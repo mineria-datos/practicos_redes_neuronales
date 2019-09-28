@@ -1,0 +1,29 @@
+---
+title: "Guia 1"
+author: "Grupo 3"
+date: "9/28/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(dplyr)
+source('./PerceptronSimple.R')
+```
+
+
+## Or
+```{r}
+
+library(readr)
+
+OR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_trn.csv", col_names = FALSE)
+
+pesos <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.8)
+pesos
+```
+
+```{r}
+graficarRectaSeparacion(pesos, OR_trn)
+```
+

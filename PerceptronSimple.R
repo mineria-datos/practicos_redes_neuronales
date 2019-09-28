@@ -35,10 +35,29 @@ entrenarPerceptron <- function(datos, critFinalizacion, maxEpocas, nu=0.05, tole
     tasa <- sum(y==d)/nrow(y)
     print(glue::glue(tasa))
     if(tasa > critFinalizacion ) {
-      return (c(w, w0))
+      return (c(w0, w))
     }
 
   }
-  return (c(w, w0))
+  return (c(w0, w))
+  
+}
+
+library(ggplot2)
+library(plotly)
+graficarRectaSeparacion <- function(w, datos) {
+  f <- function(x) {
+    -w[3]/w[2]*x-w[1]
+  }
+  d <- datos %>% as.data.frame()
+  colnames(d) <- c('x1', 'x2', 'y')
+  p<- data.frame(x=c(-2, 2)) %>% 
+    ggplot(aes(x)) + stat_function(fun=f) +
+    geom_vline(xintercept = 0) +
+    geom_hline(yintercept = 0)  +
+    geom_point(data=d, aes(x=x1, y=x2, color=y))
+
+  p <- ggplotly(p)
+  p
   
 }
