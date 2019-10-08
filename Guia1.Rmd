@@ -9,6 +9,7 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 source('./PerceptronSimple.R')
+source('./PerceptronMulticapa.R')
 ```
 
 
@@ -25,5 +26,29 @@ pesos
 
 ```{r}
 graficarRectaSeparacion(pesos, OR_trn)
+```
+
+
+
+## Punto 3
+
+
+
+```{r}
+
+XOR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
+concentlite <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
+
+resultado <- entrenarPerceptronM(concentlite, maxEpocas = 20, critFinalizacion = 0.8, 
+                                 arquitectura = c(2,1))
+
+
+```
+
+```{r}
+
+ggplot(as.data.frame(resultado$error),aes(x=eje_x, y=v_e)) + 
+  geom_point(size=2, shape=23) 
+
 ```
 
