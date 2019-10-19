@@ -10,6 +10,7 @@ knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
 source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
+source('./Particiones.R')
 ```
 
 
@@ -27,6 +28,31 @@ pesos
 ```{r}
 graficarRectaSeparacion(pesos, OR_trn)
 ```
+
+
+## Punto 2
+
+```{r}
+
+# Test de funciones que devuelven los dataset completos.
+particion_test <- generarParticion(dataset = OR_trn, porcEntrenamiento = 0.7, semilla = 1, 
+                                   clase = "X3")
+
+n_particion_test <- generarNParticiones(dataset = OR_trn, nroParticiones = 4, porcEntrenamiento = 0.75, 
+                                  semilla = 1, clase = "X3")
+
+# Test de funciones que devuelven los ID
+particion_test_ID <- generarParticionPorID(dataset = OR_trn, porcEntrenamiento = 0.7, semilla = 1, 
+                                   clase = "X3")
+
+n_particion_test_ID <- generarNParticionesPorID(dataset = OR_trn, nroParticiones = 5, 
+                                                porcEntrenamiento = 0.8, semilla = 1, 
+                                                clase = "X3")
+
+```
+
+
+
 
 
 
