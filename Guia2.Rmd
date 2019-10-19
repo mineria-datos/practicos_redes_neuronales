@@ -1,0 +1,29 @@
+---
+title: "Guia 2"
+author: "Grupo 3"
+date: "10/19/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(mvtnorm)
+source('./RedRBF.R')
+source('./PerceptronSimple.R')
+```
+
+
+## Ejercicio 1
+
+### RBF
+
+```{r}
+
+XOR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
+
+resultado <- redRBF(XOR_trn, 4)
+names(resultado)
+```
+

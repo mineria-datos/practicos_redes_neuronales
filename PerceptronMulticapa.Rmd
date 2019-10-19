@@ -1,0 +1,17 @@
+---
+title: "PerceptronMulticapa.Rmd"
+author: "Grupo 3"
+date: "10/17/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+La activación en la capa $l$ con función de activacion $\sigma$ viene dada por:
+
+$$ a^l = \sigma(z^l) $$
+siendo $$z_j^l=\sum_k w_{jk}^l a_k^{l-1}$$, la suma ponderada que va a la función de activación para la neurona $j$ de la capa $l$.
+
