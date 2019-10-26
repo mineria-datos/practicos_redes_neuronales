@@ -55,7 +55,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   #                    ncol = arquitectura[j]+1, nrow = arquitectura[j+1]) %>% as.matrix()
   #}
 
-  # Inicializando random
+  # Inicializando random. Usar valores entre -1 y 1.
   w <- list()
   set.seed(semilla)
   w[[1]] <- matrix(runif((nroEntradas+1)*(arquitectura[1]),-0.5,0.5),
@@ -74,12 +74,14 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   y <- list()
   d <- list()
   dw <- list()
-  v_e <- as.data.frame(cbind(rep(0,cantidadDatos*maxEpocas),rep(0,cantidadDatos*maxEpocas)))
-  colnames(v_e) <- c("eje_x","v_e")
+  v_e <- rep(0,cantidadDatos)
+  v_e2 <- rep(0,maxEpocas)
+  
   for (e in seq(1:maxEpocas)) {
     print("Epoca: ")
     print(glue::glue(e))
-    for(i in seq(1:cantidadDatos)) {
+    vect_i <- sample(seq(1:cantidadDatos),cantidadDatos*0.2)
+    for(i in vect_i) {
       
       # Forward
       #print("Forward")
@@ -98,19 +100,14 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
       yd <- datos[i, seq(nroEntradas+1,nroSalidas+nroEntradas)]
       error <- (yd - y[[nroCapas]]) %>% as.numeric()
       
-      # Vercor de error para luego graficar
-      eje_x <- i * e
-      v_e[eje_x,1] <- eje_x
-      v_e[eje_x,2] <- error*error
-      
+
       #En capa de salida
       d[[nroCapas]]  <- error * sigmoidea_derivada(y[[nroCapas]]) %>% as.matrix()
       if((dim(d[[nroCapas]])[1] == 1) && (dim(d[[nroCapas]])[2] == 1)){
         # caso en que dw es un numero porque tenemos una sola salida.
         dw[[nroCapas]] <- t(nu * as.numeric(d[[nroCapas]]) * (rbind(-1,y[[nroCapas-1]])
                                                               %>% as.matrix()))
-      }
-      else{
+      } else{
         dw[[nroCapas]] <- nu * d[[nroCapas]] %*% t(rbind(-1,y[[nroCapas-1]])
                                                    %>% as.matrix())
       }
@@ -122,8 +119,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
           if((dim(d[[k]])[1] == 1) && (dim(d[[k]])[2] == 1)){
             # caso en que dw es un numero porque tenemos una sola salida.
             dw[[k]] <- t(nu * as.numeric(d[[k]]) * (rbind(-1,y[[k-1]]) %>% as.matrix()))
-          }
-          else{
+          } else{
             dw[[k]] <- nu * d[[k]] %*% t(rbind(-1,y[[k-1]]) %>% as.matrix())
           }
         }
@@ -149,8 +145,9 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
     }
 
     # Calculo la salida para todos los datos
-    print("Calculo de salida. Tasa:")
+    print("Calculo de salida.")
     salida <- rep(0,cantidadDatos)
+    yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)]
     for(i in seq(1:cantidadDatos)) {
       # Calculo la salida
       x <- datos[i, 1:nroEntradas] %>%  as.matrix()
@@ -162,19 +159,22 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
         y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
       }
       salida[i] <- y[[j+1]]
+      # Verctor de error para luego promediar
+      error = as.numeric(yd[i,] - salida[i])
+      v_e[i] <- error * error
     }
     salida = clasificacion(salida)
-    yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)]
-    
+    v_e2[e] = mean(v_e)
     tasa <- sum(salida==yd)/nrow(yd)
-    print(glue::glue(tasa))
-    print("W:")
-    print(w)
+    print(glue::glue("Tasa: {tasa}"))
+    print(glue::glue("Error: {v_e2[e]}"))
+    #print("W:")
+    #print(w)
     if(tasa > critFinalizacion) break
     
   }
 
-  vectorError <- v_e[which(v_e[,1]!=0),]
+  vectorError <- v_e2
   resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError)
   return(resultado)
 }

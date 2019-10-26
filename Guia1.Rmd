@@ -65,16 +65,19 @@ n_particion_test_ID <- generarNParticionesPorID(dataset = OR_trn, nroParticiones
 XOR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
 concentlite <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
 
-resultado <- entrenarPerceptronM(concentlite, maxEpocas = 20, critFinalizacion = 0.8, 
-                                 arquitectura = c(2,1))
+resultado <- entrenarPerceptronM(concentlite, maxEpocas = 300, critFinalizacion = 0.8, nu=0.01,
+                                 arquitectura = c(5,1))
 
+
+ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
 
 ```
 
 ```{r}
 
-ggplot(as.data.frame(resultado$error),aes(x=eje_x, y=v_e)) + 
-  geom_point(size=2, shape=23) 
+plot(resultado$error)
+
+resultado$tasa
 
 ```
 
