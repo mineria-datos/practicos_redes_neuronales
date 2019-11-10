@@ -2,76 +2,330 @@
 title: "Guia 1"
 author: "Grupo 3"
 date: "9/28/2019"
-output: html_document
+output:
+  pdf_document: default
+  html_document: default
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(dplyr)
+library(readr)
+library(plotly)
+
 source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
 source('./Particiones.R')
 ```
 
 
-## Or
+## Ejercicio 1: 
+
+Realice un programa que permita el entrenamiento y prueba de un perceptrón simple con una cantidad variable de entradas.
+
+### Resolución del problema OR
+
+ - Lectura de los patrones de entrenamiento
+
+```{r message=FALSE}
+OR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_trn.csv", col_names = FALSE)
+OR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_tst.csv", col_names = FALSE)
+
+```
+ - Selección de parámetros y entrenamiento de perceptrón
+ 
+Utilizamos las funciones implementadas en el archivo "PerceptronSimple.R"
+
 ```{r}
 
-library(readr)
-
-OR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_trn.csv", col_names = FALSE)
-
 pesos <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.8)
+
+# Modelo obtenido
 pesos
+
 ```
+El entrenamiento nos devuelve la tasa obtenida en cada época y al final mostramos los valores de los pesos w que definen la recta del modelo. 
+
+$ pesos = [w_0, w_1, w_2, ...w_n] $
+
+ - Graficas
 
 ```{r}
 graficarRectaSeparacion(pesos, OR_trn)
 ```
 
+En la gráfica vemos como la recta del modelo separa el dominio según la clase.
 
-## Punto 2
+ - Prueba con datos de test
 
 ```{r}
-
-# Test de funciones que devuelven los dataset completos.
-particion_test <- generarParticion(dataset = OR_trn, porcEntrenamiento = 0.7, semilla = 1, 
-                                   clase = "X3")
-
-n_particion_test <- generarNParticiones(dataset = OR_trn, nroParticiones = 4, porcEntrenamiento = 0.75, 
-                                  semilla = 1, clase = "X3")
-
-# Test de funciones que devuelven los ID
-particion_test_ID <- generarParticionPorID(dataset = OR_trn, porcEntrenamiento = 0.7, semilla = 1, 
-                                   clase = "X3")
-
-n_particion_test_ID <- generarNParticionesPorID(dataset = OR_trn, nroParticiones = 5, 
-                                                porcEntrenamiento = 0.8, semilla = 1, 
-                                                clase = "X3")
-
+test <- aplicarPerceptron(pesos, OR_tst)
+test$tasa
 ```
 
+Por ser este un problema sencillo donde las clases son separables por una recta, la tasa de aciertos en test nos da un 100%.
 
+### Resolución del problema XOR
 
+ - Lectura de los patrones de entrenamiento
 
-
-
-## Punto 3
-
-
-
-```{r}
-
+```{r message=FALSE}
 XOR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
-concentlite <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
+XOR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_names = FALSE)
+```
+ - Selección de parámetros y entrenamiento de perceptrón
 
-resultado <- entrenarPerceptronM(concentlite, maxEpocas = 300, critFinalizacion = 0.8, nu=0.01,
-                                 arquitectura = c(5,1))
+```{r}
 
-
-ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
+pesos <- entrenarPerceptron(XOR_trn, maxEpocas = 10, critFinalizacion = 0.8)
+pesos
 
 ```
+
+Vemos que luego de 10 épocas el perceptrón simple no logra resolver el problema del XOR, ni tampoco mejorar su tasa de aciertos.
+
+ - Graficas
+
+```{r}
+graficarRectaSeparacion(pesos, XOR_trn)
+```
+
+En la gráfica vemos la recta obtenida que deja todos los patrones clasificados de igual manera.
+
+ - Prueba con datos de test
+
+```{r}
+test <- aplicarPerceptron(pesos, XOR_tst)
+test$tasa
+```
+
+Este problema no pudo ser resuelto por le perceptrón simple, la tasa de aciertos obtenida es peor que el azar.
+
+### Preguntas:
+ 
+ - ¿Pueden ser resueltos ambos problemas (OR y XOR) empleando un perceptrón simple? Justifique su respuesta.
+ 
+ En los resultados obtenidos verificamos que no se puede resolver el problema XOR con el perceptrón simple porque no es posible dividir la clase con una recta que separe el dominio en dos.
+ 
+ - ¿Qué efecto tiene la tasa de aprendizaje en el entrenamiento del perceptrón? Explique cómo este parámetro afecta a la actualización de la frontera de decisión
+ 
+La tasa de aprendizaje nos permite variar cuanto se actualizan los valores de los pesos. Una tasa muy baja puede generar que el algoritmo demore mucho en llegar al mínimo, y una tasa muy alta puede generar que el algoritmo diverja y nunca llegue a un mínimo. 
+En nuestro caso, se implementó una función que posee una tasa de aprendizaje de 0,05 (nu=0.05) por defecto y no fue necesario cambiarlo. 
+
+
+## Ejercicio 2: 
+
+### Punto a:
+
+ - Lectura de datos
+
+```{r message=FALSE}
+spheres1d10 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres1d10.csv", col_names = FALSE)
+#Nombre de las columnas
+colnames(spheres1d10)
+#Dimenciones de los datos
+dim(spheres1d10)
+```
+ - Grafica
+ 
+```{r}
+plot_ly(x=spheres1d10$X1, y=spheres1d10$X2, z=spheres1d10$X3, type="scatter3d", 
+        mode="markers", color=spheres1d10$X4)
+```
+
+ - Generamos las particiones
+
+Utilizamos la función implementada en el archivo "Particiones.R"
+
+```{r}
+particion_spheres1d10 <- generarNParticionesPorID(dataset = spheres1d10, nroParticiones = 5, 
+                                                porcEntrenamiento = 0.8, semilla = 1, 
+                                                clase = "X4")
+```
+
+Esta función nos devuelve un listado de 5 listas de ID para entrenamiento, de aproximadamente 800 elementos, y 5 listas de ID para prueba, de aproximadamente 200 elementos.
+
+ - Generamos los modelos con el perceptrón simple.
+ 
+```{r}
+for (n in seq(1,5)) {
+  print(glue::glue("Partición: {n}"))
+  #Entrenamiento
+  pesos <- entrenarPerceptron(spheres1d10[particion_spheres1d10$trn[[n]],], 
+                                   maxEpocas = 10, critFinalizacion = 0.8)
+  print(glue::glue("Pesos: {pesos}"))
+  #Prueba
+  test <- aplicarPerceptron(pesos, spheres1d10[particion_spheres1d10$tst[[n]],])
+  print(glue::glue("Tasa de aciertos en test: {test$tasa}"))
+}
+```
+ 
+### Punto b:
+
+ - Lectura de datos
+
+```{r message=FALSE}
+spheres2d10 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d10.csv", col_names = FALSE)
+spheres2d50 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d50.csv", col_names = FALSE)
+spheres2d70 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d70.csv", col_names = FALSE)
+
+```
+
+ - Generamos las particiones
+ 
+Llamamos a la función dos veces con dos semillas para obtener las 10 particiones. La función implementada genera las particiones sin reemplazo, con una relación 80/20 no se pueden generar más de 5 particiones.
+
+```{r}
+# 10%
+particion_spheres2d10 <- generarNParticionesPorID(dataset = spheres2d10, nroParticiones = 5, 
+                                                porcEntrenamiento = 0.8, semilla = 1, 
+                                                clase = "X4")
+particion_spheres2d10$trn <- c(particion_spheres2d10$trn, generarNParticionesPorID(
+  dataset = spheres2d10, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$trn)
+particion_spheres2d10$tst <- c(particion_spheres2d10$tst, generarNParticionesPorID(
+  dataset = spheres2d10, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$tst)
+
+# 50%
+particion_spheres2d50 <- generarNParticionesPorID(dataset = spheres2d50, nroParticiones = 5, 
+                                                porcEntrenamiento = 0.8, semilla = 1, 
+                                                clase = "X4")
+particion_spheres2d50$trn <- c(particion_spheres2d50$trn, generarNParticionesPorID(
+  dataset = spheres2d50, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$trn)
+particion_spheres2d50$tst <- c(particion_spheres2d50$tst, generarNParticionesPorID(
+  dataset = spheres2d50, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$tst)
+
+# 70%
+particion_spheres2d70 <- generarNParticionesPorID(dataset = spheres2d70, nroParticiones = 5, 
+                                                porcEntrenamiento = 0.8, semilla = 1, 
+                                                clase = "X4")
+particion_spheres2d70$trn <- c(particion_spheres2d70$trn, generarNParticionesPorID(
+  dataset = spheres2d70, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$trn)
+particion_spheres2d70$tst <- c(particion_spheres2d70$tst, generarNParticionesPorID(
+  dataset = spheres2d70, nroParticiones = 5, porcEntrenamiento = 0.8, semilla = 12, 
+  clase = "X4")$tst)
+```
+
+ - Generamos los modelos con el perceptrón simple.
+ 
+ -- Datos con desviaciones del 10%
+ 
+```{r}
+plot_ly(x=spheres2d10$X1, y=spheres2d10$X2, z=spheres2d10$X3, type="scatter3d", 
+        mode="markers", color=spheres2d10$X4)
+```
+ 
+ 
+```{r}
+tasaMedia <- 0
+for (n in seq(1,10)) {
+  print(glue::glue("Partición: {n}"))
+  #Entrenamiento
+  pesos <- entrenarPerceptron(spheres2d10[particion_spheres2d10$trn[[n]],], 
+                                   maxEpocas = 5, critFinalizacion = 0.79)
+  print(glue::glue("Pesos: {pesos}"))
+  #Pruba
+  test <- aplicarPerceptron(pesos, spheres2d10[particion_spheres2d10$tst[[n]],])
+  print(glue::glue("Tasa de aciertos en test: {test$tasa}"))
+  tasaMedia <- tasaMedia + test$tasa
+}
+print(glue::glue("Tasa de aciertos media en test: {tasaMedia/10}"))
+``` 
+ 
+ -- Datos con desviaciones del 50%
+ 
+```{r}
+plot_ly(x=spheres2d50$X1, y=spheres2d50$X2, z=spheres2d50$X3, type="scatter3d", mode="markers", color=spheres2d50$X4)
+```
+ 
+ 
+```{r}
+tasaMedia <- 0
+for (n in seq(1,10)) {
+  print(glue::glue("Partición: {n}"))
+  #Entrenamiento
+  pesos <- entrenarPerceptron(spheres2d50[particion_spheres2d50$trn[[n]],], 
+                                   maxEpocas = 5, critFinalizacion = 0.79)
+  print(glue::glue("Pesos: {pesos}"))
+  #Pruba
+  test <- aplicarPerceptron(pesos, spheres2d50[particion_spheres2d50$tst[[n]],])
+  print(glue::glue("Tasa de aciertos en test: {test$tasa}"))
+  tasaMedia <- tasaMedia + test$tasa
+}
+print(glue::glue("Tasa de aciertos media en test: {tasaMedia/10}"))
+```
+
+ -- Datos con desviaciones del 70%
+ 
+```{r}
+plot_ly(x=spheres2d70$X1, y=spheres2d70$X2, z=spheres2d70$X3, type="scatter3d", mode="markers", color=spheres2d70$X4)
+```
+ 
+ 
+```{r}
+tasaMedia <- 0
+for (n in seq(1,10)) {
+  print(glue::glue("Partición: {n}"))
+  #Entrenamiento
+  pesos <- entrenarPerceptron(spheres2d70[particion_spheres2d70$trn[[n]],], 
+                                   maxEpocas = 10, critFinalizacion = 0.77)
+  print(glue::glue("Pesos: {pesos}"))
+  #Pruba
+  test <- aplicarPerceptron(pesos, spheres2d70[particion_spheres2d70$tst[[n]],])
+  print(glue::glue("Tasa de aciertos en test: {test$tasa}"))
+  tasaMedia <- tasaMedia + test$tasa
+}
+print(glue::glue("Tasa de aciertos media en test: {tasaMedia/10}"))
+```
+
+
+
+### Preguntas:
+
+ - ¿Qué beneficio supone el uso de validación cruzada?
+ 
+ El uso de validación cruzada nos permite usar todos los datos para test y poder evaluar de mejor manera si el método utilizado para la generación del modelo es bueno.
+ 
+ - ¿Qué ocurre con la tasa de acierto del perceptrón para los diferentes datasets del ejercicio 2b? Analice el desempeño al incrementarse la dispersión de los datos.
+ 
+Al aumentar la dispersión de los datos, disminuye la tasa de aciertos porque el plano no permite separar correctamente las clases.
+
+
+## Ejercicio 3
+
+El algoritmo implementado se encuentra en el archivo "PerceptronMulticapa.R"
+
+ -  Lectura de datos
+
+```{r message=FALSE}
+concentlite <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
+```
+
+ - Gráfica de datos con clase
+
+```{r}
+ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
+```
+
+ - Entrenamiento de perceptrón
+
+```{r}
+resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
+                                 arquitectura = c(4,1))
+
+concentlite <- cbind(concentlite,resultado$resultado)
+```
+
+- Gráfica con clasificación del perceptron
+
+```{r}
+ggplot(data=concentlite, aes(x=X1, y=X2, color=X3, shape=as.factor(resultado$resultado)))+geom_point()
+```
+
 
 ```{r}
 

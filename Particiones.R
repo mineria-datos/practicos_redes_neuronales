@@ -16,7 +16,7 @@ generarParticion <- function(dataset, porcEntrenamiento, semilla, clase){
   dataset_training <- subset(dataset_training, select = -idtempo )
   dataset_testing  <- subset(dataset_testing, select = -idtempo )
   
-  return(list(dataset_training, dataset_testing))
+  return(list(trn = dataset_training, tst = dataset_testing))
   
 }
 
@@ -53,7 +53,7 @@ generarNParticiones <- function(dataset, nroParticiones, porcEntrenamiento, semi
     dataset_testing[[i]]  <- subset(dataset_testing[[i]], select = -idtempo )
   }
   
-  return(list(dataset_training, dataset_testing))
+  return(list(trn = dataset_training, tst = dataset_testing))
   }
   else {
     print("Error en la relación partición y porcentaje de entrenamiento")
@@ -77,7 +77,7 @@ generarParticionPorID <- function(dataset, porcEntrenamiento, semilla, clase){
                                       ungroup)$idtempo
   dataset_testing  <- seq(1,nroReg)[-dataset_training]
   
-  return(list(dataset_training, dataset_testing))
+  return(list(trn = dataset_training, tst = dataset_testing))
   
 }
 
@@ -114,7 +114,7 @@ generarNParticionesPorID <- function(dataset, nroParticiones, porcEntrenamiento,
     dataset_training[[i]]  <- seq(1,nroReg)[-dataset_testing[[i]]]
   }
   
-  return(list(dataset_training, dataset_testing))
+  return(list(trn = dataset_training, tst = dataset_testing))
   }
   else {
     print("Error en la relación partición y porcentaje de entrenamiento")

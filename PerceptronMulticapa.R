@@ -41,6 +41,7 @@ clasificacion <- function(d) {
 entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, 
                                 nu=0.05, semilla=10, arquitectura) {
   
+  t1 <- timestamp()
   nroSalidas <- arquitectura[length(arquitectura)]
   nroEntradas <- dim(datos)[2] - nroSalidas
   cantidadDatos <- dim(datos)[1]
@@ -75,17 +76,16 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   d <- list()
   dw <- list()
   v_e <- rep(0,cantidadDatos)
-  v_e2 <- rep(0,maxEpocas)
+  v_e2 <- array() #rep(0,maxEpocas)
   
   for (e in seq(1:maxEpocas)) {
-    print("Epoca: ")
-    print(glue::glue(e))
-    vect_i <- sample(seq(1:cantidadDatos),cantidadDatos*0.2)
-    for(i in vect_i) {
+    #print("Epoca: ")
+    #print(glue::glue(e))
+    for(i in seq(1:cantidadDatos)) {
       
       # Forward
       #print("Forward")
-      x <- datos[i, 1:nroEntradas] %>%  as.matrix()
+      x <- datos[i, 1:nroEntradas]
       x <- cbind(-1,x) %>% as.matrix()
       y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
       
@@ -114,6 +114,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
       
       #En capas intermedias
       if(nroCapas > 2) {
+        print("test - capas mayor a 2")
         for (k in seq(nroCapas-1,2)) {
           d[[k]]  <- (t(w[[k+1]]) %*% d[[k+1]])[-1] * sigmoidea_derivada(y[[k]]) %>% as.matrix()
           if((dim(d[[k]])[1] == 1) && (dim(d[[k]])[2] == 1)){
@@ -127,7 +128,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
     
       #En la capa de entrada
       d[[1]]  <- (t(w[[2]]) %*% d[[2]])[-1] * sigmoidea_derivada(y[[1]]) %>% as.matrix()
-      x <- datos[i, 1:nroEntradas] %>%  as.matrix()
+      x <- datos[i, 1:nroEntradas]
       x <- cbind(-1,x) %>% as.matrix()
       if((dim(d[[1]])[1] == 1) && (dim(d[[1]])[2] == 1)){
         # caso en que dw es un numero porque tenemos una sola salida.
@@ -145,7 +146,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
     }
 
     # Calculo la salida para todos los datos
-    print("Calculo de salida.")
+    #print("Calculo de salida.")
     salida <- rep(0,cantidadDatos)
     yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)]
     for(i in seq(1:cantidadDatos)) {
@@ -166,15 +167,16 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
     salida = clasificacion(salida)
     v_e2[e] = mean(v_e)
     tasa <- sum(salida==yd)/nrow(yd)
-    print(glue::glue("Tasa: {tasa}"))
-    print(glue::glue("Error: {v_e2[e]}"))
+    #print(glue::glue("Tasa: {tasa}"))
+    #print(glue::glue("Error: {v_e2[e]}"))
     #print("W:")
-    #print(w)
+    print(v_e2[e])
     if(tasa > critFinalizacion) break
     
   }
 
   vectorError <- v_e2
-  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError)
+  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError, "resultado" = salida)
+  t2 <- timestamp()
   return(resultado)
 }

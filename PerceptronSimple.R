@@ -13,7 +13,7 @@ entrenarPerceptron <- function(datos, critFinalizacion, maxEpocas, nu=0.05, tole
   w <- rep(1, nroVariables-1) %>% as.matrix()
   w0 <- 1
   
-  for (e in seq(1:maxEpocas)) {
+  for (epoca in seq(1:maxEpocas)) {
     for(i in seq(1:cantidadDatos)) {
       x <-datos[i, 1:nroVariables-1] %>%  as.matrix()
       y <- datos[i, nroVariables]
@@ -33,7 +33,7 @@ entrenarPerceptron <- function(datos, critFinalizacion, maxEpocas, nu=0.05, tole
     d <- activacion(X %*% w + w0)
     
     tasa <- sum(y==d)/nrow(y)
-    print(glue::glue(tasa))
+    print(glue::glue("Epoca: {epoca} - Tasa: {tasa}"))
     if(tasa > critFinalizacion ) {
       return (c(w0, w))
     }
@@ -60,4 +60,13 @@ graficarRectaSeparacion <- function(w, datos) {
   p <- ggplotly(p)
   p
   
+}
+
+aplicarPerceptron <- function(pesos, datos) {
+  nroVariables <- dim(datos)[2] 
+  X <- datos[, 1:nroVariables-1] %>% as.matrix()
+  y <- datos[, nroVariables]
+  d <- activacion(X %*% pesos[2:nroVariables] + pesos[1])
+  tasa <- sum(y==d)/nrow(y)
+  return(list(tasa = tasa, resultado = d))
 }
