@@ -13,15 +13,18 @@ entrenarPerceptron <- function(datos, critFinalizacion, maxEpocas, nu=0.05, tole
   w <- rep(1, nroVariables-1) %>% as.matrix()
   w0 <- 1
   
+  v_e <- rep(0,cantidadDatos)
+  v_e2 <- array()
+  
   for (epoca in seq(1:maxEpocas)) {
     for(i in seq(1:cantidadDatos)) {
-      x <-datos[i, 1:nroVariables-1] %>%  as.matrix()
+      x <- datos[i, 1:nroVariables-1] %>%  as.matrix()
       y <- datos[i, nroVariables]
       
       d <- activacion(x %*% w + w0)
       
       e <- (y - d) %>% as.numeric()
-      
+      v_e[i] <- e * e
       if( abs(e) > tolerancia ) {
         w <- w + t(nu/2*(e * x))
         w0 <- w0 + nu/2*(e)*-1
@@ -32,8 +35,10 @@ entrenarPerceptron <- function(datos, critFinalizacion, maxEpocas, nu=0.05, tole
     
     d <- activacion(X %*% w + w0)
     
-    tasa <- sum(y==d)/nrow(y)
-    print(glue::glue("Epoca: {epoca} - Tasa: {tasa}"))
+    #tasa <- sum(y==d)/nrow(y)
+    tasa <- sum(y==d)/cantidadDatos
+    error <- mean(v_e)
+    print(glue::glue("Epoca: {epoca} - Tasa: {tasa} - Error: {error}"))
     if(tasa > critFinalizacion ) {
       return (c(w0, w))
     }

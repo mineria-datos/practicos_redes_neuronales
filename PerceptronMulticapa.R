@@ -33,13 +33,13 @@ clasificacion <- function(d) {
 #datos <- concentlite
 #datos <- XOR_trn
 #critFinalizacion <- 0.8
-#maxEpocas <- 30
+#maxEpocas <- 300
 #nu <- 0.05
 #semilla <- 10
-#arquitectura <- c(2,1) # [Capas, Neuronas por capa]
+#arquitectura <- c(4,1) # [Capas, Neuronas por capa]
 
 entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, 
-                                nu=0.05, semilla=10, arquitectura) {
+                                nu=0.05, semilla=10, arquitectura, alfa = 0) {
   
   t1 <- timestamp()
   nroSalidas <- arquitectura[length(arquitectura)]
@@ -75,8 +75,9 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   y <- list()
   d <- list()
   dw <- list()
+  dw_aux <- list()
   v_e <- rep(0,cantidadDatos)
-  v_e2 <- array() #rep(0,maxEpocas)
+  v_e2 <- array()
   
   for (e in seq(1:maxEpocas)) {
     #print("Epoca: ")
@@ -114,7 +115,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
       
       #En capas intermedias
       if(nroCapas > 2) {
-        print("test - capas mayor a 2")
+        #print("test - capas mayor a 2")
         for (k in seq(nroCapas-1,2)) {
           d[[k]]  <- (t(w[[k+1]]) %*% d[[k+1]])[-1] * sigmoidea_derivada(y[[k]]) %>% as.matrix()
           if((dim(d[[k]])[1] == 1) && (dim(d[[k]])[2] == 1)){
@@ -139,9 +140,17 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
     
       # Corrección de pesos
       #print("Correccion de Pesos")
-      for (k in seq(1,nroCapas)) {
-        w[[k]]  <-  w[[k]] + dw[[k]]
+      if (e > 1) {
+        for (k in seq(1,nroCapas)) {
+          w[[k]]  <-  w[[k]] + dw[[k]] + alfa * dw_aux[[k]]
+        }
+      } else {
+        for (k in seq(1,nroCapas)) {
+          w[[k]]  <-  w[[k]] + dw[[k]]
+        }
       }
+      dw_aux <- dw # Guardo el delta anterior para el termino de momento
+      
     
     }
 
@@ -154,7 +163,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
       x <- datos[i, 1:nroEntradas] %>%  as.matrix()
       x <- cbind(-1,x) %>% as.matrix()
       y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
-      for (j in seq(1:(length(arquitectura)-1))) {
+      for (j in seq(1,(nroCapas-1))) {
         x <- y[[j]]
         x <- rbind(-1,x) %>% as.matrix()
         y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
@@ -176,7 +185,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   }
 
   vectorError <- v_e2
-  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError, "resultado" = salida)
+  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError, "resultado" = salida, "epocas" = e)
   t2 <- timestamp()
   return(resultado)
 }

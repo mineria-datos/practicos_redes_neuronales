@@ -8,7 +8,7 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 library(dplyr)
 library(readr)
 library(plotly)
@@ -317,7 +317,13 @@ ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
 resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
                                  arquitectura = c(4,1))
 
+resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.05,
+                                 arquitectura = c(4,1))
+
 concentlite <- cbind(concentlite,resultado$resultado)
+
+# resultado en 5 minutos
+
 ```
 
 - Gráfica con clasificación del perceptron
@@ -331,7 +337,91 @@ ggplot(data=concentlite, aes(x=X1, y=X2, color=X3, shape=as.factor(resultado$res
 
 plot(resultado$error)
 
+# Tasa de aciertos
 resultado$tasa
 
+# Cantidad de epocas
+resultado$epocas
+
 ```
+
+### Punto b
+
+Incorporación del termino de momento.
+
+Se agrega una variable alfa a la función, si la variable es cero no aplica el termino de momento.
+
+```{r}
+
+resultado2 <- entrenarPerceptronM(concentlite[,1:3], maxEpocas = 500, critFinalizacion = 0.9, nu=0.05,
+                                 arquitectura = c(4,1), alfa = 0.5)
+
+
+```
+
+
+```{r}
+plot(resultado2$error)
+
+# Tasa de aciertos
+resultado2$tasa
+
+# Cantidad de epocas
+resultado2$epocas
+```
+
+
+### Punto c
+
+```{r}
+
+source('./PerceptronSimple.R')
+
+# Calculo punto medio
+
+concentliteMedio <- array()
+concentliteMedio[1] <- mean(concentlite$X1)
+concentliteMedio[2] <- mean(concentlite$X2)
+
+# Agrego una columna con la distancia
+concentlite$dist <- sqrt((concentlite$X1 - concentliteMedio[1])^2 + 
+                    (concentlite$X2 - concentliteMedio[2])^2)
+datos <- as.data.frame(cbind(concentlite[,"dist"], concentlite[,"X3"]))
+# Entreno perceptrón simple
+pesosConcentlite <- entrenarPerceptron(datos, maxEpocas = 30, critFinalizacion = 0.9, nu = 0.05)
+
+# Modelo obtenido
+pesosConcentlite
+
+# hay que revisar, no anda
+
+```
+
+## Ejercicio 4
+
+ -  Lectura de datos
+
+```{r message=FALSE}
+irisbin <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE)
+
+irisbin$clase <- 0
+irisbin[which(irisbin$X7==1),]$clase <- 1
+irisbin[which(irisbin$X6==1),]$clase <- 2
+irisbin[which(irisbin$X5==1),]$clase <- 3
+
+irisbin2 <- irisbin[,-c(5,6,7)]
+
+        
+
+
+```
+
+ - Entrenamiento de perceptrón
+
+```{r}
+resultadoIris <- entrenarPerceptronM(irisbin2, maxEpocas = 20000, critFinalizacion = 0.9, nu=3,
+                                 arquitectura = c(4,2,1), alfa = 1)
+# hay que revisar, no anda
+```
+
 
