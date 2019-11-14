@@ -38,8 +38,8 @@ clasificacion <- function(d) {
 #semilla <- 10
 #arquitectura <- c(4,1) # [Capas, Neuronas por capa]
 
-entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, 
-                                nu=0.05, semilla=10, arquitectura, alfa = 0) {
+entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, semilla=10, 
+                                arquitectura, alfa = 0, imprimir = FALSE) {
   
   t1 <- timestamp()
   nroSalidas <- arquitectura[length(arquitectura)]
@@ -56,7 +56,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
   #                    ncol = arquitectura[j]+1, nrow = arquitectura[j+1]) %>% as.matrix()
   #}
 
-  # Inicializando random. Usar valores entre -1 y 1.
+  # Inicializando random. 
   w <- list()
   set.seed(semilla)
   w[[1]] <- matrix(runif((nroEntradas+1)*(arquitectura[1]),-0.5,0.5),
@@ -156,30 +156,52 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas,
 
     # Calculo la salida para todos los datos
     #print("Calculo de salida.")
-    salida <- rep(0,cantidadDatos)
-    yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)]
-    for(i in seq(1:cantidadDatos)) {
-      # Calculo la salida
-      x <- datos[i, 1:nroEntradas] %>%  as.matrix()
-      x <- cbind(-1,x) %>% as.matrix()
-      y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
-      for (j in seq(1,(nroCapas-1))) {
-        x <- y[[j]]
-        x <- rbind(-1,x) %>% as.matrix()
-        y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
+    #salida <- rep(0,cantidadDatos)
+    salida <- matrix(nrow = cantidadDatos,ncol = nroSalidas)
+    yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)] %>% as.matrix()
+    if(dim(yd)[2]!=1){ #la salida es de mas de una columna
+      for(i in seq(1:cantidadDatos)) {
+        # Calculo la salida
+        x <- datos[i, 1:nroEntradas] %>%  as.matrix()
+        x <- cbind(-1,x) %>% as.matrix()
+        y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
+        for (j in seq(1,(nroCapas-1))) {
+          x <- y[[j]]
+          x <- rbind(-1,x) %>% as.matrix()
+          y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
+        }
+        salida[i,] <- as.numeric(y[[j+1]])
+        # Verctor de error para luego promediar
+        v_e[i] <- mean(as.numeric((yd[i,] - salida[i,])*(yd[i,] - salida[i,])))
       }
-      salida[i] <- y[[j+1]]
-      # Verctor de error para luego promediar
-      error = as.numeric(yd[i,] - salida[i])
-      v_e[i] <- error * error
+      salida = clasificacion(salida)  #FALTA OTRA FUNCION ACA! 
+      v_e2[e] = mean(v_e)
+      tasa <- sum(salida==yd)/nrow(yd)
+    } else { #la salida es de una sola columna
+      for(i in seq(1:cantidadDatos)) {
+        # Calculo la salida
+        x <- datos[i, 1:nroEntradas] %>%  as.matrix()
+        x <- cbind(-1,x) %>% as.matrix()
+        y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
+        for (j in seq(1,(nroCapas-1))) {
+          x <- y[[j]]
+          x <- rbind(-1,x) %>% as.matrix()
+          y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
+        }
+        salida[i] <- y[[j+1]]
+        # Verctor de error para luego promediar
+        error = as.numeric(yd[i,] - salida[i])
+        v_e[i] <- error * error
+      }
+      salida = clasificacion(salida)
+      v_e2[e] = mean(v_e)
+      tasa <- sum(salida==yd)/nrow(yd)
     }
-    salida = clasificacion(salida)
-    v_e2[e] = mean(v_e)
-    tasa <- sum(salida==yd)/nrow(yd)
+    
     #print(glue::glue("Tasa: {tasa}"))
     #print(glue::glue("Error: {v_e2[e]}"))
     #print("W:")
-    print(v_e2[e])
+    if (imprimir) {print(v_e2[e]) }
     if(tasa > critFinalizacion) break
     
   }
