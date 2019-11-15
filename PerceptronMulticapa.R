@@ -22,10 +22,20 @@ sigmoidea_derivada <- function(y,b=1){
   return((b/2) * (1+y) * (1-y))
 }
 
+seleccionar_max <- function(row) {
+  r <- rep(-1, length(row))
+  r[which.max(row)] <- 1
+  r
+}
+
 clasificacion <- function(d) {
-  resultado <- sign(d)
-  resultado[resultado==0] <- 1
-  resultado
+  if(ncol(d) == 1)  {
+    resultado <- sign(d)
+    resultado[resultado==0] <- 1
+    resultado
+  } else {
+    apply(d,1,seleccionar_max) %>% t()
+  }
 }
 
 ## Perceptron Multicapa
@@ -41,7 +51,7 @@ clasificacion <- function(d) {
 entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, semilla=10, 
                                 arquitectura, alfa = 0, imprimir = FALSE) {
   
-  t1 <- timestamp()
+  # t1 <- timestamp()
   nroSalidas <- arquitectura[length(arquitectura)]
   nroEntradas <- dim(datos)[2] - nroSalidas
   cantidadDatos <- dim(datos)[1]
@@ -72,12 +82,24 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
   # Cada columna de W se definie con el numero de entradas mas uno por el w0
   
   
-  y <- list()
   d <- list()
   dw <- list()
   dw_aux <- list()
   v_e <- rep(0,cantidadDatos)
   v_e2 <- array()
+  
+  calcularForward <- function(x) {
+    y <- list()
+    x <- cbind(-1,x) %>% as.matrix()
+    y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
+    
+    for (j in seq(1:(length(arquitectura)-1))) {
+      x <- y[[j]]
+      x <- rbind(-1,x) %>% as.matrix()
+      y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
+    }
+    y
+  }
   
   for (e in seq(1:maxEpocas)) {
     #print("Epoca: ")
@@ -87,14 +109,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
       # Forward
       #print("Forward")
       x <- datos[i, 1:nroEntradas]
-      x <- cbind(-1,x) %>% as.matrix()
-      y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
-      
-      for (j in seq(1:(length(arquitectura)-1))) {
-        x <- y[[j]]
-        x <- rbind(-1,x) %>% as.matrix()
-        y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
-      }
+      y <- calcularForward(x)
       
       # Backward
       #print("Backward")
@@ -155,59 +170,42 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
     }
 
     # Calculo la salida para todos los datos
-    #print("Calculo de salida.")
-    #salida <- rep(0,cantidadDatos)
-    salida <- matrix(nrow = cantidadDatos,ncol = nroSalidas)
+    # print("Calculo de salida.")
+    salida <- matrix(0, nrow = cantidadDatos, ncol = nroSalidas)
     yd <- datos[, seq(nroEntradas+1,nroSalidas+nroEntradas)] %>% as.matrix()
-    if(dim(yd)[2]!=1){ #la salida es de mas de una columna
-      for(i in seq(1:cantidadDatos)) {
-        # Calculo la salida
-        x <- datos[i, 1:nroEntradas] %>%  as.matrix()
-        x <- cbind(-1,x) %>% as.matrix()
-        y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
-        for (j in seq(1,(nroCapas-1))) {
-          x <- y[[j]]
-          x <- rbind(-1,x) %>% as.matrix()
-          y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
-        }
-        salida[i,] <- as.numeric(y[[j+1]])
-        # Verctor de error para luego promediar
-        v_e[i] <- mean(as.numeric((yd[i,] - salida[i,])*(yd[i,] - salida[i,])))
+    for(i in seq(1:cantidadDatos)) {
+      # Calculo la salida
+      x <- datos[i, 1:nroEntradas] %>%  as.matrix()
+      x <- cbind(-1,x) %>% as.matrix()
+      y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
+      for (j in seq(1:(length(arquitectura)-1))) {
+        x <- y[[j]]
+        x <- rbind(-1,x) %>% as.matrix()
+        y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
       }
-      salida = clasificacion(salida)  #FALTA OTRA FUNCION ACA! 
-      v_e2[e] = mean(v_e)
-      tasa <- sum(salida==yd)/nrow(yd)
-    } else { #la salida es de una sola columna
-      for(i in seq(1:cantidadDatos)) {
-        # Calculo la salida
-        x <- datos[i, 1:nroEntradas] %>%  as.matrix()
-        x <- cbind(-1,x) %>% as.matrix()
-        y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
-        for (j in seq(1,(nroCapas-1))) {
-          x <- y[[j]]
-          x <- rbind(-1,x) %>% as.matrix()
-          y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
-        }
-        salida[i] <- y[[j+1]]
-        # Verctor de error para luego promediar
-        error = as.numeric(yd[i,] - salida[i])
-        v_e[i] <- error * error
-      }
-      salida = clasificacion(salida)
-      v_e2[e] = mean(v_e)
-      tasa <- sum(salida==yd)/nrow(yd)
+      salida[i, ] <- y[[j+1]]
+      # Verctor de error para luego promediar
+      error = as.numeric(yd[i,] - salida[i])
+      v_e[i] <- error %*% error %>%  as.numeric()
     }
-    
-    #print(glue::glue("Tasa: {tasa}"))
+    salida = clasificacion(salida)
+    v_e2[e] = mean(v_e)
+    tasa <- sum(rowSums(salida==yd)==nroSalidas)/nrow(yd)
+    # print(glue::glue("Tasa: {tasa}"))
     #print(glue::glue("Error: {v_e2[e]}"))
     #print("W:")
-    if (imprimir) {print(v_e2[e]) }
+    #print(v_e2[e])
     if(tasa > critFinalizacion) break
     
   }
 
   vectorError <- v_e2
-  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError, "resultado" = salida, "epocas" = e)
-  t2 <- timestamp()
+  resultado <- list("tasa" = tasa, "w" = w, "error" = vectorError, "resultado" = salida, "epocas" = e, "predecir" = function(entrada) {
+    y = calcularForward(entrada[,1:nroEntradas])
+    y_salida <- y[[length(arquitectura)]]
+    resultado <- t(y_salida)
+    resultado
+  })
+  # t2 <- timestamp()
   return(resultado)
 }

@@ -3,7 +3,6 @@ title: "Guia 1"
 author: "Grupo 3"
 date: "9/28/2019"
 output:
-  pdf_document: default
   html_document: default
 ---
 
@@ -12,12 +11,23 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE)
 library(dplyr)
 library(readr)
 library(plotly)
+library(foreach)
 
+## ejecuciones multicore
+library(doMC)
+registerDoMC()
+getDoParWorkers() 
 source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
 source('./Particiones.R')
+source('./LeavePOut.R')
 ```
 
+###########################
+##
+## En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out
+##
+############################
 
 ## Ejercicio 1: 
 
@@ -400,32 +410,66 @@ plot(pesosConcentlite$error)
 
 ```
 
-
 ## Ejercicio 4
 
- -  Lectura de datos
+ - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}
-irisbin <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE)
-
-irisbin$clase <- 0
-irisbin[which(irisbin$X7==1),]$clase <- 1
-irisbin[which(irisbin$X6==1),]$clase <- 2
-irisbin[which(irisbin$X5==1),]$clase <- 3
-
-irisbin2 <- irisbin[,-c(5,6,7)]
-
-        
-
+irisbin <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE) %>% head(20)
 
 ```
 
- - Entrenamiento de perceptrón
+- Selección de parámetros y entrenamiento de perceptrón
+Utilizamos las funciones implementadas en el archivo "PerceptronMulticapa.R"
+
+
+### Leave One Out
+```{r}
+system.time({
+  errores_leave_one_out <- foreach(e = leavePOutSplit(irisbin, 1), .combine = c)  %dopar% { #para ejecucion secuencia %do% {
+    y_real <- e$test[5:7] %>% as.matrix()
+    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.8, arquitectura = c(4,3,3))
+    y_predicha <- modelo$predecir(e$test)
+    e <- y_real - y_predicha
+    error <- e %*% t(e)
+    error
+  }
+})
+```
+La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
+El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
 
 ```{r}
-resultadoIris <- entrenarPerceptronM(irisbin2, maxEpocas = 20000, critFinalizacion = 0.9, nu=3,
-                                 arquitectura = c(4,3), alfa = 1)
-# hay que revisar, no anda
+errores_leave_one_out %>%
+  data.frame(x=.) %>% 
+  ggplot(aes(x=x)) +
+  geom_density()
+
 ```
 
 
+### Leave 2 Out
+```{r}
+system.time({
+  split <- leavePOutSplit(irisbin, 2)
+  errores_leave_2_out <- foreach(e = split, .combine = c)  %dopar% { #para ejecucion secuencia %do% {
+    y_real <- e$test[5:7] %>% as.matrix()
+    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.7, arquitectura = c(4,3,3))
+    print(glue::glue("progreso: {e$actual}/{e$nroCombinaciones}"))
+    y_predicha <- modelo$predecir(e$test)
+    e <- y_real - y_predicha
+    error <- c(e[1,] %*% e[1,], e[2,] %*% e[2,])
+    error
+  }
+})
+```
+La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
+El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
+
+```{r}
+errores_leave_2_out %>%
+  data.frame(x=.) %>% 
+  ggplot(aes(x=x)) +
+  geom_density()
+
+```
