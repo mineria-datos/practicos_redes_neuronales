@@ -430,6 +430,22 @@ save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
 
 ```
 
+
+### Preguntas:
+
+- ¿Cuál es la arquitectura mínima que emplearía para resolver este problema? ¿Por qué?
+ 
+ La arquitectura mínima es una capa de 3 neuronas y una capa de 1 neurona, esta fue la arquitectura utilizado para resolver la guía. Al estar una de las clases rodeada o contenida dentro de la otra clase, se requiere una arquitectura que genere una zona cerrada, para esto se requieren al menos tres rectas que definen una zona triangular. La arquitectura utilizada genera tres rectas con la primera capa de 3 neuronas y luego una capa de 1 neurona que a partir de la salida de las anteriores clasifica según si está dentro o fuera de esta zona triangular.
+ 
+ - ¿El número de épocas requerido para entrenar un perceptrón multicapa se modifica al emplear el término de momento? Analice el efecto de este término de momento sobre el entrenamiento.
+ 
+ El número de época al utilizar termino de momento se reduce. En nuestro caso, se ve que disminuye de 296 a 275. Para lograr esto se agrega un término a la corrección de los pesos utilizando el error del patrón anterior.
+
+ - ¿Qué conclusión puede sacar a partir del ejercicio 3c?
+
+ Del ejercicio 3c podemos concluir que es muy importante conocer todas las herramientas y entender bien el problema, en este caso el problema se podía resolver con una tasa de acierto mayor al 90% utilizando un perceptrón simple. Esto reduce los tiempos de entrenamiento y la complejidad del modelo.
+
+
 ## Ejercicio 4
 
  - Lectura de los patrones de entrenamiento
