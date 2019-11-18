@@ -93,13 +93,11 @@ entrenarPerceptronSigmo <- function(datos, critFinalizacion, maxEpocas, nu=0.05,
   nroVariables <- dim(datos)[2] 
   cantidadDatos <- dim(datos)[1]
   
-  if(W[1]==1 & W[2]==1){  # si no ingresa n valor lo define al azar.
+  if(W[1]==1 & W[2]==1){ 
     set.seed(semilla)
-    w <- runif(nroVariables-1,-1,1) %>% as.matrix()
-    w0 <- runif(1,-0.5,0.5)
+    w <- runif(nroVariables,-1,1) %>% as.matrix()
   } else {
-    w  <- W[2]
-    w0 <- W[1]
+    w  <- W
   }
   
   v_e <- rep(0,cantidadDatos)
@@ -107,36 +105,35 @@ entrenarPerceptronSigmo <- function(datos, critFinalizacion, maxEpocas, nu=0.05,
   
   for (epoca in seq(1:maxEpocas)) {
     for(i in seq(1:cantidadDatos)) {
-      x <- datos[i, 1:nroVariables-1] %>%  as.matrix()
+      x <- cbind (-1, datos[i, 1:nroVariables-1]) %>%  as.matrix()
       y <- datos[i, nroVariables]
       
-      d <- sigmoidea(x %*% w + w0)
+      d <- sigmoidea(x %*% w)
       
       e <- (d - y) %>% as.numeric()
       v_e[i] <- e * e
       if( abs(e) > tolerancia ) {
-        w <- w + t(nu/2 * sigmoidea_derivada(d) * (e * x))
-        w0 <- w0 + nu/2*(e)*-1
+        w  <- w - t(nu * e * sigmoidea_derivada(d) %*% x)
       }
     }
-    X <- datos[, 1:nroVariables-1] %>% as.matrix()
-    y <- datos[, nroVariables]
+    X <- cbind(-1,datos[, 1:nroVariables-1]) %>% as.matrix()
+    Y <- datos[, nroVariables]
     
-    d <- activacion(sigmoidea(X %*% w + w0))
+    D <- activacion(sigmoidea(X %*% w))
     
-    #tasa <- sum(y==d)/nrow(y)
-    tasa <- sum(y==d)/cantidadDatos
+    tasa <- sum(Y==D)/cantidadDatos
     error <- mean(v_e)
     v_e2[epoca] <- error
+    
     if (imprimir){
       print(glue::glue("Epoca: {epoca} - Tasa: {tasa} - Error: {error}"))
     }
     if(tasa > critFinalizacion ) {
-      return (list("W"=c(w0, w), "error" = v_e2, "epoca" = epoca, "tasa" = tasa))
+      return (list("W"= w, "error" = v_e2, "epoca" = epoca, "tasa" = tasa))
     }
     
   }
-  return (list("W"=c(w0, w), "error" = v_e2, "epoca" = epoca, "tasa" = tasa))
+  return (list("W"= w, "error" = v_e2, "epoca" = epoca, "tasa" = tasa))
   
 }
 

@@ -7,13 +7,14 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, message = FALSE)
+knitr::opts_chunk$set(message = FALSE, include = FALSE)
 library(dplyr)
 library(readr)
 library(plotly)
 library(foreach)
 
 ## ejecuciones multicore
+#install.packages("doMC", repos="http://R-Forge.R-project.org")
 library(doMC)
 registerDoMC()
 getDoParWorkers() 
@@ -21,6 +22,12 @@ source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
 source('./Particiones.R')
 source('./LeavePOut.R')
+if(file.exists('./resultados.RData')) {
+  load("./resultados.RData")
+  calcular = FALSE
+}
+#calcular = TRUE
+
 ```
 
 ###########################
@@ -47,11 +54,11 @@ OR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_tst.csv", col_names
 Utilizamos las funciones implementadas en el archivo "PerceptronSimple.R"
 
 ```{r}
-
-salidaPerceptron <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.9)
-
+if (calcular) {
+salidaPerceptronOR <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.9)
+}
 # Modelo obtenido
-salidaPerceptron
+salidaPerceptronOR
 
 ```
 El entrenamiento nos devuelve la tasa obtenida en cada época y al final mostramos los valores de los pesos w que definen la recta del modelo. 
@@ -61,7 +68,7 @@ $ pesos = [w_0, w_1, w_2, ...w_n] $
  - Graficas
 
 ```{r}
-graficarRectaSeparacion(salidaPerceptron$W, OR_trn)
+graficarRectaSeparacion(salidaPerceptronOR$W, OR_trn)
 ```
 
 En la gráfica vemos como la recta del modelo separa el dominio según la clase.
@@ -69,7 +76,7 @@ En la gráfica vemos como la recta del modelo separa el dominio según la clase.
  - Prueba con datos de test
 
 ```{r}
-test <- aplicarPerceptron(salidaPerceptron$W, OR_tst)
+test <- aplicarPerceptron(salidaPerceptronOR$W, OR_tst)
 test$tasa
 ```
 
@@ -86,9 +93,10 @@ XOR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_nam
  - Selección de parámetros y entrenamiento de perceptrón
 
 ```{r}
-
-salidaPerceptron <- entrenarPerceptron(XOR_trn, maxEpocas = 10, critFinalizacion = 0.8)
-salidaPerceptron
+if (calcular) {
+salidaPerceptronXOR <- entrenarPerceptron(XOR_trn, maxEpocas = 10, critFinalizacion = 0.8)
+}
+salidaPerceptronXOR
 
 ```
 
@@ -97,7 +105,7 @@ Vemos que luego de 10 épocas el perceptrón simple no logra resolver el problem
  - Graficas
 
 ```{r}
-graficarRectaSeparacion(salidaPerceptron$W, XOR_trn)
+graficarRectaSeparacion(salidaPerceptronXOR$W, XOR_trn)
 ```
 
 En la gráfica vemos la recta obtenida que deja todos los patrones clasificados de igual manera.
@@ -105,7 +113,7 @@ En la gráfica vemos la recta obtenida que deja todos los patrones clasificados 
  - Prueba con datos de test
 
 ```{r}
-test <- aplicarPerceptron(salidaPerceptron$W, XOR_tst)
+test <- aplicarPerceptron(salidaPerceptronXOR$W, XOR_tst)
 test$tasa
 ```
 
@@ -161,8 +169,8 @@ Esta función nos devuelve un listado de 5 listas de ID para entrenamiento, de a
 for (n in seq(1,5)) {
   print(glue::glue("Partición: {n}"))
   #Entrenamiento
-  salidaPerceptron <- entrenarPerceptron(spheres1d10[particion_spheres1d10$trn[[n]],], 
-                                   maxEpocas = 10, critFinalizacion = 0.8)
+  salidaPerceptron <- entrenarPerceptronSigmo(spheres1d10[particion_spheres1d10$trn[[n]],], 
+                                   maxEpocas = 20, critFinalizacion = 0.8)
   print(glue::glue("Pesos: {salidaPerceptron$W}"))
   #Prueba
   test <- aplicarPerceptron(salidaPerceptron$W, spheres1d10[particion_spheres1d10$tst[[n]],])
@@ -236,7 +244,7 @@ for (n in seq(1,10)) {
   print(glue::glue("Partición: {n}"))
   #Entrenamiento
   salidaPerceptron <- entrenarPerceptron(spheres2d10[particion_spheres2d10$trn[[n]],], 
-                                   maxEpocas = 5, critFinalizacion = 0.79)
+                                   maxEpocas = 10, critFinalizacion = 0.79)
   print(glue::glue("Pesos: {salidaPerceptron$W}"))
   #Pruba
   test <- aplicarPerceptron(salidaPerceptron$W, spheres2d10[particion_spheres2d10$tst[[n]],])
@@ -324,9 +332,10 @@ ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
  - Entrenamiento de perceptrón
 
 ```{r}
+if (calcular) {
 resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
-                                 arquitectura = c(3,1), imprimir = FALSE)
-
+                                 arquitectura = c(3,1))
+}
 concentlite <- cbind(concentlite,resultado$resultado)
 
 ```
@@ -357,10 +366,10 @@ Incorporación del termino de momento.
 Se agrega una variable alfa a la función, si la variable es cero no aplica el termino de momento.
 
 ```{r}
-
+if (calcular) {
 resultado2 <- entrenarPerceptronM(concentlite[,1:3], maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
-                                 arquitectura = c(3,1), alfa = 0.5, imprimir = FALSE)
-
+                                 arquitectura = c(3,1), alfa = 0.5)
+}
 
 ```
 
@@ -390,9 +399,10 @@ concentlite$dist <- sqrt((concentlite$X1 - concentliteMedio[1])^2 +
                     (concentlite$X2 - concentliteMedio[2])^2)
 datos <- as.data.frame(cbind(concentlite[,"dist"], concentlite[,"X3"]))
 # Entreno perceptrón simple
+if (calcular) {
 pesosConcentlite <- entrenarPerceptronSigmo(datos, maxEpocas = 100, critFinalizacion = 0.9,
-                                               nu = 0.0001, W = c(-1,1))
-
+                                               nu = 0.01)
+}
 # Modelo obtenido
 pesosConcentlite$W
 
@@ -407,6 +417,16 @@ pesosConcentlite$tasa
 
 plot(pesosConcentlite$error)
 
+
+```
+
+```{r}
+
+# Guardamos los modelos generados
+if (calcular) {
+save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
+     pesosConcentlite,file = "resultados.RData")
+}
 
 ```
 
