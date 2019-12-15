@@ -139,7 +139,8 @@ entrenarPerceptronSigmo <- function(datos, critFinalizacion, maxEpocas, nu=0.05,
 
 
 entrenarPerceptronLineal <- function(datos, critFinalizacion, maxEpocas, nu=0.05, 
-                                    tolerancia=0.1, imprimir = TRUE, semilla = 1, W = c(1,1)) {
+                                    tolerancia=0.3, imprimir = TRUE, semilla = 1, 
+                                    W = c(1,1), alfa = 0.5) {
   nroVariables <- dim(datos)[2] 
   cantidadDatos <- dim(datos)[1]
   
@@ -162,16 +163,28 @@ entrenarPerceptronLineal <- function(datos, critFinalizacion, maxEpocas, nu=0.05
       
       e <- (d - y) %>% as.numeric()
       v_e[i] <- e * e
-      if( abs(e) > tolerancia ) {
-        w  <- w - t(nu * e * (d) %*% x)
+      if( (abs(e)/y) > (tolerancia * 1.5) ) {
+        w  <- w - t(nu * e * d %*% x)
+        
+        
+  #      if (epoca > 1) {
+  #        w  <- w - t(nu * e * x) - w_aux * alfa 
+  #      } else {
+  #        w  <- w - t(nu * e * x)
+  #      }
+  #      w_aux <- w # Guardo el delta anterior para el termino de momento
+        
+        
+        
+        
       }
     }
     X <- cbind(-1,datos[, 1:nroVariables-1]) %>% as.matrix()
     Y <- datos[, nroVariables]
     
-    D <- activacion(X %*% w)
-    
-    tasa <- sum(Y==D)/cantidadDatos
+    D <- (X %*% w)
+    dif <- ((abs(Y-D)/Y) < tolerancia)
+    tasa <- sum(dif==TRUE)/cantidadDatos
     error <- mean(v_e)
     v_e2[epoca] <- error
     
