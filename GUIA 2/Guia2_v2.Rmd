@@ -1,0 +1,765 @@
+---
+title: "Guia 2"
+author: "Grupo 3: Emiliano Bodean - Zacarias Ojeda"
+date: "10/19/2019"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+library(mvtnorm)
+library(cluster)
+library(tidyverse)
+source('./RedRBF_g2.R')
+source('./PerceptronSimpleRBF_g2.R')
+source('../Particiones.R')
+
+if(file.exists('./resultadosG2.RData')) {
+  load("./resultadosG2.RData")
+  calcular = FALSE
+}
+#calcular = TRUE
+```
+
+
+## Ejercicio 1
+
+### Resolución del problema XOR con una red neuronal RBF
+
+ - Lectura de los patrones de entrenamiento
+ 
+```{r message=FALSE}
+XOR_trn <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
+XOR_tst <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_names = FALSE)
+```
+ 
+ - Selección de parámetros y entrenamiento de perceptrón
+ 
+En este caso se utilizan 4 gausianas por la distribución de los datos.
+
+```{r}
+datos_x <- XOR_trn[,c(1,2)]
+datos_y <- XOR_trn[,3]
+modeloRBF <- redRBF(datos_x, datos_y, nroGausianas = 4, funcion = "sigmo")
+```
+
+ - Prueba con datos de test
+ 
+```{r}
+datos_x <- XOR_tst[,c(1,2)]
+datos_y <- XOR_tst[,3]
+salida <- aplicarRedRBF(modeloRBF, datos_x, datos_y)
+salida$tasa
+```
+
+### Resolución del problema Iris con una red neuronal RBF
+
+ - Lectura de los patrones de entrenamiento
+
+```{r message=FALSE}
+irisbin <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE)
+```
+
+- Selección de parámetros y entrenamiento de perceptrón
+
+```{r}
+datos_x <- irisbin[,c(1,2,3,4)]
+datos_y <- irisbin[,c(5,6,7)]
+
+#Se podría aplicar criterio de Elbow para la selección de K
+
+modeloRBF <- redRBF(datos_x, datos_y, nroGausianas = 10, funcion = "sigmo", pnu = 0.2, 
+                    pepoca = 200, pcritFinalizacion = 0.9)
+```
+
+ - Prueba con datos 
+ 
+```{r}
+salida <- aplicarRedRBF(modeloRBF, datos_x, datos_y)
+salida$tasa
+
+head(salida$salida)
+
+
+```
+
+Cantidad de parámetros:
+
+En una red MLP con una estructura (3,1), tenemos los siguientes parámetros:
+
+$numParamMLP = Parámetros de Capa 1 + Parámetros de Capa 2$
+
+$numParamMLP = [(4 entradas + 1) * 3 neuronas] + [(3 entradas + 1) * 1 neurona]$
+
+$numParamMLP = 5 * 3 + 4 * 1 = 19 parámetros$
+
+Una red RBF con 19 parámetros podría tener la siguiente distribución:
+
+$numParamRBF = Parámetros de Gausianas + Parámetros de Perceptrones$
+
+$numParamRBF = [3 centros] + [(3 entradas + 1) * 3 neurona]$
+
+$numParamRBF = 3 + 4 * 3 = 15 parámetros$
+
+```{r}
+modeloRBF_2 <- redRBF(datos_x, datos_y, nroGausianas = 3, funcion = "sigmo", pnu = 0.2, 
+                    pepoca = 200, pcritFinalizacion = 0.9)
+```
+
+ - Prueba con datos 
+ 
+```{r}
+salida_2 <- aplicarRedRBF(modeloRBF_2, datos_x, datos_y)
+salida_2$tasa
+
+head(salida_2$salida)
+```
+
+
+## Ejercicio 2
+
+ - Lectura de datos
+ 
+```{r message=FALSE}
+merval <- read_csv("../../PUBLICO/Encuentro 3/Práctica/data/merval.csv", col_names = FALSE)
+```
+ 
+ - Preprocesamiento de los datos
+ 
+Generamos un dataset que contenga seis valores consecutivos en cada registro, cinco tomados como datos de entrada y un sexto valor tomado como clase.
+ 
+```{r}
+cantidadDatos <- nrow(merval)
+datos_merval <- matrix(0,nrow = cantidadDatos-5, ncol = 6)
+
+for (i in seq(1,cantidadDatos-5)) {
+  datos_merval[i,] <- merval$X1[seq(i,i+5)] 
+}
+
+datos_x <- datos_merval[,c(1,2,3,4,5)] %>% as.matrix()
+datos_y <- datos_merval[,6] %>% as.matrix()
+
+# Primeros seis registros del dataset
+head(datos_merval)
+
+```
+
+Antes de generar el modelo, tenemos que definir el número de gausianas. Utilizamos la gráfica de Elbow para definir el k a utilizar en el modelo.
+
+```{r}
+set.seed(123)
+wss <- function(k) {
+  kmeans(datos_x, k, nstart = 10 )$tot.withinss
+}
+# Valores de k = 1 a k = 15
+k.values <- 1:15
+wss_values <- map_dbl(k.values, wss)
+plot(k.values, wss_values,
+       type="b", pch = 19, frame = FALSE, 
+       xlab="Número de clusters K",
+       ylab="Inercia - Suma de Cuadrados")
+```
+
+Mirando la gráfica anterior tomamos un valor de k = 4, es donde la gráfica hace el codo y queda aproximadamente constante.
+
+ - Normalizamos los datos.
+ 
+```{r}
+maximo <- 0
+for (i in seq(1,ncol(datos_x))) {
+  if (max(datos_x[,i]) > maximo) {maximo <- max(datos_x[,i])} 
+}
+if (max(datos_y) > maximo) {maximo <- max(datos_y)}
+
+datos_x <- datos_x / maximo
+datos_y <- datos_y / maximo
+```
+
+ - Dividimos los datos en Train y Test, utilizando un 70% para entrenamiento.
+ 
+```{r}
+merval7030 <- generarParticionPorID(as.data.frame(datos_merval), porcEntrenamiento = 0.7, 
+                                    semilla = 1, clase = "V6")
+
+```
+
+ - Generamos el modelo con los datos de entrenamiento.
+
+```{r}
+
+if (calcular) {
+modeloMerval70 <- redRBF(datos_x[merval7030$trn,], (datos_y[merval7030$trn,] %>% as.matrix()), 
+                         nroGausianas = 4, funcion = "lineal", pnu = 0.01, pepoca = 200000, 
+                         pcritFinalizacion = 0.95, ptolerencia = 0.1)
+}
+```
+
+ - Aplicamos el modelo a los datos de Train y Test 
+
+```{r}
+salidaMervalTrn <- aplicarRedRBF(modeloMerval70, datos_x[merval7030$trn,], 
+                                 (datos_y[merval7030$trn,] %>% as.matrix()))
+salidaMervalTst <- aplicarRedRBF(modeloMerval70, datos_x[merval7030$tst,], 
+                                 (datos_y[merval7030$tst,] %>% as.matrix()))
+
+```
+
+ - Grafica de error en Test
+
+```{r}
+#Grafica de error en cada registro
+plot(salidaMervalTst$error)
+
+#Error cuadrático medio
+errorMedio <- sum(salidaMervalTst$error) / length(salidaMervalTst$error)
+errorMedio
+
+```
+
+ - Generamos el modelo a aplicar para realizar las predicciones con todos los datos.
+
+```{r}
+# Generamos el modelo
+if (calcular) {
+modeloMerval <- redRBF(datos_x, datos_y, nroGausianas = 4, funcion = "lineal", pnu = 0.01, 
+                    pepoca = 200000, pcritFinalizacion = 0.95, ptolerencia = 0.1)
+}
+
+```
+
+
+Aplicamos el modelo a los mismos datos de entrenamiento para graficar error en train.
+
+```{r}
+
+salidaMerval <- aplicarRedRBF(modeloMerval, datos_x, datos_y)
+
+```
+
+Grafica de error
+
+```{r}
+#Grafica de error en cada registro
+plot(salidaMerval$error)
+
+#Error cuadrático medio
+errorMedio <- sum(salidaMerval$error) / length(salidaMerval$error)
+errorMedio
+
+```
+
+ - Gráfica del valor predicho y el valor real
+
+```{r}
+par(mfrow=c(2,1))
+plot(salidaMerval$salida * maximo, main = "Valores Predichos")
+plot(datos_y * maximo, main = "Valores Reales")
+
+```
+
+ - Predecimos un nuevo valor
+ 
+Tomamos los últimos 5 valores del dataset y predecimos cual será el próximo valor.
+
+```{r}
+
+ultimosDatos <- (merval[seq(nrow(merval)-4,nrow(merval)),] / maximo) %>% as.matrix()
+ultimosDatos <- t(ultimosDatos)
+ultimosDatos <- rbind(ultimosDatos,ultimosDatos) %>% as.matrix() 
+#usamos dos registros por el tipo de datos.
+salidaUno <- as.matrix(c(1,1)) 
+salidaMervalNew <- aplicarRedRBF(modeloMerval, ultimosDatos, salidaUno)
+#Nuevo valor predicho
+salidaMervalNew$salida[1] * maximo
+```
+
+
+
+```{r}
+
+# Guardamos los modelos generados
+if (calcular) {
+save(modeloMerval, modeloMerval70,file = "resultadosG2.RData")
+}
+
+```
+
+## Ejercicio 3
+
+
+```{r include=FALSE}
+library(igraph)
+```
+
+ - Lectura de datos
+ 
+```{r message=FALSE}
+
+circulo <- read_csv("../../PUBLICO/Encuentro 3/Práctica/data/circulo.csv", col_names = FALSE)
+te <- read_csv("../../PUBLICO/Encuentro 3/Práctica/data/te.csv", col_names = FALSE)
+
+```
+ 
+ - Graficamos los datos de entrada
+ 
+```{r}
+par(mfrow=c(1,2))
+plot(circulo)
+plot(te)
+```
+
+ - Inicialización de Grilla SOM
+
+Implementamos una función con dos casos, una red cuadrada y una red lineal.
+
+```{r}
+# Definimos la cantidad de nodos. 
+# El parámetro es la cantidad de nodos a lo ancho/largo de la grilla
+
+inicializarGrilla <- function(cantidadNodos, forma = "cuadrada") {
+  if(forma == "cuadrada") {
+    # Defino conexiones entre puntos
+    g <- make_lattice( c(cantidadNodos,cantidadNodos) ) 
+    # Defino la ubicación de los puntos en el gráfico
+    # Se distribuyen en un cuadrado de 1 por 1 para trabajar con datos normalizados.
+    miLayout <- c(rep(seq(0,cantidadNodos-1),cantidadNodos))
+    for (i in seq(0,cantidadNodos-1)) {
+      miLayout <- c(miLayout,rep(i,cantidadNodos))
+    }
+    miLayout <- matrix(miLayout, ncol = 2, nrow = cantidadNodos * cantidadNodos)
+    miLayout <- ((miLayout / cantidadNodos) * 2 ) - 1
+    # Generamos el gráfico
+    plot(g, layout=miLayout)
+  }
+  if(forma == "lineal") {
+    # Defino conexiones entre puntos
+    g <- make_lattice( c(cantidadNodos) ) 
+    # Defino la ubicación de los puntos en el gráfico
+    # Se distribuyen en un cuadrado de 1 por 1 para trabajar con datos normalizados.
+    miLayout <- c(seq(0,cantidadNodos-1),rep(0,cantidadNodos))
+    miLayout <- matrix(miLayout, ncol = 2, nrow = cantidadNodos)
+    miLayout[,1] <- ((miLayout / cantidadNodos) * 2 )[,1] - 1
+    # Generamos el gráfico
+    plot(g, layout=miLayout)
+  }
+  return(list(miLayout = miLayout, g = g))
+}
+
+cantidadNodos <- 5
+grillaSOM <- inicializarGrilla(cantidadNodos, forma = "cuadrada")
+g        <- grillaSOM$g
+miLayout <- grillaSOM$miLayout
+```
+
+ - Función de vecindad
+
+Implementamos una función vecindad. Devuelve los ID de los vecinos de un nodo en un entorno cuadrado.
+ 
+```{r}
+
+vecindad <- function(nodo, g, entorno = 1) {
+  vecinos <- which(g[nodo]==1)
+  if(entorno > 1) {
+    for (n in seq(1,entorno-1)) {
+      vecinosAux <- which(apply(g[vecinos] %>% as.matrix(), 2, sum) != 0)
+      vecinos <- unique(c(vecinos,vecinosAux))
+    }
+  }
+  vecinos = unique(c(vecinos,nodo))
+  return(vecinos)
+}
+
+#vecindad(nodo = 45, g, entorno = 2)
+
+```
+
+
+ - Entrenamiento de la res SOM - Circulo
+
+Implementamos la función de entrenamiento para redes SOM, y se la utiliza en el caso del Circulo.
+
+La función dentro tiene tres etapas, 
+ - Ordenamiento topológico o global
+ - Transición
+ - Ajuste fino
+ 
+La vecindad para el ajuste de los pesos decrece en forma lineal hasta 1 y la taza de aprendizaje decrece linealmente hasta 0,05.
+ 
+```{r}
+
+entrenemientoSOM <- function(datos, nu = 0.9, cantidadEpocas = 100, g, miLayout, 
+                             cantidadNodos, entorno, criterioSalida = 0.001) {
+  cantidadDatos <- nrow(datos)
+  graficas <- list()
+  # 1) Ordenamiento topológico o global
+  for (e in seq(1,cantidadEpocas)) {
+    #Hacemos un for para recorrer todos los datos de entrada
+    miLayoutAux <- miLayout
+    for (i in seq(1,cantidadDatos)) {
+      # para cada valor recorremos la red SOM y buscamos la distancia menor
+      aux_1  <- (datos[i,1] %>% as.numeric()) - miLayout[,1]
+      aux_2  <- (datos[i,2] %>% as.numeric()) - miLayout[,2]
+      aux_1  <- (aux_1)^2
+      aux_2  <- (aux_2)^2
+      aux2 <- sqrt( aux_1 + aux_2 )
+      distMenor <- min(aux2)
+      nodoGanador <- which(aux2 == min(aux2))[1]
+
+      #ajustar los pesos de la neurona ganadora y las neuronas vecinas
+      # 1) Ordenamiento topológico o global
+      if(e < cantidadEpocas/15) {
+        vecinos <- vecindad(nodo = nodoGanador, g, entorno = entorno)
+        for (k in vecinos) {
+          miLayout[k,] <- (miLayout[k,] + nu * (datos[i,] - miLayout[k,])) %>% as.numeric()
+        } 
+      } else {
+          # 2) Transicion
+          if(e < (10*cantidadEpocas/15)) {
+            vecinos <- vecindad(nodo = nodoGanador, g, entorno = entorno)
+            for (k in vecinos) {
+              miLayout[k,] <- (miLayout[k,] + nu * (datos[i,] - miLayout[k,])) %>% as.numeric()
+            }
+            entorno <- max(entorno - 1, 1)
+            nu <- max(nu - 0.05, 0.05)
+          } else {
+            # 3) Ajuste fino
+            nu <- 0.05
+            entorno <- 1
+            vecinos <- vecindad(nodo = nodoGanador, g, entorno = entorno)
+            for (k in vecinos) {
+              miLayout[k,] <- (miLayout[k,] + nu * (datos[i,] - miLayout[k,])) %>% as.numeric()
+            }
+          }
+        }
+    }
+    
+    #if(((e%%5)==0)|e==1|e==2) {  #hacemos un dibujo cada 5 épocas
+    if(TRUE) {  #hacemos un dibujo cada época
+      plot(g, layout=miLayout)
+      print("Epoca")
+      print(e)
+      graficas[[e]] <- list(g=g,miLayout=miLayout)
+    }
+    # Controlo si hay diferencias significativas con la época anterior.
+    # sinDiferencia <- TRUE
+    # for (j in seq(1,cantidadNodos * cantidadNodos)) {
+    #     # buscar menor distancia
+    #     aux  <- (miLayoutAux[j,] - miLayout[j,])^2
+    #     aux2 <- sqrt( aux[1] + aux[2] )
+    #     if(aux2 > criterioSalida) { 
+    #       sinDiferencia <- FALSE
+    #       break
+    #     }
+    # }
+    # if(sinDiferencia) {
+    #   plot(g, layout=miLayout)
+    #   print("Epoca")
+    #   print(e)
+    #   graficas[[e]] <- recordPlot()
+    #   return(list(graficas = graficas, layout=miLayout, g=g, epocas = e))
+    # }
+  }
+  return(list(graficas = graficas, milayout=miLayout, g=g, epocas = e))
+}
+
+datos <- circulo
+nu <- 0.4
+cantidadEpocas <- 30
+entorno <- 3
+
+if (calcular) {
+  modeloCirculo <- entrenemientoSOM(datos, nu, cantidadEpocas, g, miLayout, 
+                                    cantidadNodos, entorno)
+}
+
+# Graficas:
+par(mfrow=c(1,2))
+plot(modeloCirculo$graficas[[1]]$g, layout=modeloCirculo$graficas[[1]]$miLayout)
+plot(modeloCirculo$graficas[[2]]$g, layout=modeloCirculo$graficas[[2]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloCirculo$graficas[[3]]$g, layout=modeloCirculo$graficas[[3]]$miLayout)
+plot(modeloCirculo$graficas[[5]]$g, layout=modeloCirculo$graficas[[5]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloCirculo$graficas[[10]]$g, layout=modeloCirculo$graficas[[10]]$miLayout)
+plot(modeloCirculo$graficas[[15]]$g, layout=modeloCirculo$graficas[[15]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloCirculo$graficas[[20]]$g, layout=modeloCirculo$graficas[[20]]$miLayout)
+plot(modeloCirculo$graficas[[25]]$g, layout=modeloCirculo$graficas[[25]]$miLayout)
+par(mfrow=c(1,2))
+plot(circulo)
+plot(modeloCirculo$graficas[[modeloCirculo$epocas]]$g, 
+     layout=modeloCirculo$graficas[[modeloCirculo$epocas]]$miLayout)
+```
+ 
+ 
+  - Inicialización de Grilla SOM - Te
+
+```{r}
+cantidadNodos <- 5
+grillaSOM <- inicializarGrilla(cantidadNodos, forma = "cuadrada")
+g        <- grillaSOM$g
+miLayout <- grillaSOM$miLayout
+
+```
+
+
+ - Entrenamiento de la res SOM - Te
+ 
+ 
+```{r}
+datos <- te
+nu <- 0.4
+cantidadEpocas <- 30
+entorno <- 3
+
+if (calcular) {
+  modeloTe <- entrenemientoSOM(datos, nu, cantidadEpocas, g, miLayout, 
+                               cantidadNodos, entorno)
+}
+
+# Graficas:
+par(mfrow=c(1,2))
+plot(modeloTe$graficas[[1]]$g, layout=modeloTe$graficas[[1]]$miLayout)
+plot(modeloTe$graficas[[2]]$g, layout=modeloTe$graficas[[2]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTe$graficas[[3]]$g, layout=modeloTe$graficas[[3]]$miLayout)
+plot(modeloTe$graficas[[5]]$g, layout=modeloTe$graficas[[5]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTe$graficas[[10]]$g, layout=modeloTe$graficas[[10]]$miLayout)
+plot(modeloTe$graficas[[15]]$g, layout=modeloTe$graficas[[15]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTe$graficas[[20]]$g, layout=modeloTe$graficas[[20]]$miLayout)
+plot(modeloTe$graficas[[25]]$g, layout=modeloTe$graficas[[25]]$miLayout)
+par(mfrow=c(1,2))
+plot(te)
+plot(modeloTe$graficas[[modeloTe$epocas]]$g, 
+     layout=modeloTe$graficas[[modeloTe$epocas]]$miLayout)
+```
+ 
+  - Inicialización de Grilla SOM Unidimensional - Te
+
+```{r}
+cantidadNodos <- 25
+grillaSOM <- inicializarGrilla(cantidadNodos, forma = "lineal")
+g        <- grillaSOM$g
+miLayout <- grillaSOM$miLayout
+
+``` 
+
+ 
+ - Entrenamiento de la res SOM Unidimensional - Te
+
+```{r}
+datos <- te
+nu <- 0.4
+cantidadEpocas <- 30
+cantidadNodos <- 5
+entorno <- 7
+
+if (calcular) {
+  modeloTeUni <- entrenemientoSOM(datos, nu, cantidadEpocas, g, miLayout, 
+                                  cantidadNodos, entorno)
+}
+
+# Graficas:
+par(mfrow=c(1,2))
+plot(modeloTeUni$graficas[[1]]$g, layout=modeloTeUni$graficas[[1]]$miLayout)
+plot(modeloTeUni$graficas[[2]]$g, layout=modeloTeUni$graficas[[2]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTeUni$graficas[[3]]$g, layout=modeloTeUni$graficas[[3]]$miLayout)
+plot(modeloTeUni$graficas[[5]]$g, layout=modeloTeUni$graficas[[5]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTeUni$graficas[[10]]$g, layout=modeloTeUni$graficas[[10]]$miLayout)
+plot(modeloTeUni$graficas[[15]]$g, layout=modeloTeUni$graficas[[15]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloTeUni$graficas[[20]]$g, layout=modeloTeUni$graficas[[20]]$miLayout)
+plot(modeloTeUni$graficas[[25]]$g, layout=modeloTeUni$graficas[[25]]$miLayout)
+par(mfrow=c(1,2))
+plot(te)
+plot(modeloTeUni$graficas[[modeloTeUni$epocas]]$g, 
+     layout=modeloTeUni$graficas[[modeloTeUni$epocas]]$miLayout)
+```
+
+Podemos observar que con la misma cantidad de neuronas, pero con la distribución lineal podemos obtener una red que se ubica por completo sobre los datos con el mismo entrenamiento.
+
+## Ejercicio 4
+
+ - Lectura de datos
+ 
+```{r message=FALSE}
+
+clouds <- read_csv("../../PUBLICO/Encuentro 3/Práctica/data/clouds.csv", col_names = FALSE)
+
+```
+ 
+ - Graficamos los datos de entrada
+ 
+```{r}
+
+ggplot(data=clouds, aes(x=X1, y=X2,color=as.factor(X3)))+geom_point()
+
+```
+
+ 
+ - Inicialización de Grilla SOM - Clouds
+
+Generamos una grilla SOM de 49 nodos, con esto tenemos un nodo cada 100 patrones aproximadamente.
+
+```{r}
+cantidadNodos <- 7
+grillaSOM <- inicializarGrilla(cantidadNodos, forma = "cuadrada")
+g        <- grillaSOM$g
+miLayout <- grillaSOM$miLayout
+
+``` 
+
+ 
+ - Entrenamiento de la res SOM - Clouds
+ 
+```{r}
+datos <- clouds[,c(1,2)]
+nu <- 0.4
+cantidadEpocas <- 30
+cantidadNodos <- 7
+entorno <- 3
+
+if (calcular) {
+  modeloClouds <- entrenemientoSOM(datos, nu, cantidadEpocas, g, miLayout, 
+                                   cantidadNodos, entorno)
+}
+
+# Graficas:
+par(mfrow=c(1,2))
+plot(modeloClouds$graficas[[1]]$g, layout=modeloClouds$graficas[[1]]$miLayout)
+plot(modeloClouds$graficas[[2]]$g, layout=modeloClouds$graficas[[2]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloClouds$graficas[[3]]$g, layout=modeloClouds$graficas[[3]]$miLayout)
+plot(modeloClouds$graficas[[5]]$g, layout=modeloClouds$graficas[[5]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloClouds$graficas[[10]]$g, layout=modeloClouds$graficas[[10]]$miLayout)
+plot(modeloClouds$graficas[[15]]$g, layout=modeloClouds$graficas[[15]]$miLayout)
+par(mfrow=c(1,2))
+plot(modeloClouds$graficas[[20]]$g, layout=modeloClouds$graficas[[20]]$miLayout)
+plot(modeloClouds$graficas[[25]]$g, layout=modeloClouds$graficas[[25]]$miLayout)
+par(mfrow=c(1,2))
+plot(clouds[,c(1,2)])
+plot(modeloClouds$graficas[[modeloClouds$epocas]]$g, 
+     layout=modeloClouds$graficas[[modeloClouds$epocas]]$miLayout)
+```
+
+ - Etiquetado de neuronas
+ 
+Para el etiquetado de neuronas, se evalúa la cantidad de patrones de cada clase en el entorno cercano de cada neurona. Se toma como entorno cercano un radio de la mitad de la distancia promedio de la neurona con sus vecinas. 
+ 
+```{r}
+
+clase <- 3 # defino columna de clase
+claseResultadoRed <- array(0)
+miLayout <- modeloClouds$milayout
+g        <- modeloClouds$g 
+
+for (i in seq(1,cantidadNodos*cantidadNodos)) {
+  # calculo la distancia media a sus vecinos para definir un entorno
+  vecinos <- which(g[i]==1)
+  aux_1  <- miLayout[vecinos,1] - miLayout[i,1]
+  aux_2  <- miLayout[vecinos,2] - miLayout[i,2]
+  aux_1  <- (aux_1)^2
+  aux_2  <- (aux_2)^2
+  aux2 <- sqrt( aux_1 + aux_2 )
+  radio <- mean(aux2) / 2
+  
+  # se clasifica el nodo con la categoría que más se repita en el entorno
+  acumuladores <- array(0)
+  aux_1  <- datos[,1] - miLayout[i,1]
+  aux_2  <- datos[,2] - miLayout[i,2]
+  aux_1  <- (aux_1)^2
+  aux_2  <- (aux_2)^2
+  aux2 <- sqrt( aux_1 + aux_2 )
+  if(length(which(clouds[which(aux2 < radio),clase]==0)) > 
+     length(which(clouds[which(aux2 < radio),clase]==1))) {
+    claseResultadoRed[i] <- 0
+  } else {
+    claseResultadoRed[i] <- 1
+  }
+}
+
+
+```
+
+
+ - Clasificación con red SOM
+
+Se asigna como clase ganadora a cada patrón a la clase de la neurona más cercana.
+
+```{r}
+
+#Ejemplo con un nuevo patrón
+nuevoDato <- c(1,1)
+
+#para el nuevo valor recorremos la red SOM y buscamos la distancia menor
+aux       <- (nuevoDato - miLayout[1,])^2
+distMenor <- sqrt( aux[1] + aux[2] )
+nodoGanador <- 1
+for (j in seq(2,cantidadNodos)) {
+  # buscar menor distancia
+  aux  <- (nuevoDato - miLayout[j,])^2
+  aux2 <- sqrt( aux[1] + aux[2] )
+  if(aux2 < distMenor) {
+    distMenor   <- aux2
+    nodoGanador <- j
+  }
+}
+
+#clase del dato nuevo
+claseResultadoRed[nodoGanador]
+
+# Realizamos la clasificación para todos los patrones del dataset
+claseResultado <- array(0)
+for (i in seq(1,nrow(datos))) {
+  aux_1  <- miLayout[,1] - (datos[i,1] %>% as.numeric())
+  aux_2  <- miLayout[,2] - (datos[i,2] %>% as.numeric())
+  aux_1  <- (aux_1)^2
+  aux_2  <- (aux_2)^2
+  distancias <- sqrt( aux_1 + aux_2 )
+  claseResultado[i] <- claseResultadoRed[which(distancias == min(distancias))[1]]
+}
+
+
+
+```
+ 
+ - Visualizamos los puntos clasificados
+
+```{r}
+
+ggplot(data=clouds, aes(x=X1, y=X2,color=as.factor(X3),
+                        shape=as.factor(claseResultado)))+geom_point()
+
+```
+ 
+ - Calculamos la tasa de aciertos
+ 
+```{r}
+
+aciertos <- length(which(clouds[,clase] == claseResultado))
+tasa <- aciertos / nrow(clouds)
+tasa
+
+```
+
+Obtuvimos una tasa de un 86% de acierto, para mejorar esto se podría entrenar una red SOM con mayor numeró de neuronas. 
+ 
+```{r}
+
+# Guardamos los modelos generados
+if (calcular) {
+save(modeloMerval, modeloMerval70, modeloCirculo, modeloClouds, modeloTe,
+     modeloTeUni, file = "resultadosG2.RData")
+}
+
+``` 
+ 
