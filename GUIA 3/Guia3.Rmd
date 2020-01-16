@@ -1,0 +1,78 @@
+---
+title: "Guia 3"
+author: "Grupo 3: Emiliano Bodean - Zacarias Ojeda"
+date: "16/01/2020"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(readr)
+library(dplyr)
+source('./Genetica.R')
+
+```
+
+# Algoritmos evolutivos
+
+## Ejercicio 1
+
+Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:
+
+
+ - Lectura de los patrones de entrenamiento
+ 
+```{r message=FALSE}
+
+
+```
+ 
+ - Función 1
+ 
+
+```{r}
+# Definición de funciones a minimizar
+funcion01 <- function(x){
+  return((-1)*x*sin(sqrt(x)))
+}
+```
+
+```{r}
+# Rango de la variable
+
+xMin <- -512
+xMax <- 512
+
+rango <- xMax - xMin
+
+cantidadBits <- round(log(rango)/log(2))
+
+```
+
+
+ - Función 2
+ 
+```{r}
+
+
+```
+
+ - Función 3
+
+```{r}
+
+
+```
+
+### Preguntas 
+
+ - ¿Corresponde al mínimo global el valor encontrado? Repita la búsqueda varias veces y determine el valor medio y desvío. 
+ 
+ - ¿Se encuentra ahora el mínimo global dentro del intervalo?
+
+
+
+
+ 
