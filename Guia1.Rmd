@@ -26,7 +26,7 @@ if(file.exists('./resultados.RData')) {
   load("./resultados.RData")
   calcular = FALSE
 }
-#calcular = TRUE
+calcular = TRUE
 
 ```
 
@@ -446,66 +446,3 @@ save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
  Del ejercicio 3c podemos concluir que es muy importante conocer todas las herramientas y entender bien el problema, en este caso el problema se podía resolver con una tasa de acierto mayor al 90% utilizando un perceptrón simple. Esto reduce los tiempos de entrenamiento y la complejidad del modelo.
 
 
-## Ejercicio 4
-
- - Lectura de los patrones de entrenamiento
-
-```{r message=FALSE}
-irisbin <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE) %>% head(20)
-
-```
-
-- Selección de parámetros y entrenamiento de perceptrón
-Utilizamos las funciones implementadas en el archivo "PerceptronMulticapa.R"
-
-
-### Leave One Out
-```{r}
-system.time({
-  errores_leave_one_out <- foreach(e = leavePOutSplit(irisbin, 1), .combine = c)  %dopar% { #para ejecucion secuencia %do% {
-    y_real <- e$test[5:7] %>% as.matrix()
-    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.8, arquitectura = c(4,3,3))
-    y_predicha <- modelo$predecir(e$test)
-    e <- y_real - y_predicha
-    error <- e %*% t(e)
-    error
-  }
-})
-```
-La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
-El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
-
-```{r}
-errores_leave_one_out %>%
-  data.frame(x=.) %>% 
-  ggplot(aes(x=x)) +
-  geom_density()
-
-```
-
-
-### Leave 2 Out
-```{r}
-system.time({
-  split <- leavePOutSplit(irisbin, 2)
-  errores_leave_2_out <- foreach(e = split, .combine = c)  %dopar% { #para ejecucion secuencia %do% {
-    y_real <- e$test[5:7] %>% as.matrix()
-    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.7, arquitectura = c(4,3,3))
-    print(glue::glue("progreso: {e$actual}/{e$nroCombinaciones}"))
-    y_predicha <- modelo$predecir(e$test)
-    e <- y_real - y_predicha
-    error <- c(e[1,] %*% e[1,], e[2,] %*% e[2,])
-    error
-  }
-})
-```
-La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
-El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
-
-```{r}
-errores_leave_2_out %>%
-  data.frame(x=.) %>% 
-  ggplot(aes(x=x)) +
-  geom_density()
-
-```

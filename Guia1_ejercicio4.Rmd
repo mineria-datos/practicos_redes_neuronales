@@ -1,0 +1,97 @@
+---
+title: "Guia 1, ejercicio 4"
+author: "Grupo 3"
+date: "1/16/2020"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(message = FALSE, include = FALSE)
+library(dplyr)
+library(readr)
+library(plotly)
+library(foreach)
+
+## ejecuciones multicore
+#install.packages("doMC", repos="http://R-Forge.R-project.org")
+library(doMC)
+registerDoMC()
+getDoParWorkers() 
+source('./PerceptronSimple.R')
+source('./PerceptronMulticapa.R')
+source('./Particiones.R')
+source('./LeavePOut.R')
+if(file.exists('./resultados.RData')) {
+  load("./resultados.RData")
+  calcular = FALSE
+}
+#calcular = TRUE
+
+```
+
+## Ejercicio 4
+
+ - Lectura de los patrones de entrenamiento
+
+```{r message=FALSE}
+irisbin <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE) %>% head(20)
+
+```
+
+- Selección de parámetros y entrenamiento de perceptrón
+Utilizamos las funciones implementadas en el archivo "PerceptronMulticapa.R"
+
+
+### Leave One Out
+```{r}
+system.time({
+  errores_leave_one_out <- foreach(e = leavePOutSplit(irisbin, 1), .combine = c)  %do% { #para ejecucion secuencia %do% {
+    y_real <- e$test[5:7] %>% as.matrix()
+    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.8, arquitectura = c(4,3,3))
+    y_predicha <- modelo$predecir(e$test)
+    e <- y_real - y_predicha
+    error <- e %*% t(e)
+    error
+  }
+})
+```
+La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
+El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
+
+```{r fig.cap="grafica del error"}
+errores_leave_one_out %>%
+  data.frame(x=.) %>% 
+  ggplot(aes(x=x)) +
+  geom_density() +
+  ggtitle("Densidad del error", subtitle = "leave 1 out")
+
+```
+
+
+### Leave 2 Out
+```{r}
+system.time({
+  split <- leavePOutSplit(irisbin, 2)
+  errores_leave_2_out <- foreach(e = split, .combine = c)  %dopar% { #para ejecucion secuencia %do% {
+    y_real <- e$test[5:7] %>% as.matrix()
+    modelo <- entrenarPerceptronM(e$train, maxEpocas = 100, critFinalizacion = 0.7, arquitectura = c(4,3,3))
+    print(glue::glue("progreso: {e$actual}/{e$nroCombinaciones}"))
+    y_predicha <- modelo$predecir(e$test)
+    e <- y_real - y_predicha
+    error <- c(e[1,] %*% e[1,], e[2,] %*% e[2,])
+    error
+  }
+})
+```
+La media de los errores leave_one_out es: `r mean(errores_leave_one_out)`
+El desvio standard de los errores leave_one_out es: `r sd(errores_leave_one_out)`
+
+```{r}
+errores_leave_2_out %>%
+  data.frame(x=.) %>% 
+  ggplot(aes(x=x)) +
+  geom_density() +
+  ggtitle("Densidad del error", subtitle = "leave 2 out")
+
+
+```

@@ -71,7 +71,7 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
   set.seed(semilla)
   w[[1]] <- matrix(runif((nroEntradas+1)*(arquitectura[1]),-0.5,0.5),
                    ncol = (nroEntradas+1), nrow = arquitectura[1]) %>% as.matrix()
-  for (j in seq(1:(length(arquitectura)-1))) {
+  for (j in seq(1:(nroCapas-1))) {
     w[[j+1]]<- matrix(runif((arquitectura[j]+1)*arquitectura[j+1],-0.5,0.5),
                       ncol = arquitectura[j]+1, nrow = arquitectura[j+1]) %>% as.matrix()
   }
@@ -90,13 +90,14 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
   
   calcularForward <- function(x) {
     y <- list()
-    x <- cbind(-1,x) %>% as.matrix()
-    y[[1]] <- sigmoidea(w[[1]] %*% t(x)) %>% as.matrix()
+    x <- t(x)
+    x <- rbind(-1,x) %>% as.matrix()
+    y[[1]] <- sigmoidea(w[[1]] %*% x)
     
-    for (j in seq(1:(length(arquitectura)-1))) {
-      x <- y[[j]]
-      x <- rbind(-1,x) %>% as.matrix()
-      y[[j+1]] <- sigmoidea(w[[j+1]] %*% x) %>% as.matrix()
+    for (j in seq(2,nroCapas)) {
+      x <- y[[j-1]]
+      x <- rbind(-1, x)
+      y[[j]] <- sigmoidea(w[[j]] %*% x)
     }
     y
   }
@@ -114,34 +115,21 @@ entrenarPerceptronM <- function(datos, critFinalizacion, maxEpocas, nu=0.05, sem
       # Backward
       #print("Backward")
       yd <- datos[i, seq(nroEntradas+1,nroSalidas+nroEntradas)]
-      error <- (yd - y[[nroCapas]]) %>% as.numeric()
+      error <- t(yd) - y[[nroCapas]]
       
 
-      #En capa de salida
-      d[[nroCapas]]  <- error * sigmoidea_derivada(y[[nroCapas]]) %>% as.matrix()
-      if((dim(d[[nroCapas]])[1] == 1) && (dim(d[[nroCapas]])[2] == 1)){
-        # caso en que dw es un numero porque tenemos una sola salida.
-        dw[[nroCapas]] <- t(nu * as.numeric(d[[nroCapas]]) * (rbind(-1,y[[nroCapas-1]])
-                                                              %>% as.matrix()))
-      } else{
-        dw[[nroCapas]] <- nu * d[[nroCapas]] %*% t(rbind(-1,y[[nroCapas-1]])
-                                                   %>% as.matrix())
-      }
-      
-      #En capas intermedias
-      if(nroCapas > 2) {
-        #print("test - capas mayor a 2")
-        for (k in seq(nroCapas-1,2)) {
-          d[[k]]  <- (t(w[[k+1]]) %*% d[[k+1]])[-1] * sigmoidea_derivada(y[[k]]) %>% as.matrix()
-          if((dim(d[[k]])[1] == 1) && (dim(d[[k]])[2] == 1)){
-            # caso en que dw es un numero porque tenemos una sola salida.
-            dw[[k]] <- t(nu * as.numeric(d[[k]]) * (rbind(-1,y[[k-1]]) %>% as.matrix()))
-          } else{
-            dw[[k]] <- nu * d[[k]] %*% t(rbind(-1,y[[k-1]]) %>% as.matrix())
-          }
+
+      #En capas intermedias y salida
+      for (k in seq(nroCapas,2)) {
+        if (k==nroCapas) {
+          l_k = error
+        } else {
+          l_k = t(w[[k+1]]) %*% d[[k+1]]
         }
+        d[[k]]  <- l_k[-1] * sigmoidea_derivada(y[[k]])
+        dw[[k]] <- nu * d[[k]] %*% t(rbind(-1,y[[k-1]]))
       }
-    
+
       #En la capa de entrada
       d[[1]]  <- (t(w[[2]]) %*% d[[2]])[-1] * sigmoidea_derivada(y[[1]]) %>% as.matrix()
       x <- datos[i, 1:nroEntradas]
