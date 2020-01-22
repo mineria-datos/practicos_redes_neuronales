@@ -11,6 +11,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(dplyr)
+library(purrr)
+library(ggplot2)
 source('./Genetica.R')
 
 ```
@@ -22,32 +24,73 @@ source('./Genetica.R')
 Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:
 
 
- - Lectura de los patrones de entrenamiento
- 
-```{r message=FALSE}
+# https://rpubs.com/Joaquin_AR/465473
+# https://rpubs.com/Joaquin_AR/436053
 
 
-```
- 
  - Función 1
- 
 
 ```{r}
 # Definición de funciones a minimizar
 funcion01 <- function(x){
-  return((-1)*x*sin(sqrt(x)))
+  return((-1)*x*sin(sqrt(abs(x))))
 }
 ```
+
+ - Represetación Gráfica de la función
+ 
+```{r}
+# 1D
+x <- seq(-512, 512, length.out = 255)
+y <- funcion01(x)
+datos <- as.data.frame(cbind(x,y))
+
+ggplot(data = datos, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "funcion01") +
+  theme_bw() +
+  theme(legend.position = "none")
+
+
+```
+
 
 ```{r}
 # Rango de la variable
 
 xMin <- -512
 xMax <- 512
-
 rango <- xMax - xMin
 
 cantidadBits <- round(log(rango)/log(2))
+
+
+# 1. Creamos poblacion inicial aleatoria.
+cantidadIndividuos <- 100
+cantidadVariables <- 1
+
+poblacion01 <- crearPoblacion(cantidadIndividuos, cantidadVariables, limiteInf = xMin,
+                            limiteSup = xMax)
+
+# 2. Calcular Aptitud
+
+aptitud01 <- aptitud(poblacion01,funcion01)
+
+
+# 3. Selección de Individuos
+
+individuoA <- seleccion(aptitud01, metodo = "ranking")
+individuoB <- seleccion(aptitud01, metodo = "ranking")
+
+# 4. Cruza de Individuos
+
+individuoAB <- cruzar(poblacion01[individuoA],poblacion01[individuoB],
+                      cantidadBits, metodo = "mitad")
+
+# 5. Mutación de Individuo
+
+individuoAB <- mutar(individuoAB, cantidadBits, p = 0.01, 
+                     xMin = xMin, xMax = xMax)
 
 ```
 

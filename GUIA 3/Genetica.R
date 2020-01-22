@@ -25,30 +25,85 @@ bit2int <- function(x) {
 }
 
 ##################################################################################
-# Funcion para mezclar dos valores
+# Crear Pobracion
 ##################################################################################
 
-mezclaMitad <- function(x,y) {
-  largo <- length(x)
-  largoMitad <- trunc(largo/2)
-  nuevo <- cbind(t(x[1:largoMitad]),t(y[largoMitad:largo]))
-  nuevo
+crearPoblacion <- function(cantidadIndividuos, cantidadVariables, limiteInf = NULL,
+                            limiteSup = NULL, verbose = TRUE) {
+  # Matriz donde almacenar los individuos generados.
+  poblacion <- matrix(data = NA, nrow = cantidadIndividuos, ncol = cantidadVariables)
+  
+  # Bucle para crear cada individuo.
+  for (i in 1:cantidadIndividuos) {
+    # Se crea un vector de NA que representa el individuo.
+    individuo <- rep(NA, times = cantidadVariables)
+    
+    for (j in 1:cantidadVariables) {
+      # Para cada posición, se genera un valor aleatorio dentro del rango permitido
+      # para cada variable.
+      individuo[j] <- runif(n = 1, min = limiteInf[j], max = limiteSup[j])
+    }
+    # Se añade el nuevo individuo a la población.
+    poblacion[i, ] <- individuo
+  }
+  
+  return(poblacion)
 }
 
-#valor1 <- int2bit(1,cantidadBits)
-#valor2 <- int2bit(512,cantidadBits)
+##################################################################################
+# Evaluar Funcion
+##################################################################################
 
-#mezclaMitad(valor1,valor2)
+aptitud <- function(datos, funcion) {
+  valorSalida <- funcion(datos)
+  return(valorSalida)
+}
+
+##################################################################################
+# Seleccionar Individuos
+##################################################################################
+
+seleccion <- function(aptitud, metodo = "ranking") {
+  if (metodo == "ranking") {
+    
+    probabilidad_seleccion <- 1 / rank(aptitud)
+    
+    ind_seleccionado <- sample(
+      x = 1:length(aptitud),
+      size = 1,
+      prob = probabilidad_seleccion
+    )
+  }
+  return(ind_seleccionado)
+}
+
+##################################################################################
+# Funcion para cruzar dos valores
+##################################################################################
+
+cruzar <- function(x,y,cantidadBits,metodo = "mitad") {
+  x <- int2bit(x,cantidadBits)
+  y <- int2bit(y,cantidadBits)
+  largoMitad <- trunc(cantidadBits/2)
+  nuevo <- cbind(t(x[1:largoMitad]),t(y[largoMitad+1:largoMitad]))
+  nuevo <- bit2int(nuevo)
+  return(nuevo)
+}
 
 ##################################################################################
 # Funcion para mutar
+# Cambia el bit menos significativo si un valor random en menor a p
 ##################################################################################
 
-mutar <- function(x, p = 0.001) {
-  if( random(1) < p) {
-    if(x[length(x)]==1) {
-      x[length(x)]=0
-    } else {x[length(x)]=1}
+mutar <- function(x, cantidadBits, p = 0.001, xMin, xMax) {
+  x <- int2bit(x,cantidadBits)
+  if( runif(1) < p) {
+    if(x[1]==1) {
+      x[1]=as.raw(0)
+    } else {x[1]=as.raw(1)}
   }
-  x
+  x <- bit2int(x)
+  if(x>xMax) x <- xMax
+  if(x<xMin) x <- xMin
+  return(x)
 }
