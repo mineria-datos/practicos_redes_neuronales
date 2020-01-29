@@ -54,8 +54,11 @@ crearPoblacion <- function(cantidadIndividuos, cantidadVariables, limiteInf = NU
 ##################################################################################
 
 aptitud <- function(datos, funcion) {
-  valorSalida <- funcion(datos)
+  args <-  split(datos, rep(1:ncol(datos), each = nrow(datos)))
+  names(args) <- NULL
+  valorSalida <- do.call(funcion, args=args)
   return(valorSalida)
+  
 }
 
 ##################################################################################
@@ -80,20 +83,11 @@ seleccion <- function(aptitud, metodo = "ranking") {
 # Funcion para cruzar dos valores
 ##################################################################################
 
-cruzar <- function(padre1,padre2,cantidadDecimales=2, metodo = "mitad") {
+cruzar <- function(padre1,padre2) {
   #print(glue::glue("cruza  padre1: ", padre1, " padre2: ", padre2 ))
-  cantidadBits <- 32
-  multiplicador <- 10^cantidadDecimales
-  nvar <- length(padre1)
-  x <- int2bit(padre1*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
-  y <- int2bit(padre2*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
-  #herenciaPadre1 <- trunc(cantidadBits/2)
-  
-  herenciaPadre1 <- trunc(runif(1, 1, cantidadBits))
-  nuevo <- matrix(c(x[,1:herenciaPadre1],y[,(herenciaPadre1+1):cantidadBits]), ncol=cantidadBits)
-  nuevo <- split(nuevo, row(nuevo))
-  nuevo <- bit2int(nuevo) %>% unlist()
-  nuevo <- round(nuevo / multiplicador, cantidadDecimales)
+  menor <- min(padre1, padre2)
+  mayor <- max(padre1, padre2)
+  nuevo <- runif(1, menor, mayor)
   #print(glue::glue("nuevo : ", nuevo))
   return(nuevo)
 }
@@ -104,27 +98,14 @@ cruzar <- function(padre1,padre2,cantidadDecimales=2, metodo = "mitad") {
 ##################################################################################
 
 mutar <- function(individuo, p = 0.5, cantidadDecimales=2, xMin, xMax) {
-  nvar <- length(individuo)
-  cantidadBits <- 32
-  multiplicador <- 10^cantidadDecimales
-  x <- int2bit(individuo*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
-  probMutacion <- runif(n = cantidadBits, min = 0, max = 1)
-  posicionesMutadas <- probMutacion < p
-  mutar <- FALSE
+  runif(n = length(individuo), min = 0, max = 1)
+  posicionesMutadasProb <- runif(n = length(individuo), min = 0, max = 1)
+  posicionesMutadas <- posicionesMutadasProb < p
+  nuevo <- individuo
   for (i in which(posicionesMutadas)) {
-    mutar <- TRUE
-    x[i] <- ifelse(x[i], as.raw(0), as.raw(1))
+    nuevo[i] <- runif(n = 1, min = xMin[i], max = xMax[i])
   }
-  x <- split(x, row(x))
-  x <- bit2int(x)
-  x <- ifelse(x>xMax, xMax, x)
-  x <- ifelse(x<xMin, xMin, x)
-  x <- round(x/multiplicador, cantidadDecimales)
-  if (mutar) {
-    print(glue::glue("individuo original: ", toString(individuo)))
-    print(glue::glue("nuevo             : ", unlist(x)))
-  }
-  return(x)
+  return(nuevo)
 }
 
 
@@ -169,7 +150,7 @@ algoritmoGenetico <- function(
     resultados_fitness[[i]]   <- fitness_mejor_individuo
     resultados_individuo[[i]] <- mejor_individuo
     mejor_individuo_proceso   <- resultados_individuo[[which.max(unlist(resultados_fitness))]]
-    print(glue::glue("fitness_mejor_individuo: ",fitness_mejor_individuo, " mejor_individuo: ", toString(mejor_individuo), " mejor del proceso: ", toString(mejor_individuo_proceso)))
+    #print(glue::glue("fitness_mejor_individuo: ",fitness_mejor_individuo, " mejor_individuo: ", toString(mejor_individuo), " mejor del proceso: ", toString(mejor_individuo_proceso)))
     if (i > 1) {
       diferencia_abs[[i]] <- abs(resultados_fitness[[i - 1]] - resultados_fitness[[i]])
     }
@@ -185,8 +166,7 @@ algoritmoGenetico <- function(
       
       # 4. Cruza de Individuos
       
-      individuoAB <- cruzar(poblacion[individuoA, ], poblacion[individuoB, ],
-                            metodo = "mitad")
+      individuoAB <- cruzar(poblacion[individuoA, ], poblacion[individuoB, ])
 
       # 5. Mutación de Individuo
       
@@ -220,18 +200,6 @@ algoritmoGenetico <- function(
   )
 }
 
-errorEj2 <- function(individuos){
-  #return(-x*sin(sqrt(abs(x))))
-  x <- desconocido1[, 1] %>% as.matrix(ncol=1) %>% t()
-  y <- matrix(rep(desconocido1[, 2], nrow(individuos)) %>% unlist(), ncol=length(x))
-  a1 <- individuos[,1] %>%  as.matrix(nrow=1)
-  a2 <- individuos[,2] %>%  as.matrix(nrow=1)
-  a3 <- individuos[,3] %>%  as.matrix(nrow=1)
-  a4 <- matrix(rep(individuos[,4], length(x)), ncol=length(x))
-  
-  salidaCalculada <- a1 %*% x^3 + a2 %*% x^2 +  a3 %*% x + a4
-  error <- y-salidaCalculada
-  error_cuadratico_medio = rowMeans(error^2)
-  
-  return(error_cuadratico_medio)
-}
+
+
+

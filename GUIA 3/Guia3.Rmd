@@ -3,7 +3,6 @@ title: "Guia 3"
 author: "Grupo 3: Emiliano Bodean - Zacarias Ojeda"
 date: "16/01/2020"
 output:
-  pdf_document: default
   html_document: default
 ---
 
@@ -13,6 +12,7 @@ library(readr)
 library(dplyr)
 library(purrr)
 library(ggplot2)
+library(plotly)
 source('./Genetica.R')
 
 ```
@@ -24,8 +24,12 @@ source('./Genetica.R')
 Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:
 
 
+
+```{r echo=FALSE}
 # https://rpubs.com/Joaquin_AR/465473
 # https://rpubs.com/Joaquin_AR/436053
+
+```
 
 
  - Función 1
@@ -37,22 +41,6 @@ funcion01 <- function(x){
 }
 ```
 
- - Represetación Gráfica de la función
- 
-```{r}
-# 1D
-x <- seq(-512, 512, length.out = 255)
-y <- funcion01(x)
-datos <- as.data.frame(cbind(x,y))
-
-ggplot(data = datos, aes(x = x, y = y)) +
-  geom_line() +
-  labs(title = "funcion01") +
-  theme_bw() +
-  theme(legend.position = "none")
-
-
-```
 
 
 ```{r}
@@ -60,16 +48,17 @@ ggplot(data = datos, aes(x = x, y = y)) +
 
 xMin <- -512
 xMax <- 512
-rango <- xMax - xMin
 
-cantidadBits <- round(log(rango)/log(2))
-
-resultado <- algoritmoGenetico(cantidadIndividuos = 15, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion01(x)})
+resultado <- algoritmoGenetico(cantidadIndividuos = 5, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion01(x)})
 
 
 ```
 
 ```{r}
+x <- seq(-512, 512, length.out = 255)
+y <- funcion01(x)
+datos <- as.data.frame(cbind(x,y))
+
 
 ggplot(data = datos, aes(x = x, y = y)) +
   geom_line() +
@@ -82,15 +71,72 @@ ggplot(data = datos, aes(x = x, y = y)) +
  - Función 2
  
 ```{r}
+funcion02 <- function(x){
+  return(x+sin(3*x)+8*cos(5*x))
+}
+
+xMin <- 0
+xMax <- 20
+
+resultado <- algoritmoGenetico(cantidadIndividuos = 5, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion02(x)})
+
+x <- seq(xMin, xMax, length.out = 255)
+y <- funcion02(x)
+datos <- as.data.frame(cbind(x,y))
+
+ggplot(data = datos, aes(x = x, y = y)) +
+  geom_line() +
+  labs(title = "funcion02") +
+  theme_bw() +
+  theme(legend.position = "none") +
+  geom_vline(xintercept = resultado$mejor_individuo, color="red")
 
 
 ```
 
  - Función 3
 
+ 
 ```{r}
+funcion03 <- function(x, y){
+  return((x^2+y^2)^0.25*(sin(50*(x^2+y^2)^0.1)^2+1))
+}
 
+xMin <- -100
+xMax <-  100
 
+resultado <- algoritmoGenetico(cantidadIndividuos = 5, cantidadVariables=2, limiteInf = c(xMin, xMin), limiteSup = c(xMax, xMax), generacionesSinCambio = 40, fitnessFn = function(x,y) {-funcion03(x,y)})
+
+x <- y <- seq(xMin, xMax, length.out = 255)
+z <- outer(x, y,  funcion03)
+nbcol = 100
+color = rev(rainbow(nbcol, start = 0/6, end = 4/6))
+zcol  = cut(z, nbcol)
+
+p <- plot_ly(x = x, y = y, z = z) %>% add_surface(
+  contours = list(
+    z = list(
+      show=TRUE,
+      usecolormap=TRUE,
+      highlightcolor="#ff0000",
+      project=list(z=TRUE)
+      )
+    )
+  ) %>%
+  layout(
+    scene = list(
+      camera=list(
+        eye = list(x=1.87, y=0.88, z=-0.64)
+        )
+      )
+  )
+
+p
+
+```
+
+```{r}
+resultado$mejor_individuo
 ```
 
 ### Preguntas 
@@ -115,7 +161,21 @@ desconocido1 <- read_csv("../../PUBLICO/Encuentro 5/Práctica/desconocido1.csv",
 ```
 
 ```{r}
-
+errorEj2 <- function(a1, a2, a3, a4){
+  
+  x <- desconocido1[, 1] %>% as.matrix(ncol=1) %>% t()
+  y <- matrix(rep(desconocido1[, 2], length(a1)) %>% unlist(), ncol=length(x))
+  
+  # habrá 128 salidas por individuo (una por cada dato del dataset)
+  # hay tantos individuos como se configure en el algoritmo (100 en este caso)
+  salidaEstimada <- a1 %*% x^3 + a2 %*% x^2 +  a3 %*% x + a4
+  # la matriz de error es de 100x128
+  error <- y-salidaEstimada
+  # los renglones representan a los individuos evaluados
+  error_cuadratico_medio = rowMeans(error^2)
+  
+  return(error_cuadratico_medio)
+}
 
 ```
 
@@ -125,11 +185,8 @@ desconocido1 <- read_csv("../../PUBLICO/Encuentro 5/Práctica/desconocido1.csv",
 
 xMin <- -5
 xMax <- 1.5
-rango <- xMax - xMin
 
-cantidadBits <- round(log(rango)/log(2))
-
-resultado <- algoritmoGenetico(limiteInf = rep(xMin,4), limiteSup = rep(xMax,4), cantidadVariables = 4, fitnessFn = function(x) {-errorEj2(x)})
+resultado <- algoritmoGenetico(limiteInf = rep(xMin,4), limiteSup = rep(xMax,4), cantidadVariables = 4, fitnessFn = function(a1, a2, a3, a4) {-errorEj2(a1, a2, a3, a4)})
 
 
 ```
