@@ -64,7 +64,7 @@ rango <- xMax - xMin
 
 cantidadBits <- round(log(rango)/log(2))
 
-resultado <- algoritmoGenetico(limiteInf = xMin, limiteSup = xMax, fitnessFn = function(x) {-funcion01(x)})
+resultado <- algoritmoGenetico(cantidadIndividuos = 15, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion01(x)})
 
 
 ```
@@ -103,3 +103,33 @@ ggplot(data = datos, aes(x = x, y = y)) +
 
 
  
+## Ejercicio 2
+
+En el archivo desconocido1.csv se ha registrado información de un proceso que puede describirse mediante la ecuación:
+$$y1 = a_1x^3_1 + a_2 x^2_1 + a_3 x_1 + a_4$$
+Se sabe que las mediciones contienen ruido, y que los parámetro del sistema se encuentran acotados en el intervalo [−5,1.5].
+Utilice un algoritmo genético para determinar los parámetros delmodelo. Calcule el error cuadrático total obtenido de la comparción entre los datos provistos y la función aproximada mediante el algoritmo. ¿Qué puede concluir del ajuste?
+
+```{r message=FALSE}
+desconocido1 <- read_csv("../../PUBLICO/Encuentro 5/Práctica/desconocido1.csv", col_names = FALSE)
+```
+
+```{r}
+
+
+```
+
+
+```{r}
+# Rango de los parametros
+
+xMin <- -5
+xMax <- 1.5
+rango <- xMax - xMin
+
+cantidadBits <- round(log(rango)/log(2))
+
+resultado <- algoritmoGenetico(limiteInf = rep(xMin,4), limiteSup = rep(xMax,4), cantidadVariables = 4, fitnessFn = function(x) {-errorEj2(x)})
+
+
+```

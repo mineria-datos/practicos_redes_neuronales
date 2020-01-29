@@ -3,8 +3,11 @@
 # el bit menos significativo queda en el indice 0 del vector
 ##################################################################################
 
-int2bit <- function(x,i) {
-  intToBits(x)[1:i]
+int2bit <- function(x, cantidadDecimales=2) {
+  purrr::map(x, function(.x) {
+    intToBits(.x)
+  })
+  
 }
 
 # int2bit(12,cantidadBits)
@@ -13,15 +16,10 @@ int2bit <- function(x,i) {
 # Conviente el dato binario a decimal
 ##################################################################################
 
-bit2int <- function(x) {
-  sum <- 0 
-  for (i in seq(length(x)-1,1)) {
-    if (x[i] == 1)
-    {
-      sum = sum + 2^(i-1)
-    }
-  }
-  sum
+bit2int <- function(.x) {
+  purrr::map(.x, function(x) {
+    packBits(x, type="integer")
+  })
 }
 
 ##################################################################################
@@ -67,7 +65,7 @@ aptitud <- function(datos, funcion) {
 seleccion <- function(aptitud, metodo = "ranking") {
   if (metodo == "ranking") {
     
-    probabilidad_seleccion <- 1 / rank(aptitud)
+    probabilidad_seleccion <- 1 / rank(-aptitud)
     
     ind_seleccionado <- sample(
       x = 1:length(aptitud),
@@ -82,12 +80,21 @@ seleccion <- function(aptitud, metodo = "ranking") {
 # Funcion para cruzar dos valores
 ##################################################################################
 
-cruzar <- function(x,y,cantidadBits,metodo = "mitad") {
-  x <- int2bit(x,cantidadBits)
-  y <- int2bit(y,cantidadBits)
-  largoMitad <- trunc(cantidadBits/2)
-  nuevo <- cbind(t(x[1:largoMitad]),t(y[largoMitad+1:largoMitad]))
-  nuevo <- bit2int(nuevo)
+cruzar <- function(padre1,padre2,cantidadDecimales=2, metodo = "mitad") {
+  #print(glue::glue("cruza  padre1: ", padre1, " padre2: ", padre2 ))
+  cantidadBits <- 32
+  multiplicador <- 10^cantidadDecimales
+  nvar <- length(padre1)
+  x <- int2bit(padre1*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
+  y <- int2bit(padre2*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
+  #herenciaPadre1 <- trunc(cantidadBits/2)
+  
+  herenciaPadre1 <- trunc(runif(1, 1, cantidadBits))
+  nuevo <- matrix(c(x[,1:herenciaPadre1],y[,(herenciaPadre1+1):cantidadBits]), ncol=cantidadBits)
+  nuevo <- split(nuevo, row(nuevo))
+  nuevo <- bit2int(nuevo) %>% unlist()
+  nuevo <- round(nuevo / multiplicador, cantidadDecimales)
+  #print(glue::glue("nuevo : ", nuevo))
   return(nuevo)
 }
 
@@ -96,16 +103,27 @@ cruzar <- function(x,y,cantidadBits,metodo = "mitad") {
 # Cambia el bit menos significativo si un valor random en menor a p
 ##################################################################################
 
-mutar <- function(x, cantidadBits, p = 0.001, xMin, xMax) {
-  x <- int2bit(x,cantidadBits)
-  if( runif(1) < p) {
-    if(x[1]==1) {
-      x[1]=as.raw(0)
-    } else {x[1]=as.raw(1)}
+mutar <- function(individuo, p = 0.5, cantidadDecimales=2, xMin, xMax) {
+  nvar <- length(individuo)
+  cantidadBits <- 32
+  multiplicador <- 10^cantidadDecimales
+  x <- int2bit(individuo*multiplicador) %>% unlist() %>% matrix(ncol = nvar) %>% t()
+  probMutacion <- runif(n = cantidadBits, min = 0, max = 1)
+  posicionesMutadas <- probMutacion < p
+  mutar <- FALSE
+  for (i in which(posicionesMutadas)) {
+    mutar <- TRUE
+    x[i] <- ifelse(x[i], as.raw(0), as.raw(1))
   }
+  x <- split(x, row(x))
   x <- bit2int(x)
-  if(x>xMax) x <- xMax
-  if(x<xMin) x <- xMin
+  x <- ifelse(x>xMax, xMax, x)
+  x <- ifelse(x<xMin, xMin, x)
+  x <- round(x/multiplicador, cantidadDecimales)
+  if (mutar) {
+    print(glue::glue("individuo original: ", toString(individuo)))
+    print(glue::glue("nuevo             : ", unlist(x)))
+  }
   return(x)
 }
 
@@ -115,7 +133,6 @@ algoritmoGenetico <- function(
   cantidadVariables = 1,
   limiteInf, limiteSup,
   fitnessFn,
-  nPoblacion=100,
   nGeneraciones=100,
   generacionesSinCambio=10,
   toleraciaSinCambio=0.01 # valor minimo de diferencia entre generaciones para considerar cambio en la mejor solucion
@@ -140,21 +157,27 @@ algoritmoGenetico <- function(
     
     # 2. Calcular Aptitud
     
-    aptitud <- aptitud(poblacion, fitnessFn)
+    aptitud <- aptitud(poblacion, fitnessFn) %>% as.numeric()
+    #print(poblacion)
     
     # mejor  solución en la iteración actual
     fitness_mejor_individuo   <- max(aptitud)
-    print(glue::glue("fitness_mejor_individuo: {fitness_mejor_individuo}"))
+    if(is.na(fitness_mejor_individuo)) {
+      print("NA")
+    }
     mejor_individuo           <- poblacion[which.max(aptitud), ]
     resultados_fitness[[i]]   <- fitness_mejor_individuo
     resultados_individuo[[i]] <- mejor_individuo
+    mejor_individuo_proceso   <- resultados_individuo[[which.max(unlist(resultados_fitness))]]
+    print(glue::glue("fitness_mejor_individuo: ",fitness_mejor_individuo, " mejor_individuo: ", toString(mejor_individuo), " mejor del proceso: ", toString(mejor_individuo_proceso)))
     if (i > 1) {
       diferencia_abs[[i]] <- abs(resultados_fitness[[i - 1]] - resultados_fitness[[i]])
     }
+    #print(poblacion)
     
     nuevaPoblacion <- matrix(data = NA, nrow = cantidadIndividuos, ncol = cantidadVariables)
     
-    for (j in 1:nPoblacion) {
+    for (j in 1:cantidadIndividuos) {
       # 3. Selección de Individuos
       
       individuoA <- seleccion(aptitud, metodo = "ranking")
@@ -162,17 +185,18 @@ algoritmoGenetico <- function(
       
       # 4. Cruza de Individuos
       
-      individuoAB <- cruzar(poblacion[individuoA], poblacion[individuoB],
-                            cantidadBits, metodo = "mitad")
-      
+      individuoAB <- cruzar(poblacion[individuoA, ], poblacion[individuoB, ],
+                            metodo = "mitad")
+
       # 5. Mutación de Individuo
       
-      individuoAB <- mutar(individuoAB, cantidadBits, p = 0.01, 
-                           xMin = xMin, xMax = xMax)
+      individuoAB <- mutar(individuoAB, p = 0.5, 
+                           xMin = limiteInf, xMax = limiteSup) %>% unlist()
       
+
       nuevaPoblacion[j, ] <- individuoAB
     }
-    
+     
     poblacion <- nuevaPoblacion
     
     if (i > generacionesSinCambio) {
@@ -187,12 +211,27 @@ algoritmoGenetico <- function(
   
   # IDENTIFICACIÓN DEL MEJOR INDIVIDUO DE TODO EL PROCESO
   # ==========================================================================
-  mejor_individuo <- resultados_individuo[[which.max(unlist(resultados_fitness))]]
-  print(glue::glue("mejor individuo: ", mejor_individuo))
+  print(glue::glue("mejor individuo proceso: ", toString(mejor_individuo_proceso)))
   
   return( 
     list(
-      mejor_individuo = mejor_individuo  
+      mejor_individuo = mejor_individuo_proceso  
     )
   )
+}
+
+errorEj2 <- function(individuos){
+  #return(-x*sin(sqrt(abs(x))))
+  x <- desconocido1[, 1] %>% as.matrix(ncol=1) %>% t()
+  y <- matrix(rep(desconocido1[, 2], nrow(individuos)) %>% unlist(), ncol=length(x))
+  a1 <- individuos[,1] %>%  as.matrix(nrow=1)
+  a2 <- individuos[,2] %>%  as.matrix(nrow=1)
+  a3 <- individuos[,3] %>%  as.matrix(nrow=1)
+  a4 <- matrix(rep(individuos[,4], length(x)), ncol=length(x))
+  
+  salidaCalculada <- a1 %*% x^3 + a2 %*% x^2 +  a3 %*% x + a4
+  error <- y-salidaCalculada
+  error_cuadratico_medio = rowMeans(error^2)
+  
+  return(error_cuadratico_medio)
 }
