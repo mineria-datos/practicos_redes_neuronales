@@ -23,6 +23,17 @@ source('./Genetica.R')
 
 Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:
 
+$$-x \sin(\sqrt{|x|})$$
+$$x+\sin(3x)+8\cos(5x)$$
+$$(x^2+y^2)^{0.25}*[\sin^2(50*(x^2+y^2)^{0.1})+1]$$
+
+### Preguntas 
+
+ - ¿Corresponde al mínimo global el valor encontrado? Repita la búsqueda varias veces y determine el valor medio y desvío. 
+ 
+ - ¿Se encuentra ahora el mínimo global dentro del intervalo?
+
+
 
 
 ```{r echo=FALSE}
@@ -31,8 +42,12 @@ Implemente las estructuras de datos y algoritmos básicos para la solución de u
 
 ```
 
+```{r}
+repeticionesAlgoritmo <- 10
+```
 
- - Función 1
+
+### Función 1
 
 ```{r}
 # Definición de funciones a minimizar
@@ -49,7 +64,11 @@ funcion01 <- function(x){
 xMin <- -512
 xMax <- 512
 
-resultado <- algoritmoGenetico(cantidadIndividuos = 5, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion01(x)})
+resultado <- numeric(0)
+for(i in 1:repeticionesAlgoritmo) {
+  resultadoAlgoritmo <- algoritmoGenetico(cantidadIndividuos = 10, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion01(x)})
+  resultado <- c(resultado, resultadoAlgoritmo$mejor_individuo)
+}
 
 
 ```
@@ -65,10 +84,14 @@ ggplot(data = datos, aes(x = x, y = y)) +
   labs(title = "funcion01") +
   theme_bw() +
   theme(legend.position = "none") +
-  geom_vline(xintercept = resultado$mejor_individuo, color="red")
+  geom_vline(xintercept = mean(resultado), color="red")
 ```
 
- - Función 2
+> Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+> El valor medio de los resultados de la funcion01 es **`r mean(resultado)`**, el desvio estándar es **`r sd(resultado)`**
+ 
+ 
+### Función 2
  
 ```{r}
 funcion02 <- function(x){
@@ -78,7 +101,11 @@ funcion02 <- function(x){
 xMin <- 0
 xMax <- 20
 
-resultado <- algoritmoGenetico(cantidadIndividuos = 5, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion02(x)})
+resultado <- numeric(0)
+for(i in 1:repeticionesAlgoritmo) {
+  resultadoAlgoritmo <- algoritmoGenetico(cantidadIndividuos = 10, limiteInf = xMin, limiteSup = xMax, generacionesSinCambio = 40, fitnessFn = function(x) {-funcion02(x)})
+  resultado <- c(resultado, resultadoAlgoritmo$mejor_individuo)
+}
 
 x <- seq(xMin, xMax, length.out = 255)
 y <- funcion02(x)
@@ -89,12 +116,16 @@ ggplot(data = datos, aes(x = x, y = y)) +
   labs(title = "funcion02") +
   theme_bw() +
   theme(legend.position = "none") +
-  geom_vline(xintercept = resultado$mejor_individuo, color="red")
+  geom_vline(xintercept = mean(resultado), color="red")
 
 
 ```
 
- - Función 3
+
+> Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+> El valor medio de los resultados de la funcion01 es **`r mean(resultado)`**, el desvio estándar es **`r sd(resultado)`**
+
+### Función 3
 
  
 ```{r}
@@ -105,7 +136,11 @@ funcion03 <- function(x, y){
 xMin <- -100
 xMax <-  100
 
-resultado <- algoritmoGenetico(cantidadIndividuos = 5, cantidadVariables=2, limiteInf = c(xMin, xMin), limiteSup = c(xMax, xMax), generacionesSinCambio = 40, fitnessFn = function(x,y) {-funcion03(x,y)})
+resultado <- data.frame(x=numeric(), y=numeric())
+for(i in 1:repeticionesAlgoritmo) {
+  resultadoAlgoritmo <- algoritmoGenetico(cantidadIndividuos = 10, cantidadVariables=2, limiteInf = c(xMin, xMin), limiteSup = c(xMax, xMax), generacionesSinCambio = 40, fitnessFn = function(x,y) {-funcion03(x,y)})
+  resultado[i, ] <- resultadoAlgoritmo$mejor_individuo
+}
 
 x <- y <- seq(xMin, xMax, length.out = 255)
 z <- outer(x, y,  funcion03)
@@ -136,14 +171,11 @@ p
 ```
 
 ```{r}
-resultado$mejor_individuo
+resultado %>% colMeans()
 ```
 
-### Preguntas 
-
- - ¿Corresponde al mínimo global el valor encontrado? Repita la búsqueda varias veces y determine el valor medio y desvío. 
- 
- - ¿Se encuentra ahora el mínimo global dentro del intervalo?
+> Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del ranggo (tanto para x como para y).
+> El valor medio de los resultados de la funcion01 es **`r resultado %>% colMeans()`**, el desvio estándar es **`r resultado %>% summarise_all(sd)`**
 
 
 
