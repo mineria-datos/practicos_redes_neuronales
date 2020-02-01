@@ -16,7 +16,7 @@ library(cluster)
 library(tidyverse)
 source('./RedRBF_g2.R')
 source('./PerceptronSimpleRBF_g2.R')
-source('../Particiones.R')
+source('../GUIA_1/Particiones.R')
 
 if(file.exists('./resultadosG2.RData')) {
   load("./resultadosG2.RData")

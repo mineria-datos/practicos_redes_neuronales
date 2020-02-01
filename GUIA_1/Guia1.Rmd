@@ -22,11 +22,13 @@ source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
 source('./Particiones.R')
 source('./LeavePOut.R')
+
+calcular = TRUE
+
 if(file.exists('./resultados.RData')) {
   load("./resultados.RData")
   calcular = FALSE
 }
-calcular = TRUE
 
 ```
 
@@ -45,8 +47,8 @@ Realice un programa que permita el entrenamiento y prueba de un perceptrón simp
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}
-OR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_trn.csv", col_names = FALSE)
-OR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/OR_tst.csv", col_names = FALSE)
+OR_trn <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/OR_trn.csv", col_names = FALSE)
+OR_tst <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/OR_tst.csv", col_names = FALSE)
 
 ```
  - Selección de parámetros y entrenamiento de perceptrón
@@ -87,8 +89,8 @@ Por ser este un problema sencillo donde las clases son separables por una recta,
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}
-XOR_trn <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
-XOR_tst <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_names = FALSE)
+XOR_trn <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv", col_names = FALSE)
+XOR_tst <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_names = FALSE)
 ```
  - Selección de parámetros y entrenamiento de perceptrón
 
@@ -138,7 +140,7 @@ En nuestro caso, se implementó una función que posee una tasa de aprendizaje d
  - Lectura de datos
 
 ```{r message=FALSE}
-spheres1d10 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres1d10.csv", col_names = FALSE)
+spheres1d10 <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/spheres1d10.csv", col_names = FALSE)
 #Nombre de las columnas
 colnames(spheres1d10)
 #Dimenciones de los datos
@@ -183,9 +185,9 @@ for (n in seq(1,5)) {
  - Lectura de datos
 
 ```{r message=FALSE}
-spheres2d10 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d10.csv", col_names = FALSE)
-spheres2d50 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d50.csv", col_names = FALSE)
-spheres2d70 <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/spheres2d70.csv", col_names = FALSE)
+spheres2d10 <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/spheres2d10.csv", col_names = FALSE)
+spheres2d50 <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/spheres2d50.csv", col_names = FALSE)
+spheres2d70 <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/spheres2d70.csv", col_names = FALSE)
 
 ```
 
@@ -320,7 +322,7 @@ El algoritmo implementado se encuentra en el archivo "PerceptronMulticapa.R"
  -  Lectura de datos
 
 ```{r message=FALSE}
-concentlite <- read_csv("../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
+concentlite <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/concentlite.csv", col_names = FALSE)
 ```
 
  - Gráfica de datos con clase
@@ -445,4 +447,7 @@ save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
 
  Del ejercicio 3c podemos concluir que es muy importante conocer todas las herramientas y entender bien el problema, en este caso el problema se podía resolver con una tasa de acierto mayor al 90% utilizando un perceptrón simple. Esto reduce los tiempos de entrenamiento y la complejidad del modelo.
 
+
+
+  
 

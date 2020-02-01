@@ -1,0 +1,27 @@
+--- 
+title: "Prácticos Redes Neuronales"
+author: "Bodean - Ojeda"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+documentclass: book
+bibliography: [book.bib, packages.bib]
+biblio-style: apalike
+link-citations: yes
+description: "Guias resueltas de trabajos prácticos"
+---
+
+```{r child = 'GUIA_2/Guia2_v2.Rmd'}
+```
+
+```{r child = 'GUIA_3/Guia3.Rmd'}
+```
+
+```{r include=FALSE}
+# automatically create a bib database for R packages
+knitr::write_bib(c(
+  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+), 'packages.bib')
+```
+
+<!--chapter:end:index.Rmd-->
+
