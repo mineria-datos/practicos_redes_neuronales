@@ -32,11 +32,7 @@ if(file.exists('./resultados.RData')) {
 
 ```
 
-###########################
-##
-## En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out
-##
-############################
+# Guía 1
 
 ## Ejercicio 1: 
 
@@ -449,5 +445,7 @@ save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
 
 
 
+```{r child = 'Guia1_ejercicio4.Rmd'}
+```
   
 

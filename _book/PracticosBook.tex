@@ -1,0 +1,586 @@
+\documentclass[]{book}
+\usepackage{lmodern}
+\usepackage{amssymb,amsmath}
+\usepackage{ifxetex,ifluatex}
+\usepackage{fixltx2e} % provides \textsubscript
+\ifnum 0\ifxetex 1\fi\ifluatex 1\fi=0 % if pdftex
+  \usepackage[T1]{fontenc}
+  \usepackage[utf8]{inputenc}
+\else % if luatex or xelatex
+  \ifxetex
+    \usepackage{mathspec}
+  \else
+    \usepackage{fontspec}
+  \fi
+  \defaultfontfeatures{Ligatures=TeX,Scale=MatchLowercase}
+\fi
+% use upquote if available, for straight quotes in verbatim environments
+\IfFileExists{upquote.sty}{\usepackage{upquote}}{}
+% use microtype if available
+\IfFileExists{microtype.sty}{%
+\usepackage{microtype}
+\UseMicrotypeSet[protrusion]{basicmath} % disable protrusion for tt fonts
+}{}
+\usepackage[margin=1in]{geometry}
+\usepackage{hyperref}
+\hypersetup{unicode=true,
+            pdftitle={Prácticos Redes Neuronales},
+            pdfauthor={Grupo 3: Emiliano Bodean - Zacarias Ojeda},
+            pdfborder={0 0 0},
+            breaklinks=true}
+\urlstyle{same}  % don't use monospace font for urls
+\usepackage{natbib}
+\bibliographystyle{apalike}
+\usepackage{longtable,booktabs}
+\usepackage{graphicx,grffile}
+\makeatletter
+\def\maxwidth{\ifdim\Gin@nat@width>\linewidth\linewidth\else\Gin@nat@width\fi}
+\def\maxheight{\ifdim\Gin@nat@height>\textheight\textheight\else\Gin@nat@height\fi}
+\makeatother
+% Scale images if necessary, so that they will not overflow the page
+% margins by default, and it is still possible to overwrite the defaults
+% using explicit options in \includegraphics[width, height, ...]{}
+\setkeys{Gin}{width=\maxwidth,height=\maxheight,keepaspectratio}
+\IfFileExists{parskip.sty}{%
+\usepackage{parskip}
+}{% else
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+}
+\setlength{\emergencystretch}{3em}  % prevent overfull lines
+\providecommand{\tightlist}{%
+  \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+\setcounter{secnumdepth}{5}
+% Redefines (sub)paragraphs to behave more like sections
+\ifx\paragraph\undefined\else
+\let\oldparagraph\paragraph
+\renewcommand{\paragraph}[1]{\oldparagraph{#1}\mbox{}}
+\fi
+\ifx\subparagraph\undefined\else
+\let\oldsubparagraph\subparagraph
+\renewcommand{\subparagraph}[1]{\oldsubparagraph{#1}\mbox{}}
+\fi
+
+%%% Use protect on footnotes to avoid problems with footnotes in titles
+\let\rmarkdownfootnote\footnote%
+\def\footnote{\protect\rmarkdownfootnote}
+
+%%% Change title format to be more compact
+\usepackage{titling}
+
+% Create subtitle command for use in maketitle
+\providecommand{\subtitle}[1]{
+  \posttitle{
+    \begin{center}\large#1\end{center}
+    }
+}
+
+\setlength{\droptitle}{-2em}
+
+  \title{Prácticos Redes Neuronales}
+    \pretitle{\vspace{\droptitle}\centering\huge}
+  \posttitle{\par}
+    \author{Grupo 3: Emiliano Bodean - Zacarias Ojeda}
+    \preauthor{\centering\large\emph}
+  \postauthor{\par}
+      \predate{\centering\large\emph}
+  \postdate{\par}
+    \date{2020-02-01}
+
+\usepackage{booktabs}
+
+\begin{document}
+\maketitle
+
+{
+\setcounter{tocdepth}{1}
+\tableofcontents
+}
+\hypertarget{guia-1}{%
+\chapter{Guía 1}\label{guia-1}}
+
+\hypertarget{ejercicio-1}{%
+\section{Ejercicio 1:}\label{ejercicio-1}}
+
+Realice un programa que permita el entrenamiento y prueba de un perceptrón simple con una cantidad variable de entradas.
+
+\hypertarget{resolucion-del-problema-or}{%
+\subsection{Resolución del problema OR}\label{resolucion-del-problema-or}}
+
+\begin{itemize}
+\item
+  Lectura de los patrones de entrenamiento
+\item
+  Selección de parámetros y entrenamiento de perceptrón
+\end{itemize}
+
+Utilizamos las funciones implementadas en el archivo ``PerceptronSimple.R''
+
+El entrenamiento nos devuelve la tasa obtenida en cada época y al final mostramos los valores de los pesos w que definen la recta del modelo.
+
+\$ pesos = {[}w\_0, w\_1, w\_2, \ldots{}w\_n{]} \$
+
+\begin{itemize}
+\tightlist
+\item
+  Graficas
+\end{itemize}
+
+En la gráfica vemos como la recta del modelo separa el dominio según la clase.
+
+\begin{itemize}
+\tightlist
+\item
+  Prueba con datos de test
+\end{itemize}
+
+Por ser este un problema sencillo donde las clases son separables por una recta, la tasa de aciertos en test nos da un 100\%.
+
+\hypertarget{resolucion-del-problema-xor}{%
+\subsection{Resolución del problema XOR}\label{resolucion-del-problema-xor}}
+
+\begin{itemize}
+\item
+  Lectura de los patrones de entrenamiento
+\item
+  Selección de parámetros y entrenamiento de perceptrón
+\end{itemize}
+
+Vemos que luego de 10 épocas el perceptrón simple no logra resolver el problema del XOR, ni tampoco mejorar su tasa de aciertos.
+
+\begin{itemize}
+\tightlist
+\item
+  Graficas
+\end{itemize}
+
+En la gráfica vemos la recta obtenida que deja todos los patrones clasificados de igual manera.
+
+\begin{itemize}
+\tightlist
+\item
+  Prueba con datos de test
+\end{itemize}
+
+Este problema no pudo ser resuelto por le perceptrón simple, la tasa de aciertos obtenida es peor que el azar.
+
+\hypertarget{preguntas}{%
+\subsection{Preguntas:}\label{preguntas}}
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Pueden ser resueltos ambos problemas (OR y XOR) empleando un perceptrón simple? Justifique su respuesta.
+\end{itemize}
+
+En los resultados obtenidos verificamos que no se puede resolver el problema XOR con el perceptrón simple porque no es posible dividir la clase con una recta que separe el dominio en dos.
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Qué efecto tiene la tasa de aprendizaje en el entrenamiento del perceptrón? Explique cómo este parámetro afecta a la actualización de la frontera de decisión
+\end{itemize}
+
+La tasa de aprendizaje nos permite variar cuanto se actualizan los valores de los pesos. Una tasa muy baja puede generar que el algoritmo demore mucho en llegar al mínimo, y una tasa muy alta puede generar que el algoritmo diverja y nunca llegue a un mínimo.
+En nuestro caso, se implementó una función que posee una tasa de aprendizaje de 0,05 (nu=0.05) por defecto y no fue necesario cambiarlo.
+
+\hypertarget{ejercicio-2}{%
+\section{Ejercicio 2:}\label{ejercicio-2}}
+
+\hypertarget{punto-a}{%
+\subsection{Punto a:}\label{punto-a}}
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Grafica
+\item
+  Generamos las particiones
+\end{itemize}
+
+Utilizamos la función implementada en el archivo ``Particiones.R''
+
+Esta función nos devuelve un listado de 5 listas de ID para entrenamiento, de aproximadamente 800 elementos, y 5 listas de ID para prueba, de aproximadamente 200 elementos.
+
+\begin{itemize}
+\tightlist
+\item
+  Generamos los modelos con el perceptrón simple.
+\end{itemize}
+
+\hypertarget{punto-b}{%
+\subsection{Punto b:}\label{punto-b}}
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Generamos las particiones
+\end{itemize}
+
+Llamamos a la función dos veces con dos semillas para obtener las 10 particiones. La función implementada genera las particiones sin reemplazo, con una relación 80/20 no se pueden generar más de 5 particiones.
+
+\begin{itemize}
+\tightlist
+\item
+  Generamos los modelos con el perceptrón simple.
+\end{itemize}
+
+-- Datos con desviaciones del 10\%
+
+-- Datos con desviaciones del 50\%
+
+-- Datos con desviaciones del 70\%
+
+\hypertarget{preguntas-1}{%
+\subsection{Preguntas:}\label{preguntas-1}}
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Qué beneficio supone el uso de validación cruzada?
+\end{itemize}
+
+El uso de validación cruzada nos permite usar todos los datos para test y poder evaluar de mejor manera si el método utilizado para la generación del modelo es bueno.
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Qué ocurre con la tasa de acierto del perceptrón para los diferentes datasets del ejercicio 2b? Analice el desempeño al incrementarse la dispersión de los datos.
+\end{itemize}
+
+Al aumentar la dispersión de los datos, disminuye la tasa de aciertos porque el plano no permite separar correctamente las clases.
+
+\hypertarget{ejercicio-3}{%
+\section{Ejercicio 3}\label{ejercicio-3}}
+
+El algoritmo implementado se encuentra en el archivo ``PerceptronMulticapa.R''
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Gráfica de datos con clase
+\item
+  Entrenamiento de perceptrón
+\item
+  Gráfica con clasificación del perceptron
+\end{itemize}
+
+\hypertarget{punto-b-1}{%
+\subsection{Punto b}\label{punto-b-1}}
+
+Incorporación del termino de momento.
+
+Se agrega una variable alfa a la función, si la variable es cero no aplica el termino de momento.
+
+\hypertarget{punto-c}{%
+\subsection{Punto c}\label{punto-c}}
+
+\hypertarget{preguntas-2}{%
+\subsection{Preguntas:}\label{preguntas-2}}
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Cuál es la arquitectura mínima que emplearía para resolver este problema? ¿Por qué?
+\end{itemize}
+
+La arquitectura mínima es una capa de 3 neuronas y una capa de 1 neurona, esta fue la arquitectura utilizado para resolver la guía. Al estar una de las clases rodeada o contenida dentro de la otra clase, se requiere una arquitectura que genere una zona cerrada, para esto se requieren al menos tres rectas que definen una zona triangular. La arquitectura utilizada genera tres rectas con la primera capa de 3 neuronas y luego una capa de 1 neurona que a partir de la salida de las anteriores clasifica según si está dentro o fuera de esta zona triangular.
+
+\begin{itemize}
+\tightlist
+\item
+  ¿El número de épocas requerido para entrenar un perceptrón multicapa se modifica al emplear el término de momento? Analice el efecto de este término de momento sobre el entrenamiento.
+\end{itemize}
+
+El número de época al utilizar termino de momento se reduce. En nuestro caso, se ve que disminuye de 296 a 275. Para lograr esto se agrega un término a la corrección de los pesos utilizando el error del patrón anterior.
+
+\begin{itemize}
+\tightlist
+\item
+  ¿Qué conclusión puede sacar a partir del ejercicio 3c?
+\end{itemize}
+
+Del ejercicio 3c podemos concluir que es muy importante conocer todas las herramientas y entender bien el problema, en este caso el problema se podía resolver con una tasa de acierto mayor al 90\% utilizando un perceptrón simple. Esto reduce los tiempos de entrenamiento y la complejidad del modelo.
+
+\hypertarget{ejercicio-4}{%
+\section{Ejercicio 4}\label{ejercicio-4}}
+
+\begin{quote}
+En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out
+\end{quote}
+
+\begin{itemize}
+\item
+  Lectura de los patrones de entrenamiento
+\item
+  Selección de parámetros y entrenamiento de perceptrón
+  Utilizamos las funciones implementadas en el archivo ``PerceptronMulticapa.R''
+\end{itemize}
+
+\hypertarget{leave-one-out}{%
+\subsection{Leave One Out}\label{leave-one-out}}
+
+La media de los errores leave\_one\_out es: 1.9801029
+El desvio standard de los errores leave\_one\_out es: 0.93459
+
+\hypertarget{leave-2-out}{%
+\subsection{Leave 2 Out}\label{leave-2-out}}
+
+La media de los errores leave\_one\_out es: 1.9801029
+El desvio standard de los errores leave\_one\_out es: 0.93459
+
+\hypertarget{guia-2}{%
+\chapter{Guía 2}\label{guia-2}}
+
+\hypertarget{ejercicio-1-1}{%
+\section{Ejercicio 1}\label{ejercicio-1-1}}
+
+\hypertarget{resolucion-del-problema-xor-con-una-red-neuronal-rbf}{%
+\subsection{Resolución del problema XOR con una red neuronal RBF}\label{resolucion-del-problema-xor-con-una-red-neuronal-rbf}}
+
+\begin{itemize}
+\item
+  Lectura de los patrones de entrenamiento
+\item
+  Selección de parámetros y entrenamiento de perceptrón
+\end{itemize}
+
+En este caso se utilizan 4 gausianas por la distribución de los datos.
+
+\begin{itemize}
+\tightlist
+\item
+  Prueba con datos de test
+\end{itemize}
+
+\hypertarget{resolucion-del-problema-iris-con-una-red-neuronal-rbf}{%
+\subsection{Resolución del problema Iris con una red neuronal RBF}\label{resolucion-del-problema-iris-con-una-red-neuronal-rbf}}
+
+\begin{itemize}
+\item
+  Lectura de los patrones de entrenamiento
+\item
+  Selección de parámetros y entrenamiento de perceptrón
+\item
+  Prueba con datos
+\end{itemize}
+
+Cantidad de parámetros:
+
+En una red MLP con una estructura (3,1), tenemos los siguientes parámetros:
+
+\(numParamMLP = Parámetros de Capa 1 + Parámetros de Capa 2\)
+
+\(numParamMLP = [(4 entradas + 1) * 3 neuronas] + [(3 entradas + 1) * 1 neurona]\)
+
+\(numParamMLP = 5 * 3 + 4 * 1 = 19 parámetros\)
+
+Una red RBF con 19 parámetros podría tener la siguiente distribución:
+
+\(numParamRBF = Parámetros de Gausianas + Parámetros de Perceptrones\)
+
+\(numParamRBF = [3 centros] + [(3 entradas + 1) * 3 neurona]\)
+
+\(numParamRBF = 3 + 4 * 3 = 15 parámetros\)
+
+\begin{itemize}
+\tightlist
+\item
+  Prueba con datos
+\end{itemize}
+
+\hypertarget{ejercicio-2-1}{%
+\section{Ejercicio 2}\label{ejercicio-2-1}}
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Preprocesamiento de los datos
+\end{itemize}
+
+Generamos un dataset que contenga seis valores consecutivos en cada registro, cinco tomados como datos de entrada y un sexto valor tomado como clase.
+
+Antes de generar el modelo, tenemos que definir el número de gausianas. Utilizamos la gráfica de Elbow para definir el k a utilizar en el modelo.
+
+Mirando la gráfica anterior tomamos un valor de k = 4, es donde la gráfica hace el codo y queda aproximadamente constante.
+
+\begin{itemize}
+\item
+  Normalizamos los datos.
+\item
+  Dividimos los datos en Train y Test, utilizando un 70\% para entrenamiento.
+\item
+  Generamos el modelo con los datos de entrenamiento.
+\item
+  Aplicamos el modelo a los datos de Train y Test
+\item
+  Grafica de error en Test
+\item
+  Generamos el modelo a aplicar para realizar las predicciones con todos los datos.
+\end{itemize}
+
+Aplicamos el modelo a los mismos datos de entrenamiento para graficar error en train.
+
+Grafica de error
+
+\begin{itemize}
+\item
+  Gráfica del valor predicho y el valor real
+\item
+  Predecimos un nuevo valor
+\end{itemize}
+
+Tomamos los últimos 5 valores del dataset y predecimos cual será el próximo valor.
+
+\hypertarget{ejercicio-3-1}{%
+\section{Ejercicio 3}\label{ejercicio-3-1}}
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Graficamos los datos de entrada
+\item
+  Inicialización de Grilla SOM
+\end{itemize}
+
+Implementamos una función con dos casos, una red cuadrada y una red lineal.
+
+\begin{itemize}
+\tightlist
+\item
+  Función de vecindad
+\end{itemize}
+
+Implementamos una función vecindad. Devuelve los ID de los vecinos de un nodo en un entorno cuadrado.
+
+\begin{itemize}
+\tightlist
+\item
+  Entrenamiento de la res SOM - Circulo
+\end{itemize}
+
+Implementamos la función de entrenamiento para redes SOM, y se la utiliza en el caso del Circulo.
+
+La función dentro tiene tres etapas,
+- Ordenamiento topológico o global
+- Transición
+- Ajuste fino
+
+La vecindad para el ajuste de los pesos decrece en forma lineal hasta 1 y la taza de aprendizaje decrece linealmente hasta 0,05.
+
+\begin{itemize}
+\item
+  Inicialización de Grilla SOM - Te
+\item
+  Entrenamiento de la res SOM - Te
+\item
+  Inicialización de Grilla SOM Unidimensional - Te
+\item
+  Entrenamiento de la res SOM Unidimensional - Te
+\end{itemize}
+
+Podemos observar que con la misma cantidad de neuronas, pero con la distribución lineal podemos obtener una red que se ubica por completo sobre los datos con el mismo entrenamiento.
+
+\hypertarget{ejercicio-4-1}{%
+\section{Ejercicio 4}\label{ejercicio-4-1}}
+
+\begin{itemize}
+\item
+  Lectura de datos
+\item
+  Graficamos los datos de entrada
+\item
+  Inicialización de Grilla SOM - Clouds
+\end{itemize}
+
+Generamos una grilla SOM de 49 nodos, con esto tenemos un nodo cada 100 patrones aproximadamente.
+
+\begin{itemize}
+\item
+  Entrenamiento de la res SOM - Clouds
+\item
+  Etiquetado de neuronas
+\end{itemize}
+
+Para el etiquetado de neuronas, se evalúa la cantidad de patrones de cada clase en el entorno cercano de cada neurona. Se toma como entorno cercano un radio de la mitad de la distancia promedio de la neurona con sus vecinas.
+
+\begin{itemize}
+\tightlist
+\item
+  Clasificación con red SOM
+\end{itemize}
+
+Se asigna como clase ganadora a cada patrón a la clase de la neurona más cercana.
+
+\begin{itemize}
+\item
+  Visualizamos los puntos clasificados
+\item
+  Calculamos la tasa de aciertos
+\end{itemize}
+
+Obtuvimos una tasa de un 86\% de acierto, para mejorar esto se podría entrenar una red SOM con mayor numeró de neuronas.
+
+\hypertarget{guia-3}{%
+\chapter{Guia 3}\label{guia-3}}
+
+\hypertarget{ejercicio-1-2}{%
+\section{Ejercicio 1}\label{ejercicio-1-2}}
+
+Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:
+
+\[-x \sin(\sqrt{|x|})\]
+\[x+\sin(3x)+8\cos(5x)\]
+\[(x^2+y^2)^{0.25}*[\sin^2(50*(x^2+y^2)^{0.1})+1]\]
+
+\hypertarget{preguntas-3}{%
+\subsection{Preguntas}\label{preguntas-3}}
+
+\begin{itemize}
+\item
+  ¿Corresponde al mínimo global el valor encontrado? Repita la búsqueda varias veces y determine el valor medio y desvío.
+\item
+  ¿Se encuentra ahora el mínimo global dentro del intervalo?
+\end{itemize}
+
+\hypertarget{funcion-1}{%
+\subsection{Función 1}\label{funcion-1}}
+
+\begin{quote}
+Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+El valor medio de los resultados de la funcion01 es \textbf{421.0046494}, el desvio estándar es \textbf{0.204572}
+\end{quote}
+
+\hypertarget{funcion-2}{%
+\subsection{Función 2}\label{funcion-2}}
+
+\begin{quote}
+Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+El valor medio de los resultados de la funcion01 es \textbf{1.8658132}, el desvio estándar es \textbf{0.0071057}
+\end{quote}
+
+\hypertarget{funcion-3}{%
+\subsection{Función 3}\label{funcion-3}}
+
+\begin{quote}
+Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del ranggo (tanto para x como para y).
+El valor medio de los resultados de la funcion01 es \textbf{0.0210934, 0.0210934}, el desvio estándar es \textbf{0.0688038, 0.0688038}
+\end{quote}
+
+\hypertarget{ejercicio-2-2}{%
+\section{Ejercicio 2}\label{ejercicio-2-2}}
+
+En el archivo desconocido1.csv se ha registrado información de un proceso que puede describirse mediante la ecuación:
+\[y1 = a_1x^3_1 + a_2 x^2_1 + a_3 x_1 + a_4\]
+Se sabe que las mediciones contienen ruido, y que los parámetro del sistema se encuentran acotados en el intervalo {[}−5,1.5{]}.
+Utilice un algoritmo genético para determinar los parámetros delmodelo. Calcule el error cuadrático total obtenido de la comparción entre los datos provistos y la función aproximada mediante el algoritmo. ¿Qué puede concluir del ajuste?
+
+\bibliography{book.bib,packages.bib}
+
+
+\end{document}

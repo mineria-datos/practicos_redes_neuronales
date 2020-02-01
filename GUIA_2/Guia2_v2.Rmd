@@ -7,7 +7,7 @@ output:
   html_document: default
 ---
 
-```{r setup, include=FALSE}
+```{r, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(readr)
 library(dplyr)
@@ -25,6 +25,7 @@ if(file.exists('./resultadosG2.RData')) {
 #calcular = TRUE
 ```
 
+# Guía 2
 
 ## Ejercicio 1
 

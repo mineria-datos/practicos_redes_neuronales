@@ -1,6 +1,6 @@
 --- 
 title: "Prácticos Redes Neuronales"
-author: "Bodean - Ojeda"
+author: "Grupo 3: Emiliano Bodean - Zacarias Ojeda"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site
 documentclass: book

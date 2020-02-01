@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Prácticos Redes Neuronales</title>
+  <meta name="description" content="Guias resueltas de trabajos prácticos" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Prácticos Redes Neuronales" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Prácticos Redes Neuronales" />
+  
+  <meta name="twitter:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+<meta name="author" content="Grupo 3: Emiliano Bodean - Zacarias Ojeda" />
+
+
+<meta name="date" content="2020-02-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+
+<link rel="next" href="guia-2.html"/>
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Redes Neuronales</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Guía 1</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#ejercicio-1"><i class="fa fa-check"></i><b>1.1</b> Ejercicio 1:</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#resolucion-del-problema-or"><i class="fa fa-check"></i><b>1.1.1</b> Resolución del problema OR</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#resolucion-del-problema-xor"><i class="fa fa-check"></i><b>1.1.2</b> Resolución del problema XOR</a></li>
+<li class="chapter" data-level="1.1.3" data-path="index.html"><a href="index.html#preguntas"><i class="fa fa-check"></i><b>1.1.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#ejercicio-2"><i class="fa fa-check"></i><b>1.2</b> Ejercicio 2:</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#punto-a"><i class="fa fa-check"></i><b>1.2.1</b> Punto a:</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#punto-b"><i class="fa fa-check"></i><b>1.2.2</b> Punto b:</a></li>
+<li class="chapter" data-level="1.2.3" data-path="index.html"><a href="index.html#preguntas-1"><i class="fa fa-check"></i><b>1.2.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#ejercicio-3"><i class="fa fa-check"></i><b>1.3</b> Ejercicio 3</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="index.html"><a href="index.html#punto-b-1"><i class="fa fa-check"></i><b>1.3.1</b> Punto b</a></li>
+<li class="chapter" data-level="1.3.2" data-path="index.html"><a href="index.html#punto-c"><i class="fa fa-check"></i><b>1.3.2</b> Punto c</a></li>
+<li class="chapter" data-level="1.3.3" data-path="index.html"><a href="index.html#preguntas-2"><i class="fa fa-check"></i><b>1.3.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#ejercicio-4"><i class="fa fa-check"></i><b>1.4</b> Ejercicio 4</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="index.html"><a href="index.html#leave-one-out"><i class="fa fa-check"></i><b>1.4.1</b> Leave One Out</a></li>
+<li class="chapter" data-level="1.4.2" data-path="index.html"><a href="index.html#leave-2-out"><i class="fa fa-check"></i><b>1.4.2</b> Leave 2 Out</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="guia-2.html"><a href="guia-2.html"><i class="fa fa-check"></i><b>2</b> Guía 2</a><ul>
+<li class="chapter" data-level="2.1" data-path="guia-2.html"><a href="guia-2.html#ejercicio-1-1"><i class="fa fa-check"></i><b>2.1</b> Ejercicio 1</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="guia-2.html"><a href="guia-2.html#resolucion-del-problema-xor-con-una-red-neuronal-rbf"><i class="fa fa-check"></i><b>2.1.1</b> Resolución del problema XOR con una red neuronal RBF</a></li>
+<li class="chapter" data-level="2.1.2" data-path="guia-2.html"><a href="guia-2.html#resolucion-del-problema-iris-con-una-red-neuronal-rbf"><i class="fa fa-check"></i><b>2.1.2</b> Resolución del problema Iris con una red neuronal RBF</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="guia-2.html"><a href="guia-2.html#ejercicio-2-1"><i class="fa fa-check"></i><b>2.2</b> Ejercicio 2</a></li>
+<li class="chapter" data-level="2.3" data-path="guia-2.html"><a href="guia-2.html#ejercicio-3-1"><i class="fa fa-check"></i><b>2.3</b> Ejercicio 3</a></li>
+<li class="chapter" data-level="2.4" data-path="guia-2.html"><a href="guia-2.html#ejercicio-4-1"><i class="fa fa-check"></i><b>2.4</b> Ejercicio 4</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="guia-3.html"><a href="guia-3.html"><i class="fa fa-check"></i><b>3</b> Guia 3</a><ul>
+<li class="chapter" data-level="3.1" data-path="guia-3.html"><a href="guia-3.html#ejercicio-1-2"><i class="fa fa-check"></i><b>3.1</b> Ejercicio 1</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="guia-3.html"><a href="guia-3.html#preguntas-3"><i class="fa fa-check"></i><b>3.1.1</b> Preguntas</a></li>
+<li class="chapter" data-level="3.1.2" data-path="guia-3.html"><a href="guia-3.html#funcion-1"><i class="fa fa-check"></i><b>3.1.2</b> Función 1</a></li>
+<li class="chapter" data-level="3.1.3" data-path="guia-3.html"><a href="guia-3.html#funcion-2"><i class="fa fa-check"></i><b>3.1.3</b> Función 2</a></li>
+<li class="chapter" data-level="3.1.4" data-path="guia-3.html"><a href="guia-3.html#funcion-3"><i class="fa fa-check"></i><b>3.1.4</b> Función 3</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="guia-3.html"><a href="guia-3.html#ejercicio-2-2"><i class="fa fa-check"></i><b>3.2</b> Ejercicio 2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publicado con bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prácticos Redes Neuronales</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="header">
+<h1 class="title">Prácticos Redes Neuronales</h1>
+<p class="author"><em>Grupo 3: Emiliano Bodean - Zacarias Ojeda</em></p>
+<p class="date"><em>2020-02-01</em></p>
+</div>
+<div id="guia-1" class="section level1">
+<h1><span class="header-section-number">Guía 1</span> Guía 1</h1>
+<div id="ejercicio-1" class="section level2">
+<h2><span class="header-section-number">1.1</span> Ejercicio 1:</h2>
+<p>Realice un programa que permita el entrenamiento y prueba de un perceptrón simple con una cantidad variable de entradas.</p>
+<div id="resolucion-del-problema-or" class="section level3">
+<h3><span class="header-section-number">1.1.1</span> Resolución del problema OR</h3>
+<ul>
+<li><p>Lectura de los patrones de entrenamiento</p></li>
+<li><p>Selección de parámetros y entrenamiento de perceptrón</p></li>
+</ul>
+<p>Utilizamos las funciones implementadas en el archivo “PerceptronSimple.R”</p>
+<p>El entrenamiento nos devuelve la tasa obtenida en cada época y al final mostramos los valores de los pesos w que definen la recta del modelo.</p>
+<p>$ pesos = [w_0, w_1, w_2, …w_n] $</p>
+<ul>
+<li>Graficas</li>
+</ul>
+<p>En la gráfica vemos como la recta del modelo separa el dominio según la clase.</p>
+<ul>
+<li>Prueba con datos de test</li>
+</ul>
+<p>Por ser este un problema sencillo donde las clases son separables por una recta, la tasa de aciertos en test nos da un 100%.</p>
+</div>
+<div id="resolucion-del-problema-xor" class="section level3">
+<h3><span class="header-section-number">1.1.2</span> Resolución del problema XOR</h3>
+<ul>
+<li><p>Lectura de los patrones de entrenamiento</p></li>
+<li><p>Selección de parámetros y entrenamiento de perceptrón</p></li>
+</ul>
+<p>Vemos que luego de 10 épocas el perceptrón simple no logra resolver el problema del XOR, ni tampoco mejorar su tasa de aciertos.</p>
+<ul>
+<li>Graficas</li>
+</ul>
+<p>En la gráfica vemos la recta obtenida que deja todos los patrones clasificados de igual manera.</p>
+<ul>
+<li>Prueba con datos de test</li>
+</ul>
+<p>Este problema no pudo ser resuelto por le perceptrón simple, la tasa de aciertos obtenida es peor que el azar.</p>
+</div>
+<div id="preguntas" class="section level3">
+<h3><span class="header-section-number">1.1.3</span> Preguntas:</h3>
+<ul>
+<li>¿Pueden ser resueltos ambos problemas (OR y XOR) empleando un perceptrón simple? Justifique su respuesta.</li>
+</ul>
+<p>En los resultados obtenidos verificamos que no se puede resolver el problema XOR con el perceptrón simple porque no es posible dividir la clase con una recta que separe el dominio en dos.</p>
+<ul>
+<li>¿Qué efecto tiene la tasa de aprendizaje en el entrenamiento del perceptrón? Explique cómo este parámetro afecta a la actualización de la frontera de decisión</li>
+</ul>
+<p>La tasa de aprendizaje nos permite variar cuanto se actualizan los valores de los pesos. Una tasa muy baja puede generar que el algoritmo demore mucho en llegar al mínimo, y una tasa muy alta puede generar que el algoritmo diverja y nunca llegue a un mínimo.
+En nuestro caso, se implementó una función que posee una tasa de aprendizaje de 0,05 (nu=0.05) por defecto y no fue necesario cambiarlo.</p>
+</div>
+</div>
+<div id="ejercicio-2" class="section level2">
+<h2><span class="header-section-number">1.2</span> Ejercicio 2:</h2>
+<div id="punto-a" class="section level3">
+<h3><span class="header-section-number">1.2.1</span> Punto a:</h3>
+<ul>
+<li><p>Lectura de datos</p></li>
+<li><p>Grafica</p></li>
+<li><p>Generamos las particiones</p></li>
+</ul>
+<p>Utilizamos la función implementada en el archivo “Particiones.R”</p>
+<p>Esta función nos devuelve un listado de 5 listas de ID para entrenamiento, de aproximadamente 800 elementos, y 5 listas de ID para prueba, de aproximadamente 200 elementos.</p>
+<ul>
+<li>Generamos los modelos con el perceptrón simple.</li>
+</ul>
+</div>
+<div id="punto-b" class="section level3">
+<h3><span class="header-section-number">1.2.2</span> Punto b:</h3>
+<ul>
+<li><p>Lectura de datos</p></li>
+<li><p>Generamos las particiones</p></li>
+</ul>
+<p>Llamamos a la función dos veces con dos semillas para obtener las 10 particiones. La función implementada genera las particiones sin reemplazo, con una relación 80/20 no se pueden generar más de 5 particiones.</p>
+<ul>
+<li>Generamos los modelos con el perceptrón simple.</li>
+</ul>
+<p>– Datos con desviaciones del 10%</p>
+<p>– Datos con desviaciones del 50%</p>
+<p>– Datos con desviaciones del 70%</p>
+</div>
+<div id="preguntas-1" class="section level3">
+<h3><span class="header-section-number">1.2.3</span> Preguntas:</h3>
+<ul>
+<li>¿Qué beneficio supone el uso de validación cruzada?</li>
+</ul>
+<p>El uso de validación cruzada nos permite usar todos los datos para test y poder evaluar de mejor manera si el método utilizado para la generación del modelo es bueno.</p>
+<ul>
+<li>¿Qué ocurre con la tasa de acierto del perceptrón para los diferentes datasets del ejercicio 2b? Analice el desempeño al incrementarse la dispersión de los datos.</li>
+</ul>
+<p>Al aumentar la dispersión de los datos, disminuye la tasa de aciertos porque el plano no permite separar correctamente las clases.</p>
+</div>
+</div>
+<div id="ejercicio-3" class="section level2">
+<h2><span class="header-section-number">1.3</span> Ejercicio 3</h2>
+<p>El algoritmo implementado se encuentra en el archivo “PerceptronMulticapa.R”</p>
+<ul>
+<li><p>Lectura de datos</p></li>
+<li><p>Gráfica de datos con clase</p></li>
+<li><p>Entrenamiento de perceptrón</p></li>
+<li><p>Gráfica con clasificación del perceptron</p></li>
+</ul>
+<div id="punto-b-1" class="section level3">
+<h3><span class="header-section-number">1.3.1</span> Punto b</h3>
+<p>Incorporación del termino de momento.</p>
+<p>Se agrega una variable alfa a la función, si la variable es cero no aplica el termino de momento.</p>
+</div>
+<div id="punto-c" class="section level3">
+<h3><span class="header-section-number">1.3.2</span> Punto c</h3>
+</div>
+<div id="preguntas-2" class="section level3">
+<h3><span class="header-section-number">1.3.3</span> Preguntas:</h3>
+<ul>
+<li>¿Cuál es la arquitectura mínima que emplearía para resolver este problema? ¿Por qué?</li>
+</ul>
+<p>La arquitectura mínima es una capa de 3 neuronas y una capa de 1 neurona, esta fue la arquitectura utilizado para resolver la guía. Al estar una de las clases rodeada o contenida dentro de la otra clase, se requiere una arquitectura que genere una zona cerrada, para esto se requieren al menos tres rectas que definen una zona triangular. La arquitectura utilizada genera tres rectas con la primera capa de 3 neuronas y luego una capa de 1 neurona que a partir de la salida de las anteriores clasifica según si está dentro o fuera de esta zona triangular.</p>
+<ul>
+<li>¿El número de épocas requerido para entrenar un perceptrón multicapa se modifica al emplear el término de momento? Analice el efecto de este término de momento sobre el entrenamiento.</li>
+</ul>
+<p>El número de época al utilizar termino de momento se reduce. En nuestro caso, se ve que disminuye de 296 a 275. Para lograr esto se agrega un término a la corrección de los pesos utilizando el error del patrón anterior.</p>
+<ul>
+<li>¿Qué conclusión puede sacar a partir del ejercicio 3c?</li>
+</ul>
+<p>Del ejercicio 3c podemos concluir que es muy importante conocer todas las herramientas y entender bien el problema, en este caso el problema se podía resolver con una tasa de acierto mayor al 90% utilizando un perceptrón simple. Esto reduce los tiempos de entrenamiento y la complejidad del modelo.</p>
+</div>
+</div>
+<div id="ejercicio-4" class="section level2">
+<h2><span class="header-section-number">1.4</span> Ejercicio 4</h2>
+<blockquote>
+<p>En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out</p>
+</blockquote>
+<ul>
+<li><p>Lectura de los patrones de entrenamiento</p></li>
+<li><p>Selección de parámetros y entrenamiento de perceptrón
+Utilizamos las funciones implementadas en el archivo “PerceptronMulticapa.R”</p></li>
+</ul>
+<div id="leave-one-out" class="section level3">
+<h3><span class="header-section-number">1.4.1</span> Leave One Out</h3>
+<p>La media de los errores leave_one_out es: 1.9801029
+El desvio standard de los errores leave_one_out es: 0.93459</p>
+</div>
+<div id="leave-2-out" class="section level3">
+<h3><span class="header-section-number">1.4.2</span> Leave 2 Out</h3>
+<p>La media de los errores leave_one_out es: 1.9801029
+El desvio standard de los errores leave_one_out es: 0.93459</p>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+
+<a href="guia-2.html" class="navigation navigation-next navigation-unique" aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["PracticosBook.pdf", "PracticosBook.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

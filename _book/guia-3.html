@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Guía 3 Guia 3 | Prácticos Redes Neuronales</title>
+  <meta name="description" content="Guias resueltas de trabajos prácticos" />
+  <meta name="generator" content="bookdown 0.17 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Guía 3 Guia 3 | Prácticos Redes Neuronales" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Guía 3 Guia 3 | Prácticos Redes Neuronales" />
+  
+  <meta name="twitter:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+<meta name="author" content="Grupo 3: Emiliano Bodean - Zacarias Ojeda" />
+
+
+<meta name="date" content="2020-02-01" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="guia-2.html"/>
+
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+
+<script src="libs/htmlwidgets-1.3/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.9.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.0.0/css/crosstalk.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.0.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-1.46.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+<li><a href="./">Redes Neuronales</a></li>
+
+<li class="divider"></li>
+<li class="chapter" data-level="1" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i><b>1</b> Guía 1</a><ul>
+<li class="chapter" data-level="1.1" data-path="index.html"><a href="index.html#ejercicio-1"><i class="fa fa-check"></i><b>1.1</b> Ejercicio 1:</a><ul>
+<li class="chapter" data-level="1.1.1" data-path="index.html"><a href="index.html#resolucion-del-problema-or"><i class="fa fa-check"></i><b>1.1.1</b> Resolución del problema OR</a></li>
+<li class="chapter" data-level="1.1.2" data-path="index.html"><a href="index.html#resolucion-del-problema-xor"><i class="fa fa-check"></i><b>1.1.2</b> Resolución del problema XOR</a></li>
+<li class="chapter" data-level="1.1.3" data-path="index.html"><a href="index.html#preguntas"><i class="fa fa-check"></i><b>1.1.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.2" data-path="index.html"><a href="index.html#ejercicio-2"><i class="fa fa-check"></i><b>1.2</b> Ejercicio 2:</a><ul>
+<li class="chapter" data-level="1.2.1" data-path="index.html"><a href="index.html#punto-a"><i class="fa fa-check"></i><b>1.2.1</b> Punto a:</a></li>
+<li class="chapter" data-level="1.2.2" data-path="index.html"><a href="index.html#punto-b"><i class="fa fa-check"></i><b>1.2.2</b> Punto b:</a></li>
+<li class="chapter" data-level="1.2.3" data-path="index.html"><a href="index.html#preguntas-1"><i class="fa fa-check"></i><b>1.2.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.3" data-path="index.html"><a href="index.html#ejercicio-3"><i class="fa fa-check"></i><b>1.3</b> Ejercicio 3</a><ul>
+<li class="chapter" data-level="1.3.1" data-path="index.html"><a href="index.html#punto-b-1"><i class="fa fa-check"></i><b>1.3.1</b> Punto b</a></li>
+<li class="chapter" data-level="1.3.2" data-path="index.html"><a href="index.html#punto-c"><i class="fa fa-check"></i><b>1.3.2</b> Punto c</a></li>
+<li class="chapter" data-level="1.3.3" data-path="index.html"><a href="index.html#preguntas-2"><i class="fa fa-check"></i><b>1.3.3</b> Preguntas:</a></li>
+</ul></li>
+<li class="chapter" data-level="1.4" data-path="index.html"><a href="index.html#ejercicio-4"><i class="fa fa-check"></i><b>1.4</b> Ejercicio 4</a><ul>
+<li class="chapter" data-level="1.4.1" data-path="index.html"><a href="index.html#leave-one-out"><i class="fa fa-check"></i><b>1.4.1</b> Leave One Out</a></li>
+<li class="chapter" data-level="1.4.2" data-path="index.html"><a href="index.html#leave-2-out"><i class="fa fa-check"></i><b>1.4.2</b> Leave 2 Out</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="guia-2.html"><a href="guia-2.html"><i class="fa fa-check"></i><b>2</b> Guía 2</a><ul>
+<li class="chapter" data-level="2.1" data-path="guia-2.html"><a href="guia-2.html#ejercicio-1-1"><i class="fa fa-check"></i><b>2.1</b> Ejercicio 1</a><ul>
+<li class="chapter" data-level="2.1.1" data-path="guia-2.html"><a href="guia-2.html#resolucion-del-problema-xor-con-una-red-neuronal-rbf"><i class="fa fa-check"></i><b>2.1.1</b> Resolución del problema XOR con una red neuronal RBF</a></li>
+<li class="chapter" data-level="2.1.2" data-path="guia-2.html"><a href="guia-2.html#resolucion-del-problema-iris-con-una-red-neuronal-rbf"><i class="fa fa-check"></i><b>2.1.2</b> Resolución del problema Iris con una red neuronal RBF</a></li>
+</ul></li>
+<li class="chapter" data-level="2.2" data-path="guia-2.html"><a href="guia-2.html#ejercicio-2-1"><i class="fa fa-check"></i><b>2.2</b> Ejercicio 2</a></li>
+<li class="chapter" data-level="2.3" data-path="guia-2.html"><a href="guia-2.html#ejercicio-3-1"><i class="fa fa-check"></i><b>2.3</b> Ejercicio 3</a></li>
+<li class="chapter" data-level="2.4" data-path="guia-2.html"><a href="guia-2.html#ejercicio-4-1"><i class="fa fa-check"></i><b>2.4</b> Ejercicio 4</a></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="guia-3.html"><a href="guia-3.html"><i class="fa fa-check"></i><b>3</b> Guia 3</a><ul>
+<li class="chapter" data-level="3.1" data-path="guia-3.html"><a href="guia-3.html#ejercicio-1-2"><i class="fa fa-check"></i><b>3.1</b> Ejercicio 1</a><ul>
+<li class="chapter" data-level="3.1.1" data-path="guia-3.html"><a href="guia-3.html#preguntas-3"><i class="fa fa-check"></i><b>3.1.1</b> Preguntas</a></li>
+<li class="chapter" data-level="3.1.2" data-path="guia-3.html"><a href="guia-3.html#funcion-1"><i class="fa fa-check"></i><b>3.1.2</b> Función 1</a></li>
+<li class="chapter" data-level="3.1.3" data-path="guia-3.html"><a href="guia-3.html#funcion-2"><i class="fa fa-check"></i><b>3.1.3</b> Función 2</a></li>
+<li class="chapter" data-level="3.1.4" data-path="guia-3.html"><a href="guia-3.html#funcion-3"><i class="fa fa-check"></i><b>3.1.4</b> Función 3</a></li>
+</ul></li>
+<li class="chapter" data-level="3.2" data-path="guia-3.html"><a href="guia-3.html#ejercicio-2-2"><i class="fa fa-check"></i><b>3.2</b> Ejercicio 2</a></li>
+</ul></li>
+<li class="divider"></li>
+<li><a href="https://github.com/rstudio/bookdown" target="blank">Publicado con bookdown</a></li>
+
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prácticos Redes Neuronales</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="guia-3" class="section level1">
+<h1><span class="header-section-number">Guía 3</span> Guia 3</h1>
+<div id="ejercicio-1-2" class="section level2">
+<h2><span class="header-section-number">3.1</span> Ejercicio 1</h2>
+<p>Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:</p>
+<p><span class="math display">\[-x \sin(\sqrt{|x|})\]</span>
+<span class="math display">\[x+\sin(3x)+8\cos(5x)\]</span>
+<span class="math display">\[(x^2+y^2)^{0.25}*[\sin^2(50*(x^2+y^2)^{0.1})+1]\]</span></p>
+<div id="preguntas-3" class="section level3">
+<h3><span class="header-section-number">3.1.1</span> Preguntas</h3>
+<ul>
+<li><p>¿Corresponde al mínimo global el valor encontrado? Repita la búsqueda varias veces y determine el valor medio y desvío.</p></li>
+<li><p>¿Se encuentra ahora el mínimo global dentro del intervalo?</p></li>
+</ul>
+</div>
+<div id="funcion-1" class="section level3">
+<h3><span class="header-section-number">3.1.2</span> Función 1</h3>
+<blockquote>
+<p>Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+El valor medio de los resultados de la funcion01 es <strong>421.0046494</strong>, el desvio estándar es <strong>0.204572</strong></p>
+</blockquote>
+</div>
+<div id="funcion-2" class="section level3">
+<h3><span class="header-section-number">3.1.3</span> Función 2</h3>
+<blockquote>
+<p>Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
+El valor medio de los resultados de la funcion01 es <strong>1.8658132</strong>, el desvio estándar es <strong>0.0071057</strong></p>
+</blockquote>
+</div>
+<div id="funcion-3" class="section level3">
+<h3><span class="header-section-number">3.1.4</span> Función 3</h3>
+<blockquote>
+<p>Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del ranggo (tanto para x como para y).
+El valor medio de los resultados de la funcion01 es <strong>0.0210934, 0.0210934</strong>, el desvio estándar es <strong>0.0688038, 0.0688038</strong></p>
+</blockquote>
+</div>
+</div>
+<div id="ejercicio-2-2" class="section level2">
+<h2><span class="header-section-number">3.2</span> Ejercicio 2</h2>
+<p>En el archivo desconocido1.csv se ha registrado información de un proceso que puede describirse mediante la ecuación:
+<span class="math display">\[y1 = a_1x^3_1 + a_2 x^2_1 + a_3 x_1 + a_4\]</span>
+Se sabe que las mediciones contienen ruido, y que los parámetro del sistema se encuentran acotados en el intervalo [−5,1.5].
+Utilice un algoritmo genético para determinar los parámetros delmodelo. Calcule el error cuadrático total obtenido de la comparción entre los datos provistos y la función aproximada mediante el algoritmo. ¿Qué puede concluir del ajuste?</p>
+
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="guia-2.html" class="navigation navigation-prev navigation-unique" aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": {
+"link": null,
+"text": null
+},
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": ["PracticosBook.pdf", "PracticosBook.epub"],
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

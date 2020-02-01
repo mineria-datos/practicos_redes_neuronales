@@ -5,7 +5,7 @@ date: "1/16/2020"
 output: html_document
 ---
 
-```{r setup, include=FALSE}
+```{r include=FALSE}
 knitr::opts_chunk$set(message = FALSE, include = FALSE)
 library(dplyr)
 library(readr)
@@ -30,6 +30,10 @@ calcular = TRUE
 ```
 
 ## Ejercicio 4
+
+
+> En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out
+
 
  - Lectura de los patrones de entrenamiento
 
