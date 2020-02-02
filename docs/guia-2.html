@@ -24,7 +24,7 @@
 <meta name="author" content="Grupo 3: Emiliano Bodean - Zacarias Ojeda" />
 
 
-<meta name="date" content="2020-02-01" />
+<meta name="date" content="2020-02-02" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -59,6 +59,68 @@
 <script src="libs/plotly-main-1.46.1/plotly-latest.min.js"></script>
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(data-line-number);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -142,21 +204,531 @@
 <div id="resolucion-del-problema-xor-con-una-red-neuronal-rbf" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Resolución del problema XOR con una red neuronal RBF</h3>
 <ul>
-<li><p>Lectura de los patrones de entrenamiento</p></li>
-<li><p>Selección de parámetros y entrenamiento de perceptrón</p></li>
+<li>Lectura de los patrones de entrenamiento</li>
+</ul>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb65-1" data-line-number="1">XOR_trn &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 1/Práctica/data/XOR_trn.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb65-2" data-line-number="2">XOR_tst &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<ul>
+<li>Selección de parámetros y entrenamiento de perceptrón</li>
 </ul>
 <p>En este caso se utilizan 4 gausianas por la distribución de los datos.</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb66-1" data-line-number="1">datos_x &lt;-<span class="st"> </span>XOR_trn[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</a>
+<a class="sourceLine" id="cb66-2" data-line-number="2">datos_y &lt;-<span class="st"> </span>XOR_trn[,<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb66-3" data-line-number="3">modeloRBF &lt;-<span class="st"> </span><span class="kw">redRBF</span>(datos_x, datos_y, <span class="dt">nroGausianas =</span> <span class="dv">4</span>, <span class="dt">funcion =</span> <span class="st">&quot;sigmo&quot;</span>)</a></code></pre></div>
+<pre><code>## Epoca: 1 - Tasa: 0.749 - Error: 0.975136931564991
+## Epoca: 2 - Tasa: 1 - Error: 0.818319329810593</code></pre>
 <ul>
 <li>Prueba con datos de test</li>
 </ul>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb68-1" data-line-number="1">datos_x &lt;-<span class="st"> </span>XOR_tst[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</a>
+<a class="sourceLine" id="cb68-2" data-line-number="2">datos_y &lt;-<span class="st"> </span>XOR_tst[,<span class="dv">3</span>]</a>
+<a class="sourceLine" id="cb68-3" data-line-number="3">salida &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloRBF, datos_x, datos_y)</a>
+<a class="sourceLine" id="cb68-4" data-line-number="4">salida<span class="op">$</span>tasa</a></code></pre></div>
+<pre><code>## [1] 1</code></pre>
 </div>
 <div id="resolucion-del-problema-iris-con-una-red-neuronal-rbf" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Resolución del problema Iris con una red neuronal RBF</h3>
 <ul>
-<li><p>Lectura de los patrones de entrenamiento</p></li>
-<li><p>Selección de parámetros y entrenamiento de perceptrón</p></li>
-<li><p>Prueba con datos</p></li>
+<li>Lectura de los patrones de entrenamiento</li>
 </ul>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb70-1" data-line-number="1">irisbin &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<ul>
+<li>Selección de parámetros y entrenamiento de perceptrón</li>
+</ul>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb71-1" data-line-number="1">datos_x &lt;-<span class="st"> </span>irisbin[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>)]</a>
+<a class="sourceLine" id="cb71-2" data-line-number="2">datos_y &lt;-<span class="st"> </span>irisbin[,<span class="kw">c</span>(<span class="dv">5</span>,<span class="dv">6</span>,<span class="dv">7</span>)]</a>
+<a class="sourceLine" id="cb71-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb71-4" data-line-number="4"><span class="co">#Se podría aplicar criterio de Elbow para la selección de K</span></a>
+<a class="sourceLine" id="cb71-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb71-6" data-line-number="6">modeloRBF &lt;-<span class="st"> </span><span class="kw">redRBF</span>(datos_x, datos_y, <span class="dt">nroGausianas =</span> <span class="dv">10</span>, <span class="dt">funcion =</span> <span class="st">&quot;sigmo&quot;</span>, <span class="dt">pnu =</span> <span class="fl">0.2</span>, </a>
+<a class="sourceLine" id="cb71-7" data-line-number="7">                    <span class="dt">pepoca =</span> <span class="dv">200</span>, <span class="dt">pcritFinalizacion =</span> <span class="fl">0.9</span>)</a></code></pre></div>
+<pre><code>## Epoca: 1 - Tasa: 0.7 - Error: 0.89449489107328
+## Epoca: 2 - Tasa: 0.7 - Error: 0.864093486816453
+## Epoca: 3 - Tasa: 0.7 - Error: 0.862629752685685
+## Epoca: 4 - Tasa: 0.7 - Error: 0.861197468977281
+## Epoca: 5 - Tasa: 0.7 - Error: 0.859768029477902
+## Epoca: 6 - Tasa: 0.7 - Error: 0.858341301170202
+## Epoca: 7 - Tasa: 0.7 - Error: 0.856917318865837
+## Epoca: 8 - Tasa: 0.7 - Error: 0.855496117547486
+## Epoca: 9 - Tasa: 0.7 - Error: 0.854077731382982
+## Epoca: 10 - Tasa: 0.7 - Error: 0.852662193726943
+## Epoca: 11 - Tasa: 0.7 - Error: 0.851249537128268
+## Epoca: 12 - Tasa: 0.7 - Error: 0.849839793337777
+## Epoca: 13 - Tasa: 0.7 - Error: 0.848432993315936
+## Epoca: 14 - Tasa: 0.7 - Error: 0.847029167240685
+## Epoca: 15 - Tasa: 0.7 - Error: 0.845628344515339
+## Epoca: 16 - Tasa: 0.7 - Error: 0.844230553776579
+## Epoca: 17 - Tasa: 0.7 - Error: 0.842835822902504
+## Epoca: 18 - Tasa: 0.7 - Error: 0.841444179020752
+## Epoca: 19 - Tasa: 0.7 - Error: 0.840055648516686
+## Epoca: 20 - Tasa: 0.7 - Error: 0.83867025704163
+## Epoca: 21 - Tasa: 0.7 - Error: 0.837288029521153
+## Epoca: 22 - Tasa: 0.7 - Error: 0.8359089901634
+## Epoca: 23 - Tasa: 0.7 - Error: 0.834533162467464
+## Epoca: 24 - Tasa: 0.7 - Error: 0.833160569231785
+## Epoca: 25 - Tasa: 0.7 - Error: 0.831791232562583
+## Epoca: 26 - Tasa: 0.7 - Error: 0.830425173882317
+## Epoca: 27 - Tasa: 0.7 - Error: 0.829062413938159
+## Epoca: 28 - Tasa: 0.7 - Error: 0.827702972810487
+## Epoca: 29 - Tasa: 0.7 - Error: 0.826346869921388
+## Epoca: 30 - Tasa: 0.7 - Error: 0.82499412404317
+## Epoca: 31 - Tasa: 0.7 - Error: 0.823644753306874
+## Epoca: 32 - Tasa: 0.7 - Error: 0.822298775210791
+## Epoca: 33 - Tasa: 0.7 - Error: 0.820956206628968
+## Epoca: 34 - Tasa: 0.7 - Error: 0.819617063819711
+## Epoca: 35 - Tasa: 0.7 - Error: 0.818281362434076
+## Epoca: 36 - Tasa: 0.7 - Error: 0.816949117524343
+## Epoca: 37 - Tasa: 0.7 - Error: 0.815620343552478
+## Epoca: 38 - Tasa: 0.7 - Error: 0.814295054398566
+## Epoca: 39 - Tasa: 0.7 - Error: 0.812973263369226
+## Epoca: 40 - Tasa: 0.7 - Error: 0.811654983206
+## Epoca: 41 - Tasa: 0.7 - Error: 0.81034022609371
+## Epoca: 42 - Tasa: 0.7 - Error: 0.809029003668779
+## Epoca: 43 - Tasa: 0.7 - Error: 0.80772132702753
+## Epoca: 44 - Tasa: 0.7 - Error: 0.806417206734431
+## Epoca: 45 - Tasa: 0.7 - Error: 0.805116652830319
+## Epoca: 46 - Tasa: 0.7 - Error: 0.803819674840565
+## Epoca: 47 - Tasa: 0.7 - Error: 0.802526281783209
+## Epoca: 48 - Tasa: 0.7 - Error: 0.801236482177041
+## Epoca: 49 - Tasa: 0.7 - Error: 0.799950284049637
+## Epoca: 50 - Tasa: 0.7 - Error: 0.798667694945347
+## Epoca: 51 - Tasa: 0.7 - Error: 0.797388721933231
+## Epoca: 52 - Tasa: 0.7 - Error: 0.796113371614938
+## Epoca: 53 - Tasa: 0.7 - Error: 0.794841650132535
+## Epoca: 54 - Tasa: 0.7 - Error: 0.793573563176281
+## Epoca: 55 - Tasa: 0.7 - Error: 0.792309115992338
+## Epoca: 56 - Tasa: 0.7 - Error: 0.791048313390427
+## Epoca: 57 - Tasa: 0.7 - Error: 0.789791159751421
+## Epoca: 58 - Tasa: 0.7 - Error: 0.788537659034883
+## Epoca: 59 - Tasa: 0.7 - Error: 0.787287814786532
+## Epoca: 60 - Tasa: 0.7 - Error: 0.786041630145652
+## Epoca: 61 - Tasa: 0.7 - Error: 0.784799107852434
+## Epoca: 62 - Tasa: 0.7 - Error: 0.783560250255252
+## Epoca: 63 - Tasa: 0.7 - Error: 0.782325059317876
+## Epoca: 64 - Tasa: 0.7 - Error: 0.781093536626609
+## Epoca: 65 - Tasa: 0.7 - Error: 0.779865683397368
+## Epoca: 66 - Tasa: 0.7 - Error: 0.778641500482686
+## Epoca: 67 - Tasa: 0.7 - Error: 0.777420988378648
+## Epoca: 68 - Tasa: 0.7 - Error: 0.77620414723176
+## Epoca: 69 - Tasa: 0.7 - Error: 0.77499097684574
+## Epoca: 70 - Tasa: 0.7 - Error: 0.773781476688248
+## Epoca: 71 - Tasa: 0.7 - Error: 0.772575645897534
+## Epoca: 72 - Tasa: 0.7 - Error: 0.77137348328902
+## Epoca: 73 - Tasa: 0.7 - Error: 0.77017498736181
+## Epoca: 74 - Tasa: 0.7 - Error: 0.768980156305124
+## Epoca: 75 - Tasa: 0.7 - Error: 0.767788988004662
+## Epoca: 76 - Tasa: 0.7 - Error: 0.766601480048893
+## Epoca: 77 - Tasa: 0.7 - Error: 0.765417629735272
+## Epoca: 78 - Tasa: 0.7 - Error: 0.764237434076384
+## Epoca: 79 - Tasa: 0.7 - Error: 0.76306088980601
+## Epoca: 80 - Tasa: 0.7 - Error: 0.761887993385127
+## Epoca: 81 - Tasa: 0.7 - Error: 0.760718741007827
+## Epoca: 82 - Tasa: 0.7 - Error: 0.759553128607168
+## Epoca: 83 - Tasa: 0.7 - Error: 0.758391151860947
+## Epoca: 84 - Tasa: 0.7 - Error: 0.757232806197404
+## Epoca: 85 - Tasa: 0.7 - Error: 0.756078086800846
+## Epoca: 86 - Tasa: 0.7 - Error: 0.754926988617207
+## Epoca: 87 - Tasa: 0.7 - Error: 0.753779506359525
+## Epoca: 88 - Tasa: 0.7 - Error: 0.752635634513351
+## Epoca: 89 - Tasa: 0.7 - Error: 0.75149536734209
+## Epoca: 90 - Tasa: 0.7 - Error: 0.750358698892255
+## Epoca: 91 - Tasa: 0.7 - Error: 0.74922562299867
+## Epoca: 92 - Tasa: 0.7 - Error: 0.748096133289576
+## Epoca: 93 - Tasa: 0.7 - Error: 0.74697022319169
+## Epoca: 94 - Tasa: 0.7 - Error: 0.745847885935173
+## Epoca: 95 - Tasa: 0.7 - Error: 0.744729114558539
+## Epoca: 96 - Tasa: 0.7 - Error: 0.743613901913489
+## Epoca: 97 - Tasa: 0.7 - Error: 0.742502240669673
+## Epoca: 98 - Tasa: 0.7 - Error: 0.741394123319387
+## Epoca: 99 - Tasa: 0.7 - Error: 0.740289542182195
+## Epoca: 100 - Tasa: 0.7 - Error: 0.739188489409489
+## Epoca: 101 - Tasa: 0.7 - Error: 0.738090956988969
+## Epoca: 102 - Tasa: 0.7 - Error: 0.736996936749071
+## Epoca: 103 - Tasa: 0.7 - Error: 0.735906420363312
+## Epoca: 104 - Tasa: 0.7 - Error: 0.734819399354575
+## Epoca: 105 - Tasa: 0.7 - Error: 0.733735865099329
+## Epoca: 106 - Tasa: 0.7 - Error: 0.73265580883178
+## Epoca: 107 - Tasa: 0.7 - Error: 0.731579221647956
+## Epoca: 108 - Tasa: 0.7 - Error: 0.730506094509727
+## Epoca: 109 - Tasa: 0.7 - Error: 0.729436418248763
+## Epoca: 110 - Tasa: 0.7 - Error: 0.728370183570426
+## Epoca: 111 - Tasa: 0.7 - Error: 0.727307381057596
+## Epoca: 112 - Tasa: 0.7 - Error: 0.726248001174443
+## Epoca: 113 - Tasa: 0.7 - Error: 0.725192034270125
+## Epoca: 114 - Tasa: 0.7 - Error: 0.724139470582431
+## Epoca: 115 - Tasa: 0.7 - Error: 0.723090300241364
+## Epoca: 116 - Tasa: 0.7 - Error: 0.72204451327266
+## Epoca: 117 - Tasa: 0.7 - Error: 0.721002099601249
+## Epoca: 118 - Tasa: 0.7 - Error: 0.719963049054653
+## Epoca: 119 - Tasa: 0.7 - Error: 0.718927351366334
+## Epoca: 120 - Tasa: 0.7 - Error: 0.717894996178973
+## Epoca: 121 - Tasa: 0.7 - Error: 0.716865973047697
+## Epoca: 122 - Tasa: 0.7 - Error: 0.715840271443255
+## Epoca: 123 - Tasa: 0.7 - Error: 0.714817880755122
+## Epoca: 124 - Tasa: 0.7 - Error: 0.713798790294565
+## Epoca: 125 - Tasa: 0.7 - Error: 0.71278298929764
+## Epoca: 126 - Tasa: 0.7 - Error: 0.711770466928146
+## Epoca: 127 - Tasa: 0.7 - Error: 0.710761212280515
+## Epoca: 128 - Tasa: 0.7 - Error: 0.709755214382654
+## Epoca: 129 - Tasa: 0.7 - Error: 0.708752462198739
+## Epoca: 130 - Tasa: 0.7 - Error: 0.707752944631944
+## Epoca: 131 - Tasa: 0.7 - Error: 0.706756650527135
+## Epoca: 132 - Tasa: 0.7 - Error: 0.705763568673499
+## Epoca: 133 - Tasa: 0.7 - Error: 0.704773687807134
+## Epoca: 134 - Tasa: 0.7 - Error: 0.70378699661358
+## Epoca: 135 - Tasa: 0.7 - Error: 0.702803483730312
+## Epoca: 136 - Tasa: 0.7 - Error: 0.701823137749171
+## Epoca: 137 - Tasa: 0.7 - Error: 0.700845947218764
+## Epoca: 138 - Tasa: 0.7 - Error: 0.699871900646804
+## Epoca: 139 - Tasa: 0.7 - Error: 0.698900986502407
+## Epoca: 140 - Tasa: 0.7 - Error: 0.697933193218347
+## Epoca: 141 - Tasa: 0.7 - Error: 0.696968509193264
+## Epoca: 142 - Tasa: 0.7 - Error: 0.696006922793825
+## Epoca: 143 - Tasa: 0.7 - Error: 0.695048422356844
+## Epoca: 144 - Tasa: 0.7 - Error: 0.69409299619136
+## Epoca: 145 - Tasa: 0.7 - Error: 0.693140632580666
+## Epoca: 146 - Tasa: 0.7 - Error: 0.692191319784305
+## Epoca: 147 - Tasa: 0.7 - Error: 0.691245046040016
+## Epoca: 148 - Tasa: 0.7 - Error: 0.690301799565647
+## Epoca: 149 - Tasa: 0.7 - Error: 0.689361568561019
+## Epoca: 150 - Tasa: 0.7 - Error: 0.688424341209761
+## Epoca: 151 - Tasa: 0.7 - Error: 0.687490105681094
+## Epoca: 152 - Tasa: 0.7 - Error: 0.686558850131587
+## Epoca: 153 - Tasa: 0.7 - Error: 0.685630562706866
+## Epoca: 154 - Tasa: 0.7 - Error: 0.684705231543295
+## Epoca: 155 - Tasa: 0.7 - Error: 0.683782844769613
+## Epoca: 156 - Tasa: 0.7 - Error: 0.682863390508536
+## Epoca: 157 - Tasa: 0.7 - Error: 0.681946856878325
+## Epoca: 158 - Tasa: 0.7 - Error: 0.681033231994319
+## Epoca: 159 - Tasa: 0.7 - Error: 0.68012250397043
+## Epoca: 160 - Tasa: 0.7 - Error: 0.67921466092061
+## Epoca: 161 - Tasa: 0.7 - Error: 0.678309690960278
+## Epoca: 162 - Tasa: 0.7 - Error: 0.677407582207717
+## Epoca: 163 - Tasa: 0.7 - Error: 0.676508322785439
+## Epoca: 164 - Tasa: 0.7 - Error: 0.675611900821515
+## Epoca: 165 - Tasa: 0.7 - Error: 0.674718304450881
+## Epoca: 166 - Tasa: 0.7 - Error: 0.6738275218166
+## Epoca: 167 - Tasa: 0.7 - Error: 0.67293954107111
+## Epoca: 168 - Tasa: 0.7 - Error: 0.672054350377424
+## Epoca: 169 - Tasa: 0.7 - Error: 0.671171937910317
+## Epoca: 170 - Tasa: 0.7 - Error: 0.670292291857475
+## Epoca: 171 - Tasa: 0.7 - Error: 0.669415400420615
+## Epoca: 172 - Tasa: 0.7 - Error: 0.668541251816581
+## Epoca: 173 - Tasa: 0.7 - Error: 0.66766983427841
+## Epoca: 174 - Tasa: 0.7 - Error: 0.666801136056373
+## Epoca: 175 - Tasa: 0.7 - Error: 0.665935145418987
+## Epoca: 176 - Tasa: 0.7 - Error: 0.665071850653999
+## Epoca: 177 - Tasa: 0.7 - Error: 0.664211240069353
+## Epoca: 178 - Tasa: 0.7 - Error: 0.663353301994119
+## Epoca: 179 - Tasa: 0.7 - Error: 0.66249802477941
+## Epoca: 180 - Tasa: 0.7 - Error: 0.661645396799261
+## Epoca: 181 - Tasa: 0.7 - Error: 0.660795406451502
+## Epoca: 182 - Tasa: 0.7 - Error: 0.659948042158584
+## Epoca: 183 - Tasa: 0.7 - Error: 0.659103292368405
+## Epoca: 184 - Tasa: 0.7 - Error: 0.6582611455551
+## Epoca: 185 - Tasa: 0.7 - Error: 0.657421590219808
+## Epoca: 186 - Tasa: 0.7 - Error: 0.656584614891424
+## Epoca: 187 - Tasa: 0.7 - Error: 0.655750208127328
+## Epoca: 188 - Tasa: 0.7 - Error: 0.654918358514087
+## Epoca: 189 - Tasa: 0.72 - Error: 0.65408905466814
+## Epoca: 190 - Tasa: 0.72 - Error: 0.653262285236468
+## Epoca: 191 - Tasa: 0.72 - Error: 0.652438038897235
+## Epoca: 192 - Tasa: 0.72 - Error: 0.651616304360411
+## Epoca: 193 - Tasa: 0.72 - Error: 0.650797070368383
+## Epoca: 194 - Tasa: 0.72 - Error: 0.649980325696542
+## Epoca: 195 - Tasa: 0.72 - Error: 0.649166059153845
+## Epoca: 196 - Tasa: 0.72 - Error: 0.648354259583373
+## Epoca: 197 - Tasa: 0.72 - Error: 0.64754491586286
+## Epoca: 198 - Tasa: 0.72 - Error: 0.646738016905207
+## Epoca: 199 - Tasa: 0.72 - Error: 0.645933551658983
+## Epoca: 200 - Tasa: 0.72 - Error: 0.645131509108903
+## Epoca: 1 - Tasa: 0.713333333333333 - Error: 0.862884633639659
+## Epoca: 2 - Tasa: 0.713333333333333 - Error: 0.826876287596203
+## Epoca: 3 - Tasa: 0.713333333333333 - Error: 0.825286206817963
+## Epoca: 4 - Tasa: 0.713333333333333 - Error: 0.82364745916709
+## Epoca: 5 - Tasa: 0.713333333333333 - Error: 0.822011185798905
+## Epoca: 6 - Tasa: 0.713333333333333 - Error: 0.82037791805056
+## Epoca: 7 - Tasa: 0.713333333333333 - Error: 0.818747723655696
+## Epoca: 8 - Tasa: 0.713333333333333 - Error: 0.817120664853259
+## Epoca: 9 - Tasa: 0.713333333333333 - Error: 0.81549680242582
+## Epoca: 10 - Tasa: 0.713333333333333 - Error: 0.813876195747633
+## Epoca: 11 - Tasa: 0.713333333333333 - Error: 0.812258902798518
+## Epoca: 12 - Tasa: 0.713333333333333 - Error: 0.810644980177685
+## Epoca: 13 - Tasa: 0.713333333333333 - Error: 0.809034483117791
+## Epoca: 14 - Tasa: 0.713333333333333 - Error: 0.807427465499211
+## Epoca: 15 - Tasa: 0.713333333333333 - Error: 0.805823979864483
+## Epoca: 16 - Tasa: 0.713333333333333 - Error: 0.804224077432943
+## Epoca: 17 - Tasa: 0.713333333333333 - Error: 0.802627808115498
+## Epoca: 18 - Tasa: 0.713333333333333 - Error: 0.801035220529555
+## Epoca: 19 - Tasa: 0.713333333333333 - Error: 0.799446362014055
+## Epoca: 20 - Tasa: 0.713333333333333 - Error: 0.797861278644631
+## Epoca: 21 - Tasa: 0.713333333333333 - Error: 0.796280015248852
+## Epoca: 22 - Tasa: 0.713333333333333 - Error: 0.794702615421545
+## Epoca: 23 - Tasa: 0.713333333333333 - Error: 0.793129121540192
+## Epoca: 24 - Tasa: 0.713333333333333 - Error: 0.791559574780375
+## Epoca: 25 - Tasa: 0.713333333333333 - Error: 0.789994015131267
+## Epoca: 26 - Tasa: 0.713333333333333 - Error: 0.788432481411154
+## Epoca: 27 - Tasa: 0.713333333333333 - Error: 0.786875011282978
+## Epoca: 28 - Tasa: 0.713333333333333 - Error: 0.785321641269891
+## Epoca: 29 - Tasa: 0.713333333333333 - Error: 0.783772406770809
+## Epoca: 30 - Tasa: 0.713333333333333 - Error: 0.782227342075958
+## Epoca: 31 - Tasa: 0.713333333333333 - Error: 0.780686480382403
+## Epoca: 32 - Tasa: 0.713333333333333 - Error: 0.779149853809553
+## Epoca: 33 - Tasa: 0.713333333333333 - Error: 0.77761749341463
+## Epoca: 34 - Tasa: 0.713333333333333 - Error: 0.776089429208099
+## Epoca: 35 - Tasa: 0.713333333333333 - Error: 0.774565690169052
+## Epoca: 36 - Tasa: 0.713333333333333 - Error: 0.77304630426053
+## Epoca: 37 - Tasa: 0.713333333333333 - Error: 0.771531298444796
+## Epoca: 38 - Tasa: 0.713333333333333 - Error: 0.770020698698531
+## Epoca: 39 - Tasa: 0.713333333333333 - Error: 0.768514530027961
+## Epoca: 40 - Tasa: 0.713333333333333 - Error: 0.76701281648391
+## Epoca: 41 - Tasa: 0.713333333333333 - Error: 0.765515581176761
+## Epoca: 42 - Tasa: 0.713333333333333 - Error: 0.764022846291344
+## Epoca: 43 - Tasa: 0.713333333333333 - Error: 0.762534633101715
+## Epoca: 44 - Tasa: 0.713333333333333 - Error: 0.761050961985857
+## Epoca: 45 - Tasa: 0.713333333333333 - Error: 0.759571852440262
+## Epoca: 46 - Tasa: 0.713333333333333 - Error: 0.758097323094431
+## Epoca: 47 - Tasa: 0.713333333333333 - Error: 0.756627391725248
+## Epoca: 48 - Tasa: 0.713333333333333 - Error: 0.755162075271256
+## Epoca: 49 - Tasa: 0.713333333333333 - Error: 0.753701389846816
+## Epoca: 50 - Tasa: 0.713333333333333 - Error: 0.752245350756153
+## Epoca: 51 - Tasa: 0.713333333333333 - Error: 0.750793972507279
+## Epoca: 52 - Tasa: 0.713333333333333 - Error: 0.7493472688258
+## Epoca: 53 - Tasa: 0.713333333333333 - Error: 0.747905252668605
+## Epoca: 54 - Tasa: 0.713333333333333 - Error: 0.746467936237414
+## Epoca: 55 - Tasa: 0.713333333333333 - Error: 0.745035330992222
+## Epoca: 56 - Tasa: 0.713333333333333 - Error: 0.743607447664598
+## Epoca: 57 - Tasa: 0.713333333333333 - Error: 0.742184296270863
+## Epoca: 58 - Tasa: 0.713333333333333 - Error: 0.740765886125134
+## Epoca: 59 - Tasa: 0.713333333333333 - Error: 0.739352225852237
+## Epoca: 60 - Tasa: 0.713333333333333 - Error: 0.737943323400488
+## Epoca: 61 - Tasa: 0.713333333333333 - Error: 0.736539186054339
+## Epoca: 62 - Tasa: 0.713333333333333 - Error: 0.735139820446889
+## Epoca: 63 - Tasa: 0.713333333333333 - Error: 0.73374523257226
+## Epoca: 64 - Tasa: 0.713333333333333 - Error: 0.732355427797834
+## Epoca: 65 - Tasa: 0.713333333333333 - Error: 0.730970410876363
+## Epoca: 66 - Tasa: 0.713333333333333 - Error: 0.729590185957925
+## Epoca: 67 - Tasa: 0.713333333333333 - Error: 0.728214756601759
+## Epoca: 68 - Tasa: 0.713333333333333 - Error: 0.726844125787952
+## Epoca: 69 - Tasa: 0.713333333333333 - Error: 0.725478295928996
+## Epoca: 70 - Tasa: 0.713333333333333 - Error: 0.724117268881193
+## Epoca: 71 - Tasa: 0.713333333333333 - Error: 0.722761045955943
+## Epoca: 72 - Tasa: 0.713333333333333 - Error: 0.721409627930872
+## Epoca: 73 - Tasa: 0.713333333333333 - Error: 0.720063015060838
+## Epoca: 74 - Tasa: 0.713333333333333 - Error: 0.718721207088793
+## Epoca: 75 - Tasa: 0.713333333333333 - Error: 0.717384203256505
+## Epoca: 76 - Tasa: 0.713333333333333 - Error: 0.71605200231515
+## Epoca: 77 - Tasa: 0.713333333333333 - Error: 0.714724602535759
+## Epoca: 78 - Tasa: 0.713333333333333 - Error: 0.713402001719535
+## Epoca: 79 - Tasa: 0.713333333333333 - Error: 0.71208419720803
+## Epoca: 80 - Tasa: 0.713333333333333 - Error: 0.710771185893188
+## Epoca: 81 - Tasa: 0.713333333333333 - Error: 0.709462964227255
+## Epoca: 82 - Tasa: 0.713333333333333 - Error: 0.708159528232547
+## Epoca: 83 - Tasa: 0.713333333333333 - Error: 0.706860873511096
+## Epoca: 84 - Tasa: 0.713333333333333 - Error: 0.705566995254152
+## Epoca: 85 - Tasa: 0.713333333333333 - Error: 0.70427788825156
+## Epoca: 86 - Tasa: 0.713333333333333 - Error: 0.702993546900998
+## Epoca: 87 - Tasa: 0.713333333333333 - Error: 0.701713965217092
+## Epoca: 88 - Tasa: 0.713333333333333 - Error: 0.700439136840396
+## Epoca: 89 - Tasa: 0.713333333333333 - Error: 0.699169055046242
+## Epoca: 90 - Tasa: 0.713333333333333 - Error: 0.697903712753465
+## Epoca: 91 - Tasa: 0.713333333333333 - Error: 0.696643102532995
+## Epoca: 92 - Tasa: 0.713333333333333 - Error: 0.695387216616331
+## Epoca: 93 - Tasa: 0.713333333333333 - Error: 0.694136046903876
+## Epoca: 94 - Tasa: 0.713333333333333 - Error: 0.692889584973162
+## Epoca: 95 - Tasa: 0.713333333333333 - Error: 0.691647822086937
+## Epoca: 96 - Tasa: 0.713333333333333 - Error: 0.690410749201138
+## Epoca: 97 - Tasa: 0.713333333333333 - Error: 0.689178356972741
+## Epoca: 98 - Tasa: 0.713333333333333 - Error: 0.687950635767484
+## Epoca: 99 - Tasa: 0.713333333333333 - Error: 0.686727575667475
+## Epoca: 100 - Tasa: 0.713333333333333 - Error: 0.685509166478683
+## Epoca: 101 - Tasa: 0.713333333333333 - Error: 0.684295397738303
+## Epoca: 102 - Tasa: 0.713333333333333 - Error: 0.683086258722012
+## Epoca: 103 - Tasa: 0.713333333333333 - Error: 0.681881738451101
+## Epoca: 104 - Tasa: 0.713333333333333 - Error: 0.680681825699505
+## Epoca: 105 - Tasa: 0.713333333333333 - Error: 0.679486509000703
+## Epoca: 106 - Tasa: 0.713333333333333 - Error: 0.678295776654515
+## Epoca: 107 - Tasa: 0.713333333333333 - Error: 0.67710961673379
+## Epoca: 108 - Tasa: 0.713333333333333 - Error: 0.675928017090972
+## Epoca: 109 - Tasa: 0.713333333333333 - Error: 0.674750965364569
+## Epoca: 110 - Tasa: 0.713333333333333 - Error: 0.673578448985506
+## Epoca: 111 - Tasa: 0.713333333333333 - Error: 0.672410455183374
+## Epoca: 112 - Tasa: 0.713333333333333 - Error: 0.671246970992569
+## Epoca: 113 - Tasa: 0.713333333333333 - Error: 0.670087983258332
+## Epoca: 114 - Tasa: 0.713333333333333 - Error: 0.668933478642681
+## Epoca: 115 - Tasa: 0.713333333333333 - Error: 0.667783443630241
+## Epoca: 116 - Tasa: 0.713333333333333 - Error: 0.666637864533971
+## Epoca: 117 - Tasa: 0.713333333333333 - Error: 0.665496727500797
+## Epoca: 118 - Tasa: 0.713333333333333 - Error: 0.664360018517135
+## Epoca: 119 - Tasa: 0.713333333333333 - Error: 0.663227723414326
+## Epoca: 120 - Tasa: 0.713333333333333 - Error: 0.662099827873966
+## Epoca: 121 - Tasa: 0.713333333333333 - Error: 0.660976317433146
+## Epoca: 122 - Tasa: 0.713333333333333 - Error: 0.659857177489595
+## Epoca: 123 - Tasa: 0.713333333333333 - Error: 0.658742393306726
+## Epoca: 124 - Tasa: 0.713333333333333 - Error: 0.657631950018597
+## Epoca: 125 - Tasa: 0.713333333333333 - Error: 0.656525832634772
+## Epoca: 126 - Tasa: 0.713333333333333 - Error: 0.655424026045097
+## Epoca: 127 - Tasa: 0.713333333333333 - Error: 0.654326515024385
+## Epoca: 128 - Tasa: 0.713333333333333 - Error: 0.653233284237016
+## Epoca: 129 - Tasa: 0.713333333333333 - Error: 0.652144318241445
+## Epoca: 130 - Tasa: 0.713333333333333 - Error: 0.651059601494624
+## Epoca: 131 - Tasa: 0.713333333333333 - Error: 0.649979118356349
+## Epoca: 132 - Tasa: 0.713333333333333 - Error: 0.648902853093509
+## Epoca: 133 - Tasa: 0.713333333333333 - Error: 0.647830789884263
+## Epoca: 134 - Tasa: 0.713333333333333 - Error: 0.64676291282213
+## Epoca: 135 - Tasa: 0.713333333333333 - Error: 0.645699205920004
+## Epoca: 136 - Tasa: 0.713333333333333 - Error: 0.644639653114083
+## Epoca: 137 - Tasa: 0.713333333333333 - Error: 0.643584238267723
+## Epoca: 138 - Tasa: 0.713333333333333 - Error: 0.642532945175219
+## Epoca: 139 - Tasa: 0.713333333333333 - Error: 0.641485757565499
+## Epoca: 140 - Tasa: 0.713333333333333 - Error: 0.640442659105757
+## Epoca: 141 - Tasa: 0.713333333333333 - Error: 0.639403633404999
+## Epoca: 142 - Tasa: 0.713333333333333 - Error: 0.638368664017523
+## Epoca: 143 - Tasa: 0.713333333333333 - Error: 0.637337734446328
+## Epoca: 144 - Tasa: 0.713333333333333 - Error: 0.636310828146449
+## Epoca: 145 - Tasa: 0.713333333333333 - Error: 0.635287928528219
+## Epoca: 146 - Tasa: 0.713333333333333 - Error: 0.634269018960473
+## Epoca: 147 - Tasa: 0.713333333333333 - Error: 0.63325408277367
+## Epoca: 148 - Tasa: 0.713333333333333 - Error: 0.632243103262961
+## Epoca: 149 - Tasa: 0.713333333333333 - Error: 0.631236063691182
+## Epoca: 150 - Tasa: 0.713333333333333 - Error: 0.630232947291787
+## Epoca: 151 - Tasa: 0.713333333333333 - Error: 0.629233737271714
+## Epoca: 152 - Tasa: 0.713333333333333 - Error: 0.628238416814192
+## Epoca: 153 - Tasa: 0.713333333333333 - Error: 0.627246969081482
+## Epoca: 154 - Tasa: 0.713333333333333 - Error: 0.626259377217558
+## Epoca: 155 - Tasa: 0.713333333333333 - Error: 0.625275624350731
+## Epoca: 156 - Tasa: 0.713333333333333 - Error: 0.624295693596207
+## Epoca: 157 - Tasa: 0.713333333333333 - Error: 0.623319568058595
+## Epoca: 158 - Tasa: 0.713333333333333 - Error: 0.622347230834353
+## Epoca: 159 - Tasa: 0.713333333333333 - Error: 0.621378665014176
+## Epoca: 160 - Tasa: 0.713333333333333 - Error: 0.620413853685332
+## Epoca: 161 - Tasa: 0.713333333333333 - Error: 0.619452779933943
+## Epoca: 162 - Tasa: 0.713333333333333 - Error: 0.618495426847209
+## Epoca: 163 - Tasa: 0.713333333333333 - Error: 0.617541777515583
+## Epoca: 164 - Tasa: 0.713333333333333 - Error: 0.616591815034894
+## Epoca: 165 - Tasa: 0.713333333333333 - Error: 0.615645522508413
+## Epoca: 166 - Tasa: 0.713333333333333 - Error: 0.614702883048874
+## Epoca: 167 - Tasa: 0.713333333333333 - Error: 0.613763879780449
+## Epoca: 168 - Tasa: 0.713333333333333 - Error: 0.612828495840663
+## Epoca: 169 - Tasa: 0.713333333333333 - Error: 0.611896714382272
+## Epoca: 170 - Tasa: 0.713333333333333 - Error: 0.610968518575087
+## Epoca: 171 - Tasa: 0.713333333333333 - Error: 0.61004389160776
+## Epoca: 172 - Tasa: 0.713333333333333 - Error: 0.60912281668951
+## Epoca: 173 - Tasa: 0.713333333333333 - Error: 0.608205277051821
+## Epoca: 174 - Tasa: 0.713333333333333 - Error: 0.607291255950088
+## Epoca: 175 - Tasa: 0.713333333333333 - Error: 0.606380736665215
+## Epoca: 176 - Tasa: 0.713333333333333 - Error: 0.605473702505182
+## Epoca: 177 - Tasa: 0.713333333333333 - Error: 0.604570136806558
+## Epoca: 178 - Tasa: 0.713333333333333 - Error: 0.603670022935987
+## Epoca: 179 - Tasa: 0.713333333333333 - Error: 0.602773344291621
+## Epoca: 180 - Tasa: 0.713333333333333 - Error: 0.60188008430452
+## Epoca: 181 - Tasa: 0.713333333333333 - Error: 0.60099022644001
+## Epoca: 182 - Tasa: 0.713333333333333 - Error: 0.600103754199012
+## Epoca: 183 - Tasa: 0.713333333333333 - Error: 0.599220651119317
+## Epoca: 184 - Tasa: 0.713333333333333 - Error: 0.59834090077684
+## Epoca: 185 - Tasa: 0.713333333333333 - Error: 0.597464486786833
+## Epoca: 186 - Tasa: 0.713333333333333 - Error: 0.596591392805057
+## Epoca: 187 - Tasa: 0.713333333333333 - Error: 0.595721602528926
+## Epoca: 188 - Tasa: 0.713333333333333 - Error: 0.594855099698615
+## Epoca: 189 - Tasa: 0.713333333333333 - Error: 0.593991868098136
+## Epoca: 190 - Tasa: 0.713333333333333 - Error: 0.593131891556378
+## Epoca: 191 - Tasa: 0.713333333333333 - Error: 0.592275153948114
+## Epoca: 192 - Tasa: 0.713333333333333 - Error: 0.591421639194985
+## Epoca: 193 - Tasa: 0.713333333333333 - Error: 0.590571331266443
+## Epoca: 194 - Tasa: 0.713333333333333 - Error: 0.589724214180667
+## Epoca: 195 - Tasa: 0.713333333333333 - Error: 0.588880272005453
+## Epoca: 196 - Tasa: 0.713333333333333 - Error: 0.588039488859071
+## Epoca: 197 - Tasa: 0.713333333333333 - Error: 0.587201848911092
+## Epoca: 198 - Tasa: 0.713333333333333 - Error: 0.58636733638319
+## Epoca: 199 - Tasa: 0.713333333333333 - Error: 0.58553593554992
+## Epoca: 200 - Tasa: 0.713333333333333 - Error: 0.584707630739457
+## Epoca: 1 - Tasa: 0.586666666666667 - Error: 0.996200433769754
+## Epoca: 2 - Tasa: 0.586666666666667 - Error: 0.981061928437062
+## Epoca: 3 - Tasa: 0.586666666666667 - Error: 0.974549256096245
+## Epoca: 4 - Tasa: 0.586666666666667 - Error: 0.968060481695876
+## Epoca: 5 - Tasa: 0.586666666666667 - Error: 0.961606243662866
+## Epoca: 6 - Tasa: 0.586666666666667 - Error: 0.95518709594034
+## Epoca: 7 - Tasa: 0.586666666666667 - Error: 0.948803550917149
+## Epoca: 8 - Tasa: 0.586666666666667 - Error: 0.94245609206567
+## Epoca: 9 - Tasa: 0.586666666666667 - Error: 0.93614517481774
+## Epoca: 10 - Tasa: 0.586666666666667 - Error: 0.929871227401144
+## Epoca: 11 - Tasa: 0.586666666666667 - Error: 0.923634651650923
+## Epoca: 12 - Tasa: 0.586666666666667 - Error: 0.917435823796739
+## Epoca: 13 - Tasa: 0.586666666666667 - Error: 0.911275095227457
+## Epoca: 14 - Tasa: 0.586666666666667 - Error: 0.905152793234026
+## Epoca: 15 - Tasa: 0.586666666666667 - Error: 0.899069221731699
+## Epoca: 16 - Tasa: 0.586666666666667 - Error: 0.89302466196253
+## Epoca: 17 - Tasa: 0.586666666666667 - Error: 0.887019373179061
+## Epoca: 18 - Tasa: 0.586666666666667 - Error: 0.881053593310033
+## Epoca: 19 - Tasa: 0.586666666666667 - Error: 0.87512753960889
+## Epoca: 20 - Tasa: 0.586666666666667 - Error: 0.869241409285819
+## Epoca: 21 - Tasa: 0.586666666666667 - Error: 0.863395380123982
+## Epoca: 22 - Tasa: 0.586666666666667 - Error: 0.857589611080579
+## Epoca: 23 - Tasa: 0.586666666666667 - Error: 0.851824242873309
+## Epoca: 24 - Tasa: 0.586666666666667 - Error: 0.846099398552777
+## Epoca: 25 - Tasa: 0.586666666666667 - Error: 0.84041518406133
+## Epoca: 26 - Tasa: 0.586666666666667 - Error: 0.834771688778795
+## Epoca: 27 - Tasa: 0.586666666666667 - Error: 0.829168986055531
+## Epoca: 28 - Tasa: 0.586666666666667 - Error: 0.823607133733191
+## Epoca: 29 - Tasa: 0.586666666666667 - Error: 0.818086174653564
+## Epoca: 30 - Tasa: 0.586666666666667 - Error: 0.812606137155816
+## Epoca: 31 - Tasa: 0.586666666666667 - Error: 0.807167035562458
+## Epoca: 32 - Tasa: 0.586666666666667 - Error: 0.801768870654318
+## Epoca: 33 - Tasa: 0.586666666666667 - Error: 0.796411630134785
+## Epoca: 34 - Tasa: 0.586666666666667 - Error: 0.791095289083579
+## Epoca: 35 - Tasa: 0.586666666666667 - Error: 0.785819810400267
+## Epoca: 36 - Tasa: 0.586666666666667 - Error: 0.780585145237752
+## Epoca: 37 - Tasa: 0.586666666666667 - Error: 0.775391233425932
+## Epoca: 38 - Tasa: 0.586666666666667 - Error: 0.770238003885713
+## Epoca: 39 - Tasa: 0.586666666666667 - Error: 0.765125375033561
+## Epoca: 40 - Tasa: 0.586666666666667 - Error: 0.760053255176761
+## Epoca: 41 - Tasa: 0.586666666666667 - Error: 0.755021542899537
+## Epoca: 42 - Tasa: 0.586666666666667 - Error: 0.750030127440187
+## Epoca: 43 - Tasa: 0.586666666666667 - Error: 0.745078889059381
+## Epoca: 44 - Tasa: 0.586666666666667 - Error: 0.740167699399757
+## Epoca: 45 - Tasa: 0.586666666666667 - Error: 0.735296421836948
+## Epoca: 46 - Tasa: 0.586666666666667 - Error: 0.730464911822175
+## Epoca: 47 - Tasa: 0.586666666666667 - Error: 0.725673017216525
+## Epoca: 48 - Tasa: 0.586666666666667 - Error: 0.72092057861704
+## Epoca: 49 - Tasa: 0.586666666666667 - Error: 0.716207429674736
+## Epoca: 50 - Tasa: 0.586666666666667 - Error: 0.711533397404672
+## Epoca: 51 - Tasa: 0.586666666666667 - Error: 0.706898302488175
+## Epoca: 52 - Tasa: 0.586666666666667 - Error: 0.702301959567348
+## Epoca: 53 - Tasa: 0.586666666666667 - Error: 0.697744177531969
+## Epoca: 54 - Tasa: 0.586666666666667 - Error: 0.693224759798884
+## Epoca: 55 - Tasa: 0.586666666666667 - Error: 0.688743504584026
+## Epoca: 56 - Tasa: 0.586666666666667 - Error: 0.684300205167145
+## Epoca: 57 - Tasa: 0.586666666666667 - Error: 0.679894650149384
+## Epoca: 58 - Tasa: 0.586666666666667 - Error: 0.675526623703794
+## Epoca: 59 - Tasa: 0.586666666666667 - Error: 0.671195905818909
+## Epoca: 60 - Tasa: 0.586666666666667 - Error: 0.666902272535487
+## Epoca: 61 - Tasa: 0.586666666666667 - Error: 0.662645496176522
+## Epoca: 62 - Tasa: 0.686666666666667 - Error: 0.658425345570655
+## Epoca: 63 - Tasa: 0.686666666666667 - Error: 0.654241586269072
+## Epoca: 64 - Tasa: 0.713333333333333 - Error: 0.650093980756019
+## Epoca: 65 - Tasa: 0.753333333333333 - Error: 0.645982288653036
+## Epoca: 66 - Tasa: 0.806666666666667 - Error: 0.641906266917016
+## Epoca: 67 - Tasa: 0.84 - Error: 0.63786567003222
+## Epoca: 68 - Tasa: 0.866666666666667 - Error: 0.633860250196331
+## Epoca: 69 - Tasa: 0.866666666666667 - Error: 0.629889757500689
+## Epoca: 70 - Tasa: 0.866666666666667 - Error: 0.625953940104789
+## Epoca: 71 - Tasa: 0.893333333333333 - Error: 0.62205254440518
+## Epoca: 72 - Tasa: 0.9 - Error: 0.618185315198853
+## Epoca: 73 - Tasa: 0.906666666666667 - Error: 0.614351995841245</code></pre>
+<ul>
+<li>Prueba con datos</li>
+</ul>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb73-1" data-line-number="1">salida &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloRBF, datos_x, datos_y)</a>
+<a class="sourceLine" id="cb73-2" data-line-number="2">salida<span class="op">$</span>tasa</a></code></pre></div>
+<pre><code>## [1] 0.94</code></pre>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb75-1" data-line-number="1"><span class="kw">head</span>(salida<span class="op">$</span>salida)</a></code></pre></div>
+<pre><code>##    1  1  1
+## 1 -1 -1  1
+## 2 -1 -1  1
+## 3  1 -1 -1
+## 4 -1 -1  1
+## 5  1 -1 -1
+## 6  1 -1 -1</code></pre>
 <p>Cantidad de parámetros:</p>
 <p>En una red MLP con una estructura (3,1), tenemos los siguientes parámetros:</p>
 <p><span class="math inline">\(numParamMLP = Parámetros de Capa 1 + Parámetros de Capa 2\)</span></p>
@@ -166,48 +738,804 @@
 <p><span class="math inline">\(numParamRBF = Parámetros de Gausianas + Parámetros de Perceptrones\)</span></p>
 <p><span class="math inline">\(numParamRBF = [3 centros] + [(3 entradas + 1) * 3 neurona]\)</span></p>
 <p><span class="math inline">\(numParamRBF = 3 + 4 * 3 = 15 parámetros\)</span></p>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb77-1" data-line-number="1">modeloRBF_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">redRBF</span>(datos_x, datos_y, <span class="dt">nroGausianas =</span> <span class="dv">3</span>, <span class="dt">funcion =</span> <span class="st">&quot;sigmo&quot;</span>, <span class="dt">pnu =</span> <span class="fl">0.2</span>, </a>
+<a class="sourceLine" id="cb77-2" data-line-number="2">                    <span class="dt">pepoca =</span> <span class="dv">200</span>, <span class="dt">pcritFinalizacion =</span> <span class="fl">0.9</span>)</a></code></pre></div>
+<pre><code>## Epoca: 1 - Tasa: 0.7 - Error: 0.898137153324026
+## Epoca: 2 - Tasa: 0.7 - Error: 0.868279769865699
+## Epoca: 3 - Tasa: 0.7 - Error: 0.86759353466148
+## Epoca: 4 - Tasa: 0.7 - Error: 0.866937620211468
+## Epoca: 5 - Tasa: 0.7 - Error: 0.866282238303869
+## Epoca: 6 - Tasa: 0.7 - Error: 0.865627207456794
+## Epoca: 7 - Tasa: 0.7 - Error: 0.86497253055321
+## Epoca: 8 - Tasa: 0.7 - Error: 0.864318211608235
+## Epoca: 9 - Tasa: 0.7 - Error: 0.863664254617286
+## Epoca: 10 - Tasa: 0.7 - Error: 0.863010663548921
+## Epoca: 11 - Tasa: 0.7 - Error: 0.862357442344828
+## Epoca: 12 - Tasa: 0.7 - Error: 0.861704594919853
+## Epoca: 13 - Tasa: 0.7 - Error: 0.861052125162038
+## Epoca: 14 - Tasa: 0.7 - Error: 0.860400036932651
+## Epoca: 15 - Tasa: 0.7 - Error: 0.859748334066231
+## Epoca: 16 - Tasa: 0.7 - Error: 0.859097020370615
+## Epoca: 17 - Tasa: 0.7 - Error: 0.858446099626986
+## Epoca: 18 - Tasa: 0.7 - Error: 0.857795575589908
+## Epoca: 19 - Tasa: 0.7 - Error: 0.857145451987368
+## Epoca: 20 - Tasa: 0.7 - Error: 0.85649573252082
+## Epoca: 21 - Tasa: 0.7 - Error: 0.855846420865225
+## Epoca: 22 - Tasa: 0.7 - Error: 0.855197520669102
+## Epoca: 23 - Tasa: 0.7 - Error: 0.854549035554567
+## Epoca: 24 - Tasa: 0.7 - Error: 0.853900969117384
+## Epoca: 25 - Tasa: 0.7 - Error: 0.85325332492701
+## Epoca: 26 - Tasa: 0.7 - Error: 0.852606106526648
+## Epoca: 27 - Tasa: 0.7 - Error: 0.851959317433293
+## Epoca: 28 - Tasa: 0.7 - Error: 0.851312961137785
+## Epoca: 29 - Tasa: 0.7 - Error: 0.850667041104863
+## Epoca: 30 - Tasa: 0.7 - Error: 0.850021560773214
+## Epoca: 31 - Tasa: 0.7 - Error: 0.849376523555528
+## Epoca: 32 - Tasa: 0.7 - Error: 0.848731932838559
+## Epoca: 33 - Tasa: 0.7 - Error: 0.84808779198317
+## Epoca: 34 - Tasa: 0.7 - Error: 0.847444104324402
+## Epoca: 35 - Tasa: 0.7 - Error: 0.846800873171522
+## Epoca: 36 - Tasa: 0.7 - Error: 0.846158101808087
+## Epoca: 37 - Tasa: 0.7 - Error: 0.845515793492005
+## Epoca: 38 - Tasa: 0.7 - Error: 0.844873951455589
+## Epoca: 39 - Tasa: 0.7 - Error: 0.844232578905626
+## Epoca: 40 - Tasa: 0.7 - Error: 0.843591679023433
+## Epoca: 41 - Tasa: 0.7 - Error: 0.842951254964927
+## Epoca: 42 - Tasa: 0.7 - Error: 0.84231130986068
+## Epoca: 43 - Tasa: 0.7 - Error: 0.841671846815993
+## Epoca: 44 - Tasa: 0.7 - Error: 0.841032868910955
+## Epoca: 45 - Tasa: 0.7 - Error: 0.840394379200511
+## Epoca: 46 - Tasa: 0.7 - Error: 0.839756380714533
+## Epoca: 47 - Tasa: 0.7 - Error: 0.839118876457881
+## Epoca: 48 - Tasa: 0.7 - Error: 0.838481869410476
+## Epoca: 49 - Tasa: 0.7 - Error: 0.837845362527371
+## Epoca: 50 - Tasa: 0.7 - Error: 0.837209358738815
+## Epoca: 51 - Tasa: 0.7 - Error: 0.836573860950329
+## Epoca: 52 - Tasa: 0.7 - Error: 0.835938872042777
+## Epoca: 53 - Tasa: 0.7 - Error: 0.835304394872434
+## Epoca: 54 - Tasa: 0.7 - Error: 0.834670432271064
+## Epoca: 55 - Tasa: 0.7 - Error: 0.834036987045989
+## Epoca: 56 - Tasa: 0.7 - Error: 0.833404061980168
+## Epoca: 57 - Tasa: 0.7 - Error: 0.832771659832265
+## Epoca: 58 - Tasa: 0.7 - Error: 0.832139783336732
+## Epoca: 59 - Tasa: 0.7 - Error: 0.831508435203878
+## Epoca: 60 - Tasa: 0.7 - Error: 0.830877618119949
+## Epoca: 61 - Tasa: 0.7 - Error: 0.830247334747207
+## Epoca: 62 - Tasa: 0.7 - Error: 0.829617587724001
+## Epoca: 63 - Tasa: 0.7 - Error: 0.828988379664853
+## Epoca: 64 - Tasa: 0.7 - Error: 0.828359713160531
+## Epoca: 65 - Tasa: 0.7 - Error: 0.827731590778131
+## Epoca: 66 - Tasa: 0.7 - Error: 0.827104015061157
+## Epoca: 67 - Tasa: 0.7 - Error: 0.826476988529598
+## Epoca: 68 - Tasa: 0.7 - Error: 0.825850513680014
+## Epoca: 69 - Tasa: 0.7 - Error: 0.825224592985612
+## Epoca: 70 - Tasa: 0.7 - Error: 0.824599228896331
+## Epoca: 71 - Tasa: 0.7 - Error: 0.823974423838925
+## Epoca: 72 - Tasa: 0.7 - Error: 0.823350180217042
+## Epoca: 73 - Tasa: 0.7 - Error: 0.822726500411308
+## Epoca: 74 - Tasa: 0.7 - Error: 0.822103386779415
+## Epoca: 75 - Tasa: 0.7 - Error: 0.8214808416562
+## Epoca: 76 - Tasa: 0.7 - Error: 0.820858867353729
+## Epoca: 77 - Tasa: 0.7 - Error: 0.820237466161387
+## Epoca: 78 - Tasa: 0.7 - Error: 0.819616640345957
+## Epoca: 79 - Tasa: 0.7 - Error: 0.81899639215171
+## Epoca: 80 - Tasa: 0.7 - Error: 0.818376723800489
+## Epoca: 81 - Tasa: 0.7 - Error: 0.817757637491794
+## Epoca: 82 - Tasa: 0.7 - Error: 0.817139135402871
+## Epoca: 83 - Tasa: 0.7 - Error: 0.8165212196888
+## Epoca: 84 - Tasa: 0.7 - Error: 0.815903892482576
+## Epoca: 85 - Tasa: 0.7 - Error: 0.815287155895204
+## Epoca: 86 - Tasa: 0.7 - Error: 0.814671012015784
+## Epoca: 87 - Tasa: 0.7 - Error: 0.814055462911596
+## Epoca: 88 - Tasa: 0.7 - Error: 0.813440510628194
+## Epoca: 89 - Tasa: 0.7 - Error: 0.812826157189491
+## Epoca: 90 - Tasa: 0.7 - Error: 0.81221240459785
+## Epoca: 91 - Tasa: 0.7 - Error: 0.811599254834172
+## Epoca: 92 - Tasa: 0.7 - Error: 0.810986709857986
+## Epoca: 93 - Tasa: 0.7 - Error: 0.810374771607539
+## Epoca: 94 - Tasa: 0.7 - Error: 0.809763441999887
+## Epoca: 95 - Tasa: 0.7 - Error: 0.809152722930983
+## Epoca: 96 - Tasa: 0.7 - Error: 0.808542616275769
+## Epoca: 97 - Tasa: 0.7 - Error: 0.807933123888267
+## Epoca: 98 - Tasa: 0.7 - Error: 0.80732424760167
+## Epoca: 99 - Tasa: 0.7 - Error: 0.806715989228429
+## Epoca: 100 - Tasa: 0.7 - Error: 0.806108350560354
+## Epoca: 101 - Tasa: 0.7 - Error: 0.805501333368694
+## Epoca: 102 - Tasa: 0.7 - Error: 0.804894939404236
+## Epoca: 103 - Tasa: 0.7 - Error: 0.804289170397396
+## Epoca: 104 - Tasa: 0.7 - Error: 0.803684028058308
+## Epoca: 105 - Tasa: 0.7 - Error: 0.803079514076919
+## Epoca: 106 - Tasa: 0.7 - Error: 0.80247563012308
+## Epoca: 107 - Tasa: 0.7 - Error: 0.801872377846638
+## Epoca: 108 - Tasa: 0.7 - Error: 0.801269758877532
+## Epoca: 109 - Tasa: 0.7 - Error: 0.80066777482588
+## Epoca: 110 - Tasa: 0.7 - Error: 0.800066427282076
+## Epoca: 111 - Tasa: 0.7 - Error: 0.79946571781688
+## Epoca: 112 - Tasa: 0.7 - Error: 0.798865647981515
+## Epoca: 113 - Tasa: 0.7 - Error: 0.798266219307757
+## Epoca: 114 - Tasa: 0.7 - Error: 0.797667433308026
+## Epoca: 115 - Tasa: 0.7 - Error: 0.797069291475487
+## Epoca: 116 - Tasa: 0.7 - Error: 0.796471795284133
+## Epoca: 117 - Tasa: 0.7 - Error: 0.795874946188888
+## Epoca: 118 - Tasa: 0.7 - Error: 0.795278745625694
+## Epoca: 119 - Tasa: 0.7 - Error: 0.794683195011607
+## Epoca: 120 - Tasa: 0.7 - Error: 0.79408829574489
+## Epoca: 121 - Tasa: 0.7 - Error: 0.793494049205106
+## Epoca: 122 - Tasa: 0.7 - Error: 0.792900456753214
+## Epoca: 123 - Tasa: 0.7 - Error: 0.79230751973166
+## Epoca: 124 - Tasa: 0.7 - Error: 0.79171523946447
+## Epoca: 125 - Tasa: 0.7 - Error: 0.791123617257348
+## Epoca: 126 - Tasa: 0.7 - Error: 0.790532654397764
+## Epoca: 127 - Tasa: 0.7 - Error: 0.789942352155053
+## Epoca: 128 - Tasa: 0.7 - Error: 0.789352711780504
+## Epoca: 129 - Tasa: 0.7 - Error: 0.788763734507458
+## Epoca: 130 - Tasa: 0.7 - Error: 0.788175421551396
+## Epoca: 131 - Tasa: 0.7 - Error: 0.787587774110039
+## Epoca: 132 - Tasa: 0.7 - Error: 0.787000793363438
+## Epoca: 133 - Tasa: 0.7 - Error: 0.786414480474066
+## Epoca: 134 - Tasa: 0.7 - Error: 0.785828836586917
+## Epoca: 135 - Tasa: 0.7 - Error: 0.785243862829593
+## Epoca: 136 - Tasa: 0.7 - Error: 0.784659560312402
+## Epoca: 137 - Tasa: 0.7 - Error: 0.78407593012845
+## Epoca: 138 - Tasa: 0.7 - Error: 0.783492973353732
+## Epoca: 139 - Tasa: 0.7 - Error: 0.78291069104723
+## Epoca: 140 - Tasa: 0.7 - Error: 0.782329084251003
+## Epoca: 141 - Tasa: 0.7 - Error: 0.781748153990279
+## Epoca: 142 - Tasa: 0.7 - Error: 0.781167901273551
+## Epoca: 143 - Tasa: 0.7 - Error: 0.780588327092667
+## Epoca: 144 - Tasa: 0.7 - Error: 0.780009432422927
+## Epoca: 145 - Tasa: 0.7 - Error: 0.77943121822317
+## Epoca: 146 - Tasa: 0.7 - Error: 0.778853685435872
+## Epoca: 147 - Tasa: 0.7 - Error: 0.778276834987235
+## Epoca: 148 - Tasa: 0.7 - Error: 0.777700667787282
+## Epoca: 149 - Tasa: 0.7 - Error: 0.777125184729947
+## Epoca: 150 - Tasa: 0.7 - Error: 0.776550386693167
+## Epoca: 151 - Tasa: 0.7 - Error: 0.775976274538978
+## Epoca: 152 - Tasa: 0.7 - Error: 0.775402849113603
+## Epoca: 153 - Tasa: 0.7 - Error: 0.774830111247544
+## Epoca: 154 - Tasa: 0.7 - Error: 0.774258061755676
+## Epoca: 155 - Tasa: 0.7 - Error: 0.773686701437338
+## Epoca: 156 - Tasa: 0.7 - Error: 0.773116031076423
+## Epoca: 157 - Tasa: 0.7 - Error: 0.772546051441469
+## Epoca: 158 - Tasa: 0.7 - Error: 0.771976763285752
+## Epoca: 159 - Tasa: 0.7 - Error: 0.771408167347377
+## Epoca: 160 - Tasa: 0.7 - Error: 0.770840264349366
+## Epoca: 161 - Tasa: 0.7 - Error: 0.770273054999754
+## Epoca: 162 - Tasa: 0.7 - Error: 0.769706539991672
+## Epoca: 163 - Tasa: 0.7 - Error: 0.769140720003443
+## Epoca: 164 - Tasa: 0.7 - Error: 0.768575595698673
+## Epoca: 165 - Tasa: 0.7 - Error: 0.768011167726334
+## Epoca: 166 - Tasa: 0.7 - Error: 0.767447436720861
+## Epoca: 167 - Tasa: 0.7 - Error: 0.76688440330224
+## Epoca: 168 - Tasa: 0.7 - Error: 0.766322068076094
+## Epoca: 169 - Tasa: 0.7 - Error: 0.765760431633777
+## Epoca: 170 - Tasa: 0.7 - Error: 0.765199494552457
+## Epoca: 171 - Tasa: 0.7 - Error: 0.764639257395213
+## Epoca: 172 - Tasa: 0.7 - Error: 0.764079720711116
+## Epoca: 173 - Tasa: 0.7 - Error: 0.763520885035322
+## Epoca: 174 - Tasa: 0.7 - Error: 0.762962750889159
+## Epoca: 175 - Tasa: 0.7 - Error: 0.762405318780215
+## Epoca: 176 - Tasa: 0.7 - Error: 0.761848589202425
+## Epoca: 177 - Tasa: 0.7 - Error: 0.761292562636159
+## Epoca: 178 - Tasa: 0.7 - Error: 0.760737239548312
+## Epoca: 179 - Tasa: 0.7 - Error: 0.760182620392388
+## Epoca: 180 - Tasa: 0.7 - Error: 0.759628705608588
+## Epoca: 181 - Tasa: 0.7 - Error: 0.759075495623895
+## Epoca: 182 - Tasa: 0.7 - Error: 0.758522990852166
+## Epoca: 183 - Tasa: 0.7 - Error: 0.757971191694211
+## Epoca: 184 - Tasa: 0.7 - Error: 0.757420098537885
+## Epoca: 185 - Tasa: 0.7 - Error: 0.756869711758171
+## Epoca: 186 - Tasa: 0.7 - Error: 0.756320031717266
+## Epoca: 187 - Tasa: 0.7 - Error: 0.755771058764665
+## Epoca: 188 - Tasa: 0.7 - Error: 0.75522279323725
+## Epoca: 189 - Tasa: 0.7 - Error: 0.754675235459371
+## Epoca: 190 - Tasa: 0.7 - Error: 0.754128385742933
+## Epoca: 191 - Tasa: 0.7 - Error: 0.753582244387477
+## Epoca: 192 - Tasa: 0.7 - Error: 0.753036811680271
+## Epoca: 193 - Tasa: 0.7 - Error: 0.752492087896386
+## Epoca: 194 - Tasa: 0.7 - Error: 0.751948073298783
+## Epoca: 195 - Tasa: 0.7 - Error: 0.751404768138398
+## Epoca: 196 - Tasa: 0.7 - Error: 0.750862172654224
+## Epoca: 197 - Tasa: 0.7 - Error: 0.750320287073392
+## Epoca: 198 - Tasa: 0.7 - Error: 0.749779111611255
+## Epoca: 199 - Tasa: 0.7 - Error: 0.749238646471472
+## Epoca: 200 - Tasa: 0.7 - Error: 0.748698891846087
+## Epoca: 1 - Tasa: 0.713333333333333 - Error: 0.862026379792178
+## Epoca: 2 - Tasa: 0.713333333333333 - Error: 0.8269755074123
+## Epoca: 3 - Tasa: 0.713333333333333 - Error: 0.826393578523275
+## Epoca: 4 - Tasa: 0.713333333333333 - Error: 0.82576144050492
+## Epoca: 5 - Tasa: 0.713333333333333 - Error: 0.825129286879211
+## Epoca: 6 - Tasa: 0.713333333333333 - Error: 0.824497582961006
+## Epoca: 7 - Tasa: 0.713333333333333 - Error: 0.823866336645257
+## Epoca: 8 - Tasa: 0.713333333333333 - Error: 0.823235551703389
+## Epoca: 9 - Tasa: 0.713333333333333 - Error: 0.822605231838083
+## Epoca: 10 - Tasa: 0.713333333333333 - Error: 0.821975380719404
+## Epoca: 11 - Tasa: 0.713333333333333 - Error: 0.821346001985235
+## Epoca: 12 - Tasa: 0.713333333333333 - Error: 0.820717099241388
+## Epoca: 13 - Tasa: 0.713333333333333 - Error: 0.820088676061721
+## Epoca: 14 - Tasa: 0.713333333333333 - Error: 0.819460735988253
+## Epoca: 15 - Tasa: 0.713333333333333 - Error: 0.818833282531283
+## Epoca: 16 - Tasa: 0.713333333333333 - Error: 0.8182063191695
+## Epoca: 17 - Tasa: 0.713333333333333 - Error: 0.817579849350108
+## Epoca: 18 - Tasa: 0.713333333333333 - Error: 0.816953876488943
+## Epoca: 19 - Tasa: 0.713333333333333 - Error: 0.816328403970591
+## Epoca: 20 - Tasa: 0.713333333333333 - Error: 0.815703435148508
+## Epoca: 21 - Tasa: 0.713333333333333 - Error: 0.815078973345145
+## Epoca: 22 - Tasa: 0.713333333333333 - Error: 0.814455021852068
+## Epoca: 23 - Tasa: 0.713333333333333 - Error: 0.81383158393008
+## Epoca: 24 - Tasa: 0.713333333333333 - Error: 0.813208662809346
+## Epoca: 25 - Tasa: 0.713333333333333 - Error: 0.812586261689515
+## Epoca: 26 - Tasa: 0.713333333333333 - Error: 0.811964383739847
+## Epoca: 27 - Tasa: 0.713333333333333 - Error: 0.81134303209934
+## Epoca: 28 - Tasa: 0.713333333333333 - Error: 0.810722209876851
+## Epoca: 29 - Tasa: 0.713333333333333 - Error: 0.810101920151226
+## Epoca: 30 - Tasa: 0.713333333333333 - Error: 0.80948216597143
+## Epoca: 31 - Tasa: 0.713333333333333 - Error: 0.808862950356666
+## Epoca: 32 - Tasa: 0.713333333333333 - Error: 0.808244276296516
+## Epoca: 33 - Tasa: 0.713333333333333 - Error: 0.807626146751057
+## Epoca: 34 - Tasa: 0.713333333333333 - Error: 0.807008564650998
+## Epoca: 35 - Tasa: 0.713333333333333 - Error: 0.806391532897811
+## Epoca: 36 - Tasa: 0.713333333333333 - Error: 0.805775054363853
+## Epoca: 37 - Tasa: 0.713333333333333 - Error: 0.805159131892505
+## Epoca: 38 - Tasa: 0.713333333333333 - Error: 0.804543768298299
+## Epoca: 39 - Tasa: 0.713333333333333 - Error: 0.803928966367051
+## Epoca: 40 - Tasa: 0.713333333333333 - Error: 0.80331472885599
+## Epoca: 41 - Tasa: 0.713333333333333 - Error: 0.802701058493895
+## Epoca: 42 - Tasa: 0.713333333333333 - Error: 0.802087957981221
+## Epoca: 43 - Tasa: 0.713333333333333 - Error: 0.801475429990239
+## Epoca: 44 - Tasa: 0.713333333333333 - Error: 0.800863477165163
+## Epoca: 45 - Tasa: 0.713333333333333 - Error: 0.800252102122285
+## Epoca: 46 - Tasa: 0.713333333333333 - Error: 0.799641307450111
+## Epoca: 47 - Tasa: 0.713333333333333 - Error: 0.799031095709491
+## Epoca: 48 - Tasa: 0.713333333333333 - Error: 0.798421469433758
+## Epoca: 49 - Tasa: 0.713333333333333 - Error: 0.797812431128857
+## Epoca: 50 - Tasa: 0.713333333333333 - Error: 0.797203983273481
+## Epoca: 51 - Tasa: 0.713333333333333 - Error: 0.796596128319206
+## Epoca: 52 - Tasa: 0.713333333333333 - Error: 0.79598886869063
+## Epoca: 53 - Tasa: 0.713333333333333 - Error: 0.795382206785498
+## Epoca: 54 - Tasa: 0.713333333333333 - Error: 0.794776144974846
+## Epoca: 55 - Tasa: 0.713333333333333 - Error: 0.794170685603133
+## Epoca: 56 - Tasa: 0.713333333333333 - Error: 0.793565830988376
+## Epoca: 57 - Tasa: 0.713333333333333 - Error: 0.792961583422283
+## Epoca: 58 - Tasa: 0.713333333333333 - Error: 0.792357945170394
+## Epoca: 59 - Tasa: 0.713333333333333 - Error: 0.791754918472211
+## Epoca: 60 - Tasa: 0.713333333333333 - Error: 0.791152505541338
+## Epoca: 61 - Tasa: 0.713333333333333 - Error: 0.79055070856561
+## Epoca: 62 - Tasa: 0.713333333333333 - Error: 0.789949529707238
+## Epoca: 63 - Tasa: 0.713333333333333 - Error: 0.789348971102935
+## Epoca: 64 - Tasa: 0.713333333333333 - Error: 0.788749034864058
+## Epoca: 65 - Tasa: 0.713333333333333 - Error: 0.78814972307674
+## Epoca: 66 - Tasa: 0.713333333333333 - Error: 0.787551037802028
+## Epoca: 67 - Tasa: 0.713333333333333 - Error: 0.786952981076015
+## Epoca: 68 - Tasa: 0.713333333333333 - Error: 0.78635555490998
+## Epoca: 69 - Tasa: 0.713333333333333 - Error: 0.78575876129052
+## Epoca: 70 - Tasa: 0.713333333333333 - Error: 0.785162602179684
+## Epoca: 71 - Tasa: 0.713333333333333 - Error: 0.784567079515113
+## Epoca: 72 - Tasa: 0.713333333333333 - Error: 0.783972195210172
+## Epoca: 73 - Tasa: 0.713333333333333 - Error: 0.783377951154082
+## Epoca: 74 - Tasa: 0.713333333333333 - Error: 0.782784349212063
+## Epoca: 75 - Tasa: 0.713333333333333 - Error: 0.782191391225459
+## Epoca: 76 - Tasa: 0.713333333333333 - Error: 0.781599079011881
+## Epoca: 77 - Tasa: 0.713333333333333 - Error: 0.781007414365335
+## Epoca: 78 - Tasa: 0.713333333333333 - Error: 0.780416399056361
+## Epoca: 79 - Tasa: 0.713333333333333 - Error: 0.779826034832163
+## Epoca: 80 - Tasa: 0.713333333333333 - Error: 0.779236323416747
+## Epoca: 81 - Tasa: 0.713333333333333 - Error: 0.778647266511051
+## Epoca: 82 - Tasa: 0.713333333333333 - Error: 0.778058865793083
+## Epoca: 83 - Tasa: 0.713333333333333 - Error: 0.777471122918049
+## Epoca: 84 - Tasa: 0.713333333333333 - Error: 0.77688403951849
+## Epoca: 85 - Tasa: 0.713333333333333 - Error: 0.776297617204413
+## Epoca: 86 - Tasa: 0.713333333333333 - Error: 0.775711857563426
+## Epoca: 87 - Tasa: 0.713333333333333 - Error: 0.775126762160868
+## Epoca: 88 - Tasa: 0.713333333333333 - Error: 0.774542332539942
+## Epoca: 89 - Tasa: 0.713333333333333 - Error: 0.773958570221848
+## Epoca: 90 - Tasa: 0.713333333333333 - Error: 0.773375476705913
+## Epoca: 91 - Tasa: 0.713333333333333 - Error: 0.772793053469725
+## Epoca: 92 - Tasa: 0.713333333333333 - Error: 0.772211301969262
+## Epoca: 93 - Tasa: 0.713333333333333 - Error: 0.771630223639024
+## Epoca: 94 - Tasa: 0.713333333333333 - Error: 0.771049819892163
+## Epoca: 95 - Tasa: 0.713333333333333 - Error: 0.770470092120614
+## Epoca: 96 - Tasa: 0.713333333333333 - Error: 0.769891041695224
+## Epoca: 97 - Tasa: 0.713333333333333 - Error: 0.769312669965886
+## Epoca: 98 - Tasa: 0.713333333333333 - Error: 0.768734978261662
+## Epoca: 99 - Tasa: 0.713333333333333 - Error: 0.768157967890916
+## Epoca: 100 - Tasa: 0.713333333333333 - Error: 0.767581640141444
+## Epoca: 101 - Tasa: 0.713333333333333 - Error: 0.7670059962806
+## Epoca: 102 - Tasa: 0.713333333333333 - Error: 0.766431037555426
+## Epoca: 103 - Tasa: 0.713333333333333 - Error: 0.765856765192777
+## Epoca: 104 - Tasa: 0.713333333333333 - Error: 0.765283180399453
+## Epoca: 105 - Tasa: 0.713333333333333 - Error: 0.764710284362323
+## Epoca: 106 - Tasa: 0.713333333333333 - Error: 0.764138078248454
+## Epoca: 107 - Tasa: 0.713333333333333 - Error: 0.763566563205235
+## Epoca: 108 - Tasa: 0.713333333333333 - Error: 0.762995740360506
+## Epoca: 109 - Tasa: 0.713333333333333 - Error: 0.762425610822683
+## Epoca: 110 - Tasa: 0.713333333333333 - Error: 0.76185617568088
+## Epoca: 111 - Tasa: 0.713333333333333 - Error: 0.761287436005041
+## Epoca: 112 - Tasa: 0.713333333333333 - Error: 0.760719392846059
+## Epoca: 113 - Tasa: 0.713333333333333 - Error: 0.760152047235902
+## Epoca: 114 - Tasa: 0.713333333333333 - Error: 0.759585400187738
+## Epoca: 115 - Tasa: 0.713333333333333 - Error: 0.759019452696058
+## Epoca: 116 - Tasa: 0.713333333333333 - Error: 0.758454205736799
+## Epoca: 117 - Tasa: 0.713333333333333 - Error: 0.757889660267468
+## Epoca: 118 - Tasa: 0.713333333333333 - Error: 0.75732581722726
+## Epoca: 119 - Tasa: 0.713333333333333 - Error: 0.756762677537189
+## Epoca: 120 - Tasa: 0.713333333333333 - Error: 0.756200242100199
+## Epoca: 121 - Tasa: 0.713333333333333 - Error: 0.755638511801294
+## Epoca: 122 - Tasa: 0.713333333333333 - Error: 0.755077487507653
+## Epoca: 123 - Tasa: 0.713333333333333 - Error: 0.754517170068754
+## Epoca: 124 - Tasa: 0.713333333333333 - Error: 0.753957560316494
+## Epoca: 125 - Tasa: 0.713333333333333 - Error: 0.753398659065303
+## Epoca: 126 - Tasa: 0.713333333333333 - Error: 0.752840467112273
+## Epoca: 127 - Tasa: 0.713333333333333 - Error: 0.752282985237268
+## Epoca: 128 - Tasa: 0.713333333333333 - Error: 0.751726214203047
+## Epoca: 129 - Tasa: 0.713333333333333 - Error: 0.75117015475538
+## Epoca: 130 - Tasa: 0.713333333333333 - Error: 0.750614807623166
+## Epoca: 131 - Tasa: 0.713333333333333 - Error: 0.750060173518551
+## Epoca: 132 - Tasa: 0.713333333333333 - Error: 0.749506253137045
+## Epoca: 133 - Tasa: 0.713333333333333 - Error: 0.748953047157634
+## Epoca: 134 - Tasa: 0.713333333333333 - Error: 0.748400556242901
+## Epoca: 135 - Tasa: 0.713333333333333 - Error: 0.74784878103914
+## Epoca: 136 - Tasa: 0.713333333333333 - Error: 0.747297722176469
+## Epoca: 137 - Tasa: 0.713333333333333 - Error: 0.746747380268944
+## Epoca: 138 - Tasa: 0.713333333333333 - Error: 0.746197755914679
+## Epoca: 139 - Tasa: 0.713333333333333 - Error: 0.745648849695952
+## Epoca: 140 - Tasa: 0.713333333333333 - Error: 0.74510066217932
+## Epoca: 141 - Tasa: 0.713333333333333 - Error: 0.744553193915738
+## Epoca: 142 - Tasa: 0.713333333333333 - Error: 0.744006445440661
+## Epoca: 143 - Tasa: 0.713333333333333 - Error: 0.743460417274165
+## Epoca: 144 - Tasa: 0.713333333333333 - Error: 0.742915109921051
+## Epoca: 145 - Tasa: 0.713333333333333 - Error: 0.742370523870963
+## Epoca: 146 - Tasa: 0.713333333333333 - Error: 0.741826659598492
+## Epoca: 147 - Tasa: 0.713333333333333 - Error: 0.741283517563288
+## Epoca: 148 - Tasa: 0.713333333333333 - Error: 0.740741098210174
+## Epoca: 149 - Tasa: 0.713333333333333 - Error: 0.740199401969246
+## Epoca: 150 - Tasa: 0.713333333333333 - Error: 0.739658429255992
+## Epoca: 151 - Tasa: 0.713333333333333 - Error: 0.739118180471391
+## Epoca: 152 - Tasa: 0.713333333333333 - Error: 0.738578656002027
+## Epoca: 153 - Tasa: 0.713333333333333 - Error: 0.738039856220191
+## Epoca: 154 - Tasa: 0.713333333333333 - Error: 0.737501781483995
+## Epoca: 155 - Tasa: 0.713333333333333 - Error: 0.736964432137469
+## Epoca: 156 - Tasa: 0.713333333333333 - Error: 0.736427808510676
+## Epoca: 157 - Tasa: 0.713333333333333 - Error: 0.735891910919809
+## Epoca: 158 - Tasa: 0.713333333333333 - Error: 0.735356739667303
+## Epoca: 159 - Tasa: 0.713333333333333 - Error: 0.734822295041935
+## Epoca: 160 - Tasa: 0.713333333333333 - Error: 0.73428857731893
+## Epoca: 161 - Tasa: 0.713333333333333 - Error: 0.733755586760062
+## Epoca: 162 - Tasa: 0.713333333333333 - Error: 0.733223323613761
+## Epoca: 163 - Tasa: 0.713333333333333 - Error: 0.732691788115212
+## Epoca: 164 - Tasa: 0.713333333333333 - Error: 0.732160980486458
+## Epoca: 165 - Tasa: 0.713333333333333 - Error: 0.731630900936505
+## Epoca: 166 - Tasa: 0.713333333333333 - Error: 0.731101549661417
+## Epoca: 167 - Tasa: 0.713333333333333 - Error: 0.73057292684442
+## Epoca: 168 - Tasa: 0.713333333333333 - Error: 0.730045032656005
+## Epoca: 169 - Tasa: 0.713333333333333 - Error: 0.729517867254021
+## Epoca: 170 - Tasa: 0.713333333333333 - Error: 0.728991430783781
+## Epoca: 171 - Tasa: 0.713333333333333 - Error: 0.728465723378157
+## Epoca: 172 - Tasa: 0.713333333333333 - Error: 0.727940745157679
+## Epoca: 173 - Tasa: 0.713333333333333 - Error: 0.727416496230634
+## Epoca: 174 - Tasa: 0.713333333333333 - Error: 0.726892976693161
+## Epoca: 175 - Tasa: 0.713333333333333 - Error: 0.72637018662935
+## Epoca: 176 - Tasa: 0.713333333333333 - Error: 0.725848126111339
+## Epoca: 177 - Tasa: 0.713333333333333 - Error: 0.725326795199407
+## Epoca: 178 - Tasa: 0.713333333333333 - Error: 0.724806193942074
+## Epoca: 179 - Tasa: 0.713333333333333 - Error: 0.724286322376191
+## Epoca: 180 - Tasa: 0.713333333333333 - Error: 0.723767180527039
+## Epoca: 181 - Tasa: 0.713333333333333 - Error: 0.723248768408419
+## Epoca: 182 - Tasa: 0.713333333333333 - Error: 0.722731086022749
+## Epoca: 183 - Tasa: 0.713333333333333 - Error: 0.722214133361156
+## Epoca: 184 - Tasa: 0.713333333333333 - Error: 0.721697910403569
+## Epoca: 185 - Tasa: 0.713333333333333 - Error: 0.721182417118811
+## Epoca: 186 - Tasa: 0.713333333333333 - Error: 0.720667653464691
+## Epoca: 187 - Tasa: 0.713333333333333 - Error: 0.720153619388092
+## Epoca: 188 - Tasa: 0.713333333333333 - Error: 0.71964031482507
+## Epoca: 189 - Tasa: 0.713333333333333 - Error: 0.719127739700935
+## Epoca: 190 - Tasa: 0.713333333333333 - Error: 0.718615893930347
+## Epoca: 191 - Tasa: 0.713333333333333 - Error: 0.718104777417404
+## Epoca: 192 - Tasa: 0.713333333333333 - Error: 0.717594390055731
+## Epoca: 193 - Tasa: 0.713333333333333 - Error: 0.717084731728566
+## Epoca: 194 - Tasa: 0.713333333333333 - Error: 0.716575802308852
+## Epoca: 195 - Tasa: 0.713333333333333 - Error: 0.716067601659324
+## Epoca: 196 - Tasa: 0.713333333333333 - Error: 0.715560129632592
+## Epoca: 197 - Tasa: 0.713333333333333 - Error: 0.715053386071233
+## Epoca: 198 - Tasa: 0.713333333333333 - Error: 0.714547370807874
+## Epoca: 199 - Tasa: 0.713333333333333 - Error: 0.71404208366528
+## Epoca: 200 - Tasa: 0.713333333333333 - Error: 0.713537524456436
+## Epoca: 1 - Tasa: 0.586666666666667 - Error: 0.996073686376647
+## Epoca: 2 - Tasa: 0.586666666666667 - Error: 0.984882213613751
+## Epoca: 3 - Tasa: 0.586666666666667 - Error: 0.982225166824311
+## Epoca: 4 - Tasa: 0.586666666666667 - Error: 0.979563249371207
+## Epoca: 5 - Tasa: 0.586666666666667 - Error: 0.976906672452261
+## Epoca: 6 - Tasa: 0.586666666666667 - Error: 0.974255491693144
+## Epoca: 7 - Tasa: 0.586666666666667 - Error: 0.971609749611466
+## Epoca: 8 - Tasa: 0.586666666666667 - Error: 0.968969487824729
+## Epoca: 9 - Tasa: 0.586666666666667 - Error: 0.966334747075322
+## Epoca: 10 - Tasa: 0.586666666666667 - Error: 0.963705567241068
+## Epoca: 11 - Tasa: 0.586666666666667 - Error: 0.961081987345632
+## Epoca: 12 - Tasa: 0.586666666666667 - Error: 0.958464045568792
+## Epoca: 13 - Tasa: 0.586666666666667 - Error: 0.955851779256586
+## Epoca: 14 - Tasa: 0.586666666666667 - Error: 0.953245224931337
+## Epoca: 15 - Tasa: 0.586666666666667 - Error: 0.950644418301546
+## Epoca: 16 - Tasa: 0.586666666666667 - Error: 0.948049394271675
+## Epoca: 17 - Tasa: 0.586666666666667 - Error: 0.945460186951802
+## Epoca: 18 - Tasa: 0.586666666666667 - Error: 0.942876829667166
+## Epoca: 19 - Tasa: 0.586666666666667 - Error: 0.940299354967594
+## Epoca: 20 - Tasa: 0.586666666666667 - Error: 0.937727794636819
+## Epoca: 21 - Tasa: 0.586666666666667 - Error: 0.935162179701685
+## Epoca: 22 - Tasa: 0.586666666666667 - Error: 0.932602540441243
+## Epoca: 23 - Tasa: 0.586666666666667 - Error: 0.930048906395745
+## Epoca: 24 - Tasa: 0.586666666666667 - Error: 0.92750130637553
+## Epoca: 25 - Tasa: 0.586666666666667 - Error: 0.924959768469808
+## Epoca: 26 - Tasa: 0.586666666666667 - Error: 0.922424320055344
+## Epoca: 27 - Tasa: 0.586666666666667 - Error: 0.919894987805046
+## Epoca: 28 - Tasa: 0.586666666666667 - Error: 0.917371797696448
+## Epoca: 29 - Tasa: 0.586666666666667 - Error: 0.914854775020109
+## Epoca: 30 - Tasa: 0.586666666666667 - Error: 0.91234394438791
+## Epoca: 31 - Tasa: 0.586666666666667 - Error: 0.909839329741259
+## Epoca: 32 - Tasa: 0.586666666666667 - Error: 0.907340954359215
+## Epoca: 33 - Tasa: 0.586666666666667 - Error: 0.90484884086651
+## Epoca: 34 - Tasa: 0.586666666666667 - Error: 0.902363011241498
+## Epoca: 35 - Tasa: 0.586666666666667 - Error: 0.899883486824005
+## Epoca: 36 - Tasa: 0.586666666666667 - Error: 0.897410288323104
+## Epoca: 37 - Tasa: 0.586666666666667 - Error: 0.894943435824807
+## Epoca: 38 - Tasa: 0.586666666666667 - Error: 0.892482948799669
+## Epoca: 39 - Tasa: 0.586666666666667 - Error: 0.890028846110321
+## Epoca: 40 - Tasa: 0.586666666666667 - Error: 0.887581146018918
+## Epoca: 41 - Tasa: 0.586666666666667 - Error: 0.885139866194512
+## Epoca: 42 - Tasa: 0.586666666666667 - Error: 0.882705023720353
+## Epoca: 43 - Tasa: 0.586666666666667 - Error: 0.880276635101105
+## Epoca: 44 - Tasa: 0.586666666666667 - Error: 0.87785471627
+## Epoca: 45 - Tasa: 0.586666666666667 - Error: 0.875439282595915
+## Epoca: 46 - Tasa: 0.586666666666667 - Error: 0.873030348890374
+## Epoca: 47 - Tasa: 0.586666666666667 - Error: 0.87062792941449
+## Epoca: 48 - Tasa: 0.586666666666667 - Error: 0.868232037885823
+## Epoca: 49 - Tasa: 0.586666666666667 - Error: 0.865842687485188
+## Epoca: 50 - Tasa: 0.586666666666667 - Error: 0.863459890863379
+## Epoca: 51 - Tasa: 0.586666666666667 - Error: 0.861083660147842
+## Epoca: 52 - Tasa: 0.586666666666667 - Error: 0.858714006949271
+## Epoca: 53 - Tasa: 0.586666666666667 - Error: 0.856350942368146
+## Epoca: 54 - Tasa: 0.586666666666667 - Error: 0.85399447700121
+## Epoca: 55 - Tasa: 0.586666666666667 - Error: 0.851644620947876
+## Epoca: 56 - Tasa: 0.586666666666667 - Error: 0.849301383816581
+## Epoca: 57 - Tasa: 0.586666666666667 - Error: 0.846964774731075
+## Epoca: 58 - Tasa: 0.586666666666667 - Error: 0.844634802336649
+## Epoca: 59 - Tasa: 0.586666666666667 - Error: 0.842311474806308
+## Epoca: 60 - Tasa: 0.586666666666667 - Error: 0.839994799846885
+## Epoca: 61 - Tasa: 0.586666666666667 - Error: 0.837684784705091
+## Epoca: 62 - Tasa: 0.586666666666667 - Error: 0.835381436173521
+## Epoca: 63 - Tasa: 0.586666666666667 - Error: 0.833084760596589
+## Epoca: 64 - Tasa: 0.586666666666667 - Error: 0.830794763876422
+## Epoca: 65 - Tasa: 0.586666666666667 - Error: 0.828511451478687
+## Epoca: 66 - Tasa: 0.586666666666667 - Error: 0.82623482843837
+## Epoca: 67 - Tasa: 0.586666666666667 - Error: 0.823964899365503
+## Epoca: 68 - Tasa: 0.586666666666667 - Error: 0.821701668450836
+## Epoca: 69 - Tasa: 0.586666666666667 - Error: 0.819445139471452
+## Epoca: 70 - Tasa: 0.586666666666667 - Error: 0.817195315796339
+## Epoca: 71 - Tasa: 0.586666666666667 - Error: 0.814952200391903
+## Epoca: 72 - Tasa: 0.586666666666667 - Error: 0.812715795827437
+## Epoca: 73 - Tasa: 0.586666666666667 - Error: 0.810486104280534
+## Epoca: 74 - Tasa: 0.586666666666667 - Error: 0.808263127542453
+## Epoca: 75 - Tasa: 0.586666666666667 - Error: 0.806046867023438
+## Epoca: 76 - Tasa: 0.586666666666667 - Error: 0.803837323757981
+## Epoca: 77 - Tasa: 0.586666666666667 - Error: 0.801634498410046
+## Epoca: 78 - Tasa: 0.586666666666667 - Error: 0.799438391278239
+## Epoca: 79 - Tasa: 0.586666666666667 - Error: 0.79724900230093
+## Epoca: 80 - Tasa: 0.586666666666667 - Error: 0.795066331061334
+## Epoca: 81 - Tasa: 0.586666666666667 - Error: 0.792890376792541
+## Epoca: 82 - Tasa: 0.586666666666667 - Error: 0.790721138382498
+## Epoca: 83 - Tasa: 0.586666666666667 - Error: 0.788558614378949
+## Epoca: 84 - Tasa: 0.586666666666667 - Error: 0.78640280299433
+## Epoca: 85 - Tasa: 0.586666666666667 - Error: 0.784253702110614
+## Epoca: 86 - Tasa: 0.586666666666667 - Error: 0.782111309284117
+## Epoca: 87 - Tasa: 0.586666666666667 - Error: 0.779975621750258
+## Epoca: 88 - Tasa: 0.586666666666667 - Error: 0.777846636428269
+## Epoca: 89 - Tasa: 0.586666666666667 - Error: 0.775724349925874
+## Epoca: 90 - Tasa: 0.586666666666667 - Error: 0.773608758543913
+## Epoca: 91 - Tasa: 0.586666666666667 - Error: 0.771499858280926
+## Epoca: 92 - Tasa: 0.586666666666667 - Error: 0.769397644837698
+## Epoca: 93 - Tasa: 0.586666666666667 - Error: 0.767302113621761
+## Epoca: 94 - Tasa: 0.586666666666667 - Error: 0.765213259751845
+## Epoca: 95 - Tasa: 0.586666666666667 - Error: 0.763131078062303
+## Epoca: 96 - Tasa: 0.586666666666667 - Error: 0.76105556310748
+## Epoca: 97 - Tasa: 0.586666666666667 - Error: 0.758986709166047
+## Epoca: 98 - Tasa: 0.586666666666667 - Error: 0.756924510245297
+## Epoca: 99 - Tasa: 0.586666666666667 - Error: 0.754868960085392
+## Epoca: 100 - Tasa: 0.586666666666667 - Error: 0.752820052163581
+## Epoca: 101 - Tasa: 0.586666666666667 - Error: 0.750777779698362
+## Epoca: 102 - Tasa: 0.586666666666667 - Error: 0.748742135653624
+## Epoca: 103 - Tasa: 0.586666666666667 - Error: 0.746713112742731
+## Epoca: 104 - Tasa: 0.586666666666667 - Error: 0.744690703432578
+## Epoca: 105 - Tasa: 0.586666666666667 - Error: 0.742674899947601
+## Epoca: 106 - Tasa: 0.586666666666667 - Error: 0.740665694273758
+## Epoca: 107 - Tasa: 0.586666666666667 - Error: 0.738663078162458
+## Epoca: 108 - Tasa: 0.586666666666667 - Error: 0.73666704313446
+## Epoca: 109 - Tasa: 0.586666666666667 - Error: 0.734677580483735
+## Epoca: 110 - Tasa: 0.586666666666667 - Error: 0.732694681281283
+## Epoca: 111 - Tasa: 0.586666666666667 - Error: 0.730718336378921
+## Epoca: 112 - Tasa: 0.586666666666667 - Error: 0.728748536413024
+## Epoca: 113 - Tasa: 0.586666666666667 - Error: 0.726785271808239
+## Epoca: 114 - Tasa: 0.586666666666667 - Error: 0.724828532781152
+## Epoca: 115 - Tasa: 0.586666666666667 - Error: 0.722878309343924
+## Epoca: 116 - Tasa: 0.586666666666667 - Error: 0.720934591307893
+## Epoca: 117 - Tasa: 0.586666666666667 - Error: 0.71899736828713
+## Epoca: 118 - Tasa: 0.586666666666667 - Error: 0.717066629701969
+## Epoca: 119 - Tasa: 0.586666666666667 - Error: 0.715142364782495
+## Epoca: 120 - Tasa: 0.586666666666667 - Error: 0.713224562571996
+## Epoca: 121 - Tasa: 0.586666666666667 - Error: 0.711313211930388
+## Epoca: 122 - Tasa: 0.586666666666667 - Error: 0.709408301537589
+## Epoca: 123 - Tasa: 0.586666666666667 - Error: 0.707509819896876
+## Epoca: 124 - Tasa: 0.586666666666667 - Error: 0.705617755338191
+## Epoca: 125 - Tasa: 0.586666666666667 - Error: 0.703732096021424
+## Epoca: 126 - Tasa: 0.586666666666667 - Error: 0.701852829939654
+## Epoca: 127 - Tasa: 0.586666666666667 - Error: 0.69997994492236
+## Epoca: 128 - Tasa: 0.586666666666667 - Error: 0.698113428638598
+## Epoca: 129 - Tasa: 0.586666666666667 - Error: 0.696253268600141
+## Epoca: 130 - Tasa: 0.586666666666667 - Error: 0.694399452164586
+## Epoca: 131 - Tasa: 0.586666666666667 - Error: 0.692551966538431
+## Epoca: 132 - Tasa: 0.586666666666667 - Error: 0.690710798780117
+## Epoca: 133 - Tasa: 0.586666666666667 - Error: 0.688875935803033
+## Epoca: 134 - Tasa: 0.586666666666667 - Error: 0.687047364378494
+## Epoca: 135 - Tasa: 0.586666666666667 - Error: 0.685225071138683
+## Epoca: 136 - Tasa: 0.586666666666667 - Error: 0.683409042579563
+## Epoca: 137 - Tasa: 0.586666666666667 - Error: 0.681599265063753
+## Epoca: 138 - Tasa: 0.586666666666667 - Error: 0.679795724823375
+## Epoca: 139 - Tasa: 0.586666666666667 - Error: 0.67799840796287
+## Epoca: 140 - Tasa: 0.586666666666667 - Error: 0.67620730046178
+## Epoca: 141 - Tasa: 0.586666666666667 - Error: 0.674422388177496
+## Epoca: 142 - Tasa: 0.586666666666667 - Error: 0.672643656847984
+## Epoca: 143 - Tasa: 0.64 - Error: 0.670871092094471
+## Epoca: 144 - Tasa: 0.686666666666667 - Error: 0.669104679424103
+## Epoca: 145 - Tasa: 0.686666666666667 - Error: 0.667344404232573
+## Epoca: 146 - Tasa: 0.686666666666667 - Error: 0.66559025180672
+## Epoca: 147 - Tasa: 0.686666666666667 - Error: 0.663842207327096
+## Epoca: 148 - Tasa: 0.686666666666667 - Error: 0.662100255870499
+## Epoca: 149 - Tasa: 0.686666666666667 - Error: 0.660364382412489
+## Epoca: 150 - Tasa: 0.713333333333333 - Error: 0.658634571829857
+## Epoca: 151 - Tasa: 0.72 - Error: 0.656910808903078
+## Epoca: 152 - Tasa: 0.72 - Error: 0.65519307831873
+## Epoca: 153 - Tasa: 0.76 - Error: 0.653481364671884
+## Epoca: 154 - Tasa: 0.76 - Error: 0.651775652468466
+## Epoca: 155 - Tasa: 0.76 - Error: 0.650075926127589
+## Epoca: 156 - Tasa: 0.773333333333333 - Error: 0.648382169983858
+## Epoca: 157 - Tasa: 0.773333333333333 - Error: 0.646694368289649
+## Epoca: 158 - Tasa: 0.773333333333333 - Error: 0.645012505217353
+## Epoca: 159 - Tasa: 0.786666666666667 - Error: 0.643336564861601
+## Epoca: 160 - Tasa: 0.84 - Error: 0.641666531241456
+## Epoca: 161 - Tasa: 0.84 - Error: 0.640002388302578
+## Epoca: 162 - Tasa: 0.84 - Error: 0.638344119919365
+## Epoca: 163 - Tasa: 0.84 - Error: 0.636691709897061
+## Epoca: 164 - Tasa: 0.84 - Error: 0.635045141973846
+## Epoca: 165 - Tasa: 0.84 - Error: 0.633404399822894
+## Epoca: 166 - Tasa: 0.84 - Error: 0.6317694670544
+## Epoca: 167 - Tasa: 0.84 - Error: 0.630140327217595
+## Epoca: 168 - Tasa: 0.84 - Error: 0.62851696380272
+## Epoca: 169 - Tasa: 0.84 - Error: 0.626899360242981
+## Epoca: 170 - Tasa: 0.846666666666667 - Error: 0.625287499916482
+## Epoca: 171 - Tasa: 0.873333333333333 - Error: 0.623681366148127
+## Epoca: 172 - Tasa: 0.873333333333333 - Error: 0.622080942211497
+## Epoca: 173 - Tasa: 0.9 - Error: 0.620486211330707
+## Epoca: 174 - Tasa: 0.9 - Error: 0.618897156682233
+## Epoca: 175 - Tasa: 0.9 - Error: 0.617313761396719
+## Epoca: 176 - Tasa: 0.9 - Error: 0.615736008560756
+## Epoca: 177 - Tasa: 0.9 - Error: 0.61416388121864
+## Epoca: 178 - Tasa: 0.9 - Error: 0.6125973623741
+## Epoca: 179 - Tasa: 0.9 - Error: 0.611036434992016
+## Epoca: 180 - Tasa: 0.906666666666667 - Error: 0.609481082000094</code></pre>
 <ul>
 <li>Prueba con datos</li>
 </ul>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb79-1" data-line-number="1">salida_<span class="dv">2</span> &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloRBF_<span class="dv">2</span>, datos_x, datos_y)</a>
+<a class="sourceLine" id="cb79-2" data-line-number="2">salida_<span class="dv">2</span><span class="op">$</span>tasa</a></code></pre></div>
+<pre><code>## [1] 0.7133333</code></pre>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb81-1" data-line-number="1"><span class="kw">head</span>(salida_<span class="dv">2</span><span class="op">$</span>salida)</a></code></pre></div>
+<pre><code>##    1  1  1
+## 1 -1 -1  1
+## 2 -1 -1  1
+## 3  1 -1 -1
+## 4 -1 -1  1
+## 5  1 -1 -1
+## 6  1 -1 -1</code></pre>
 </div>
 </div>
 <div id="ejercicio-2-1" class="section level2">
 <h2><span class="header-section-number">2.2</span> Ejercicio 2</h2>
 <ul>
-<li><p>Lectura de datos</p></li>
-<li><p>Preprocesamiento de los datos</p></li>
+<li>Lectura de datos</li>
+</ul>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb83-1" data-line-number="1">merval &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 3/Práctica/data/merval.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<ul>
+<li>Preprocesamiento de los datos</li>
 </ul>
 <p>Generamos un dataset que contenga seis valores consecutivos en cada registro, cinco tomados como datos de entrada y un sexto valor tomado como clase.</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb84-1" data-line-number="1">cantidadDatos &lt;-<span class="st"> </span><span class="kw">nrow</span>(merval)</a>
+<a class="sourceLine" id="cb84-2" data-line-number="2">datos_merval &lt;-<span class="st"> </span><span class="kw">matrix</span>(<span class="dv">0</span>,<span class="dt">nrow =</span> cantidadDatos<span class="dv">-5</span>, <span class="dt">ncol =</span> <span class="dv">6</span>)</a>
+<a class="sourceLine" id="cb84-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb84-4" data-line-number="4"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,cantidadDatos<span class="dv">-5</span>)) {</a>
+<a class="sourceLine" id="cb84-5" data-line-number="5">  datos_merval[i,] &lt;-<span class="st"> </span>merval<span class="op">$</span>X1[<span class="kw">seq</span>(i,i<span class="op">+</span><span class="dv">5</span>)] </a>
+<a class="sourceLine" id="cb84-6" data-line-number="6">}</a>
+<a class="sourceLine" id="cb84-7" data-line-number="7"></a>
+<a class="sourceLine" id="cb84-8" data-line-number="8">datos_x &lt;-<span class="st"> </span>datos_merval[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>,<span class="dv">3</span>,<span class="dv">4</span>,<span class="dv">5</span>)] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()</a>
+<a class="sourceLine" id="cb84-9" data-line-number="9">datos_y &lt;-<span class="st"> </span>datos_merval[,<span class="dv">6</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()</a>
+<a class="sourceLine" id="cb84-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb84-11" data-line-number="11"><span class="co"># Primeros seis registros del dataset</span></a>
+<a class="sourceLine" id="cb84-12" data-line-number="12"><span class="kw">head</span>(datos_merval)</a></code></pre></div>
+<pre><code>##      [,1] [,2] [,3] [,4] [,5] [,6]
+## [1,]  215  212  229  253  254  235
+## [2,]  212  229  253  254  235  239
+## [3,]  229  253  254  235  239  241
+## [4,]  253  254  235  239  241  252
+## [5,]  254  235  239  241  252  253
+## [6,]  235  239  241  252  253  257</code></pre>
 <p>Antes de generar el modelo, tenemos que definir el número de gausianas. Utilizamos la gráfica de Elbow para definir el k a utilizar en el modelo.</p>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb86-1" data-line-number="1"><span class="kw">set.seed</span>(<span class="dv">123</span>)</a>
+<a class="sourceLine" id="cb86-2" data-line-number="2">wss &lt;-<span class="st"> </span><span class="cf">function</span>(k) {</a>
+<a class="sourceLine" id="cb86-3" data-line-number="3">  <span class="kw">kmeans</span>(datos_x, k, <span class="dt">nstart =</span> <span class="dv">10</span> )<span class="op">$</span>tot.withinss</a>
+<a class="sourceLine" id="cb86-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb86-5" data-line-number="5"><span class="co"># Valores de k = 1 a k = 15</span></a>
+<a class="sourceLine" id="cb86-6" data-line-number="6">k.values &lt;-<span class="st"> </span><span class="dv">1</span><span class="op">:</span><span class="dv">15</span></a>
+<a class="sourceLine" id="cb86-7" data-line-number="7">wss_values &lt;-<span class="st"> </span><span class="kw">map_dbl</span>(k.values, wss)</a>
+<a class="sourceLine" id="cb86-8" data-line-number="8"><span class="kw">plot</span>(k.values, wss_values,</a>
+<a class="sourceLine" id="cb86-9" data-line-number="9">       <span class="dt">type=</span><span class="st">&quot;b&quot;</span>, <span class="dt">pch =</span> <span class="dv">19</span>, <span class="dt">frame =</span> <span class="ot">FALSE</span>, </a>
+<a class="sourceLine" id="cb86-10" data-line-number="10">       <span class="dt">xlab=</span><span class="st">&quot;Número de clusters K&quot;</span>,</a>
+<a class="sourceLine" id="cb86-11" data-line-number="11">       <span class="dt">ylab=</span><span class="st">&quot;Inercia - Suma de Cuadrados&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-55-1.png" width="672" /></p>
 <p>Mirando la gráfica anterior tomamos un valor de k = 4, es donde la gráfica hace el codo y queda aproximadamente constante.</p>
 <ul>
-<li><p>Normalizamos los datos.</p></li>
-<li><p>Dividimos los datos en Train y Test, utilizando un 70% para entrenamiento.</p></li>
-<li><p>Generamos el modelo con los datos de entrenamiento.</p></li>
-<li><p>Aplicamos el modelo a los datos de Train y Test</p></li>
-<li><p>Grafica de error en Test</p></li>
-<li><p>Generamos el modelo a aplicar para realizar las predicciones con todos los datos.</p></li>
+<li>Normalizamos los datos.</li>
 </ul>
-<p>Aplicamos el modelo a los mismos datos de entrenamiento para graficar error en train.</p>
-<p>Grafica de error</p>
+<div class="sourceCode" id="cb87"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb87-1" data-line-number="1">maximo &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb87-2" data-line-number="2"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">ncol</span>(datos_x))) {</a>
+<a class="sourceLine" id="cb87-3" data-line-number="3">  <span class="cf">if</span> (<span class="kw">max</span>(datos_x[,i]) <span class="op">&gt;</span><span class="st"> </span>maximo) {maximo &lt;-<span class="st"> </span><span class="kw">max</span>(datos_x[,i])} </a>
+<a class="sourceLine" id="cb87-4" data-line-number="4">}</a>
+<a class="sourceLine" id="cb87-5" data-line-number="5"><span class="cf">if</span> (<span class="kw">max</span>(datos_y) <span class="op">&gt;</span><span class="st"> </span>maximo) {maximo &lt;-<span class="st"> </span><span class="kw">max</span>(datos_y)}</a>
+<a class="sourceLine" id="cb87-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb87-7" data-line-number="7">datos_x &lt;-<span class="st"> </span>datos_x <span class="op">/</span><span class="st"> </span>maximo</a>
+<a class="sourceLine" id="cb87-8" data-line-number="8">datos_y &lt;-<span class="st"> </span>datos_y <span class="op">/</span><span class="st"> </span>maximo</a></code></pre></div>
 <ul>
-<li><p>Gráfica del valor predicho y el valor real</p></li>
-<li><p>Predecimos un nuevo valor</p></li>
+<li>Dividimos los datos en Train y Test, utilizando un 70% para entrenamiento.</li>
+</ul>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb88-1" data-line-number="1">merval7030 &lt;-<span class="st"> </span><span class="kw">generarParticionPorID</span>(<span class="kw">as.data.frame</span>(datos_merval), <span class="dt">porcEntrenamiento =</span> <span class="fl">0.7</span>, </a>
+<a class="sourceLine" id="cb88-2" data-line-number="2">                                    <span class="dt">semilla =</span> <span class="dv">1</span>, <span class="dt">clase =</span> <span class="st">&quot;V6&quot;</span>)</a></code></pre></div>
+<ul>
+<li>Generamos el modelo con los datos de entrenamiento.</li>
+</ul>
+<div class="sourceCode" id="cb89"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb89-1" data-line-number="1"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb89-2" data-line-number="2">modeloMerval70 &lt;-<span class="st"> </span><span class="kw">redRBF</span>(datos_x[merval7030<span class="op">$</span>trn,], (datos_y[merval7030<span class="op">$</span>trn,] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()), </a>
+<a class="sourceLine" id="cb89-3" data-line-number="3">                         <span class="dt">nroGausianas =</span> <span class="dv">4</span>, <span class="dt">funcion =</span> <span class="st">&quot;lineal&quot;</span>, <span class="dt">pnu =</span> <span class="fl">0.01</span>, <span class="dt">pepoca =</span> <span class="dv">200000</span>, </a>
+<a class="sourceLine" id="cb89-4" data-line-number="4">                         <span class="dt">pcritFinalizacion =</span> <span class="fl">0.95</span>, <span class="dt">ptolerencia =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb89-5" data-line-number="5">}</a></code></pre></div>
+<ul>
+<li>Aplicamos el modelo a los datos de Train y Test</li>
+</ul>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb90-1" data-line-number="1">salidaMervalTrn &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloMerval70, datos_x[merval7030<span class="op">$</span>trn,], </a>
+<a class="sourceLine" id="cb90-2" data-line-number="2">                                 (datos_y[merval7030<span class="op">$</span>trn,] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()))</a>
+<a class="sourceLine" id="cb90-3" data-line-number="3">salidaMervalTst &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloMerval70, datos_x[merval7030<span class="op">$</span>tst,], </a>
+<a class="sourceLine" id="cb90-4" data-line-number="4">                                 (datos_y[merval7030<span class="op">$</span>tst,] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()))</a></code></pre></div>
+<ul>
+<li>Grafica de error en Test</li>
+</ul>
+<div class="sourceCode" id="cb91"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb91-1" data-line-number="1"><span class="co">#Grafica de error en cada registro</span></a>
+<a class="sourceLine" id="cb91-2" data-line-number="2"><span class="kw">plot</span>(salidaMervalTst<span class="op">$</span>error)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-60-1.png" width="672" /></p>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb92-1" data-line-number="1"><span class="co">#Error cuadrático medio</span></a>
+<a class="sourceLine" id="cb92-2" data-line-number="2">errorMedio &lt;-<span class="st"> </span><span class="kw">sum</span>(salidaMervalTst<span class="op">$</span>error) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(salidaMervalTst<span class="op">$</span>error)</a>
+<a class="sourceLine" id="cb92-3" data-line-number="3">errorMedio</a></code></pre></div>
+<pre><code>## [1] 0.001068555</code></pre>
+<ul>
+<li>Generamos el modelo a aplicar para realizar las predicciones con todos los datos.</li>
+</ul>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb94-1" data-line-number="1"><span class="co"># Generamos el modelo</span></a>
+<a class="sourceLine" id="cb94-2" data-line-number="2"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb94-3" data-line-number="3">modeloMerval &lt;-<span class="st"> </span><span class="kw">redRBF</span>(datos_x, datos_y, <span class="dt">nroGausianas =</span> <span class="dv">4</span>, <span class="dt">funcion =</span> <span class="st">&quot;lineal&quot;</span>, <span class="dt">pnu =</span> <span class="fl">0.01</span>, </a>
+<a class="sourceLine" id="cb94-4" data-line-number="4">                    <span class="dt">pepoca =</span> <span class="dv">200000</span>, <span class="dt">pcritFinalizacion =</span> <span class="fl">0.95</span>, <span class="dt">ptolerencia =</span> <span class="fl">0.1</span>)</a>
+<a class="sourceLine" id="cb94-5" data-line-number="5">}</a></code></pre></div>
+<p>Aplicamos el modelo a los mismos datos de entrenamiento para graficar error en train.</p>
+<div class="sourceCode" id="cb95"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb95-1" data-line-number="1">salidaMerval &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloMerval, datos_x, datos_y)</a></code></pre></div>
+<p>Grafica de error</p>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb96-1" data-line-number="1"><span class="co">#Grafica de error en cada registro</span></a>
+<a class="sourceLine" id="cb96-2" data-line-number="2"><span class="kw">plot</span>(salidaMerval<span class="op">$</span>error)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-63-1.png" width="672" /></p>
+<div class="sourceCode" id="cb97"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb97-1" data-line-number="1"><span class="co">#Error cuadrático medio</span></a>
+<a class="sourceLine" id="cb97-2" data-line-number="2">errorMedio &lt;-<span class="st"> </span><span class="kw">sum</span>(salidaMerval<span class="op">$</span>error) <span class="op">/</span><span class="st"> </span><span class="kw">length</span>(salidaMerval<span class="op">$</span>error)</a>
+<a class="sourceLine" id="cb97-3" data-line-number="3">errorMedio</a></code></pre></div>
+<pre><code>## [1] 0.001437009</code></pre>
+<ul>
+<li>Gráfica del valor predicho y el valor real</li>
+</ul>
+<div class="sourceCode" id="cb99"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb99-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">2</span>,<span class="dv">1</span>))</a>
+<a class="sourceLine" id="cb99-2" data-line-number="2"><span class="kw">plot</span>(salidaMerval<span class="op">$</span>salida <span class="op">*</span><span class="st"> </span>maximo, <span class="dt">main =</span> <span class="st">&quot;Valores Predichos&quot;</span>)</a>
+<a class="sourceLine" id="cb99-3" data-line-number="3"><span class="kw">plot</span>(datos_y <span class="op">*</span><span class="st"> </span>maximo, <span class="dt">main =</span> <span class="st">&quot;Valores Reales&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-64-1.png" width="672" /></p>
+<ul>
+<li>Predecimos un nuevo valor</li>
 </ul>
 <p>Tomamos los últimos 5 valores del dataset y predecimos cual será el próximo valor.</p>
+<div class="sourceCode" id="cb100"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb100-1" data-line-number="1">ultimosDatos &lt;-<span class="st"> </span>(merval[<span class="kw">seq</span>(<span class="kw">nrow</span>(merval)<span class="op">-</span><span class="dv">4</span>,<span class="kw">nrow</span>(merval)),] <span class="op">/</span><span class="st"> </span>maximo) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>()</a>
+<a class="sourceLine" id="cb100-2" data-line-number="2">ultimosDatos &lt;-<span class="st"> </span><span class="kw">t</span>(ultimosDatos)</a>
+<a class="sourceLine" id="cb100-3" data-line-number="3">ultimosDatos &lt;-<span class="st"> </span><span class="kw">rbind</span>(ultimosDatos,ultimosDatos) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>() </a>
+<a class="sourceLine" id="cb100-4" data-line-number="4"><span class="co">#usamos dos registros por el tipo de datos.</span></a>
+<a class="sourceLine" id="cb100-5" data-line-number="5">salidaUno &lt;-<span class="st"> </span><span class="kw">as.matrix</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)) </a>
+<a class="sourceLine" id="cb100-6" data-line-number="6">salidaMervalNew &lt;-<span class="st"> </span><span class="kw">aplicarRedRBF</span>(modeloMerval, ultimosDatos, salidaUno)</a>
+<a class="sourceLine" id="cb100-7" data-line-number="7"><span class="co">#Nuevo valor predicho</span></a>
+<a class="sourceLine" id="cb100-8" data-line-number="8">salidaMervalNew<span class="op">$</span>salida[<span class="dv">1</span>] <span class="op">*</span><span class="st"> </span>maximo</a></code></pre></div>
+<pre><code>##       X1 
+## 851.0265</code></pre>
+<div class="sourceCode" id="cb102"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb102-1" data-line-number="1"><span class="co"># Guardamos los modelos generados</span></a>
+<a class="sourceLine" id="cb102-2" data-line-number="2"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb102-3" data-line-number="3"><span class="kw">save</span>(modeloMerval, modeloMerval70,<span class="dt">file =</span> <span class="st">&quot;resultadosG2.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb102-4" data-line-number="4">}</a></code></pre></div>
 </div>
 <div id="ejercicio-3-1" class="section level2">
 <h2><span class="header-section-number">2.3</span> Ejercicio 3</h2>
 <ul>
-<li><p>Lectura de datos</p></li>
-<li><p>Graficamos los datos de entrada</p></li>
-<li><p>Inicialización de Grilla SOM</p></li>
+<li>Lectura de datos</li>
+</ul>
+<div class="sourceCode" id="cb103"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb103-1" data-line-number="1">circulo &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 3/Práctica/data/circulo.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a>
+<a class="sourceLine" id="cb103-2" data-line-number="2">te &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 3/Práctica/data/te.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<ul>
+<li>Graficamos los datos de entrada</li>
+</ul>
+<div class="sourceCode" id="cb104"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb104-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb104-2" data-line-number="2"><span class="kw">plot</span>(circulo)</a>
+<a class="sourceLine" id="cb104-3" data-line-number="3"><span class="kw">plot</span>(te)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-69-1.png" width="672" /></p>
+<ul>
+<li>Inicialización de Grilla SOM</li>
 </ul>
 <p>Implementamos una función con dos casos, una red cuadrada y una red lineal.</p>
+<div class="sourceCode" id="cb105"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb105-1" data-line-number="1"><span class="co"># Definimos la cantidad de nodos. </span></a>
+<a class="sourceLine" id="cb105-2" data-line-number="2"><span class="co"># El parámetro es la cantidad de nodos a lo ancho/largo de la grilla</span></a>
+<a class="sourceLine" id="cb105-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb105-4" data-line-number="4">inicializarGrilla &lt;-<span class="st"> </span><span class="cf">function</span>(cantidadNodos, <span class="dt">forma =</span> <span class="st">&quot;cuadrada&quot;</span>) {</a>
+<a class="sourceLine" id="cb105-5" data-line-number="5">  <span class="cf">if</span>(forma <span class="op">==</span><span class="st"> &quot;cuadrada&quot;</span>) {</a>
+<a class="sourceLine" id="cb105-6" data-line-number="6">    <span class="co"># Defino conexiones entre puntos</span></a>
+<a class="sourceLine" id="cb105-7" data-line-number="7">    g &lt;-<span class="st"> </span><span class="kw">make_lattice</span>( <span class="kw">c</span>(cantidadNodos,cantidadNodos) ) </a>
+<a class="sourceLine" id="cb105-8" data-line-number="8">    <span class="co"># Defino la ubicación de los puntos en el gráfico</span></a>
+<a class="sourceLine" id="cb105-9" data-line-number="9">    <span class="co"># Se distribuyen en un cuadrado de 1 por 1 para trabajar con datos normalizados.</span></a>
+<a class="sourceLine" id="cb105-10" data-line-number="10">    miLayout &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">rep</span>(<span class="kw">seq</span>(<span class="dv">0</span>,cantidadNodos<span class="dv">-1</span>),cantidadNodos))</a>
+<a class="sourceLine" id="cb105-11" data-line-number="11">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">0</span>,cantidadNodos<span class="dv">-1</span>)) {</a>
+<a class="sourceLine" id="cb105-12" data-line-number="12">      miLayout &lt;-<span class="st"> </span><span class="kw">c</span>(miLayout,<span class="kw">rep</span>(i,cantidadNodos))</a>
+<a class="sourceLine" id="cb105-13" data-line-number="13">    }</a>
+<a class="sourceLine" id="cb105-14" data-line-number="14">    miLayout &lt;-<span class="st"> </span><span class="kw">matrix</span>(miLayout, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">nrow =</span> cantidadNodos <span class="op">*</span><span class="st"> </span>cantidadNodos)</a>
+<a class="sourceLine" id="cb105-15" data-line-number="15">    miLayout &lt;-<span class="st"> </span>((miLayout <span class="op">/</span><span class="st"> </span>cantidadNodos) <span class="op">*</span><span class="st"> </span><span class="dv">2</span> ) <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb105-16" data-line-number="16">    <span class="co"># Generamos el gráfico</span></a>
+<a class="sourceLine" id="cb105-17" data-line-number="17">    <span class="kw">plot</span>(g, <span class="dt">layout=</span>miLayout)</a>
+<a class="sourceLine" id="cb105-18" data-line-number="18">  }</a>
+<a class="sourceLine" id="cb105-19" data-line-number="19">  <span class="cf">if</span>(forma <span class="op">==</span><span class="st"> &quot;lineal&quot;</span>) {</a>
+<a class="sourceLine" id="cb105-20" data-line-number="20">    <span class="co"># Defino conexiones entre puntos</span></a>
+<a class="sourceLine" id="cb105-21" data-line-number="21">    g &lt;-<span class="st"> </span><span class="kw">make_lattice</span>( <span class="kw">c</span>(cantidadNodos) ) </a>
+<a class="sourceLine" id="cb105-22" data-line-number="22">    <span class="co"># Defino la ubicación de los puntos en el gráfico</span></a>
+<a class="sourceLine" id="cb105-23" data-line-number="23">    <span class="co"># Se distribuyen en un cuadrado de 1 por 1 para trabajar con datos normalizados.</span></a>
+<a class="sourceLine" id="cb105-24" data-line-number="24">    miLayout &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="kw">seq</span>(<span class="dv">0</span>,cantidadNodos<span class="dv">-1</span>),<span class="kw">rep</span>(<span class="dv">0</span>,cantidadNodos))</a>
+<a class="sourceLine" id="cb105-25" data-line-number="25">    miLayout &lt;-<span class="st"> </span><span class="kw">matrix</span>(miLayout, <span class="dt">ncol =</span> <span class="dv">2</span>, <span class="dt">nrow =</span> cantidadNodos)</a>
+<a class="sourceLine" id="cb105-26" data-line-number="26">    miLayout[,<span class="dv">1</span>] &lt;-<span class="st"> </span>((miLayout <span class="op">/</span><span class="st"> </span>cantidadNodos) <span class="op">*</span><span class="st"> </span><span class="dv">2</span> )[,<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb105-27" data-line-number="27">    <span class="co"># Generamos el gráfico</span></a>
+<a class="sourceLine" id="cb105-28" data-line-number="28">    <span class="kw">plot</span>(g, <span class="dt">layout=</span>miLayout)</a>
+<a class="sourceLine" id="cb105-29" data-line-number="29">  }</a>
+<a class="sourceLine" id="cb105-30" data-line-number="30">  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">miLayout =</span> miLayout, <span class="dt">g =</span> g))</a>
+<a class="sourceLine" id="cb105-31" data-line-number="31">}</a>
+<a class="sourceLine" id="cb105-32" data-line-number="32"></a>
+<a class="sourceLine" id="cb105-33" data-line-number="33">cantidadNodos &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb105-34" data-line-number="34">grillaSOM &lt;-<span class="st"> </span><span class="kw">inicializarGrilla</span>(cantidadNodos, <span class="dt">forma =</span> <span class="st">&quot;cuadrada&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-70-1.png" width="672" /></p>
+<div class="sourceCode" id="cb106"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb106-1" data-line-number="1">g        &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>g</a>
+<a class="sourceLine" id="cb106-2" data-line-number="2">miLayout &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>miLayout</a></code></pre></div>
 <ul>
 <li>Función de vecindad</li>
 </ul>
 <p>Implementamos una función vecindad. Devuelve los ID de los vecinos de un nodo en un entorno cuadrado.</p>
+<div class="sourceCode" id="cb107"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb107-1" data-line-number="1">vecindad &lt;-<span class="st"> </span><span class="cf">function</span>(nodo, g, <span class="dt">entorno =</span> <span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb107-2" data-line-number="2">  vecinos &lt;-<span class="st"> </span><span class="kw">which</span>(g[nodo]<span class="op">==</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb107-3" data-line-number="3">  <span class="cf">if</span>(entorno <span class="op">&gt;</span><span class="st"> </span><span class="dv">1</span>) {</a>
+<a class="sourceLine" id="cb107-4" data-line-number="4">    <span class="cf">for</span> (n <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,entorno<span class="dv">-1</span>)) {</a>
+<a class="sourceLine" id="cb107-5" data-line-number="5">      vecinosAux &lt;-<span class="st"> </span><span class="kw">which</span>(<span class="kw">apply</span>(g[vecinos] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.matrix</span>(), <span class="dv">2</span>, sum) <span class="op">!=</span><span class="st"> </span><span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb107-6" data-line-number="6">      vecinos &lt;-<span class="st"> </span><span class="kw">unique</span>(<span class="kw">c</span>(vecinos,vecinosAux))</a>
+<a class="sourceLine" id="cb107-7" data-line-number="7">    }</a>
+<a class="sourceLine" id="cb107-8" data-line-number="8">  }</a>
+<a class="sourceLine" id="cb107-9" data-line-number="9">  vecinos =<span class="st"> </span><span class="kw">unique</span>(<span class="kw">c</span>(vecinos,nodo))</a>
+<a class="sourceLine" id="cb107-10" data-line-number="10">  <span class="kw">return</span>(vecinos)</a>
+<a class="sourceLine" id="cb107-11" data-line-number="11">}</a>
+<a class="sourceLine" id="cb107-12" data-line-number="12"></a>
+<a class="sourceLine" id="cb107-13" data-line-number="13"><span class="co">#vecindad(nodo = 45, g, entorno = 2)</span></a></code></pre></div>
 <ul>
 <li>Entrenamiento de la res SOM - Circulo</li>
 </ul>
@@ -217,36 +1545,343 @@
 - Transición
 - Ajuste fino</p>
 <p>La vecindad para el ajuste de los pesos decrece en forma lineal hasta 1 y la taza de aprendizaje decrece linealmente hasta 0,05.</p>
+<div class="sourceCode" id="cb108"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb108-1" data-line-number="1">entrenemientoSOM &lt;-<span class="st"> </span><span class="cf">function</span>(datos, <span class="dt">nu =</span> <span class="fl">0.9</span>, <span class="dt">cantidadEpocas =</span> <span class="dv">100</span>, g, miLayout, </a>
+<a class="sourceLine" id="cb108-2" data-line-number="2">                             cantidadNodos, entorno, <span class="dt">criterioSalida =</span> <span class="fl">0.001</span>) {</a>
+<a class="sourceLine" id="cb108-3" data-line-number="3">  cantidadDatos &lt;-<span class="st"> </span><span class="kw">nrow</span>(datos)</a>
+<a class="sourceLine" id="cb108-4" data-line-number="4">  graficas &lt;-<span class="st"> </span><span class="kw">list</span>()</a>
+<a class="sourceLine" id="cb108-5" data-line-number="5">  <span class="co"># 1) Ordenamiento topológico o global</span></a>
+<a class="sourceLine" id="cb108-6" data-line-number="6">  <span class="cf">for</span> (e <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,cantidadEpocas)) {</a>
+<a class="sourceLine" id="cb108-7" data-line-number="7">    <span class="co">#Hacemos un for para recorrer todos los datos de entrada</span></a>
+<a class="sourceLine" id="cb108-8" data-line-number="8">    miLayoutAux &lt;-<span class="st"> </span>miLayout</a>
+<a class="sourceLine" id="cb108-9" data-line-number="9">    <span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,cantidadDatos)) {</a>
+<a class="sourceLine" id="cb108-10" data-line-number="10">      <span class="co"># para cada valor recorremos la red SOM y buscamos la distancia menor</span></a>
+<a class="sourceLine" id="cb108-11" data-line-number="11">      aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>(datos[i,<span class="dv">1</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()) <span class="op">-</span><span class="st"> </span>miLayout[,<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb108-12" data-line-number="12">      aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>(datos[i,<span class="dv">2</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()) <span class="op">-</span><span class="st"> </span>miLayout[,<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb108-13" data-line-number="13">      aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb108-14" data-line-number="14">      aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb108-15" data-line-number="15">      aux2 &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>aux_<span class="dv">2</span> )</a>
+<a class="sourceLine" id="cb108-16" data-line-number="16">      distMenor &lt;-<span class="st"> </span><span class="kw">min</span>(aux2)</a>
+<a class="sourceLine" id="cb108-17" data-line-number="17">      nodoGanador &lt;-<span class="st"> </span><span class="kw">which</span>(aux2 <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(aux2))[<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb108-18" data-line-number="18"></a>
+<a class="sourceLine" id="cb108-19" data-line-number="19">      <span class="co">#ajustar los pesos de la neurona ganadora y las neuronas vecinas</span></a>
+<a class="sourceLine" id="cb108-20" data-line-number="20">      <span class="co"># 1) Ordenamiento topológico o global</span></a>
+<a class="sourceLine" id="cb108-21" data-line-number="21">      <span class="cf">if</span>(e <span class="op">&lt;</span><span class="st"> </span>cantidadEpocas<span class="op">/</span><span class="dv">15</span>) {</a>
+<a class="sourceLine" id="cb108-22" data-line-number="22">        vecinos &lt;-<span class="st"> </span><span class="kw">vecindad</span>(<span class="dt">nodo =</span> nodoGanador, g, <span class="dt">entorno =</span> entorno)</a>
+<a class="sourceLine" id="cb108-23" data-line-number="23">        <span class="cf">for</span> (k <span class="cf">in</span> vecinos) {</a>
+<a class="sourceLine" id="cb108-24" data-line-number="24">          miLayout[k,] &lt;-<span class="st"> </span>(miLayout[k,] <span class="op">+</span><span class="st"> </span>nu <span class="op">*</span><span class="st"> </span>(datos[i,] <span class="op">-</span><span class="st"> </span>miLayout[k,])) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()</a>
+<a class="sourceLine" id="cb108-25" data-line-number="25">        } </a>
+<a class="sourceLine" id="cb108-26" data-line-number="26">      } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb108-27" data-line-number="27">          <span class="co"># 2) Transicion</span></a>
+<a class="sourceLine" id="cb108-28" data-line-number="28">          <span class="cf">if</span>(e <span class="op">&lt;</span><span class="st"> </span>(<span class="dv">10</span><span class="op">*</span>cantidadEpocas<span class="op">/</span><span class="dv">15</span>)) {</a>
+<a class="sourceLine" id="cb108-29" data-line-number="29">            vecinos &lt;-<span class="st"> </span><span class="kw">vecindad</span>(<span class="dt">nodo =</span> nodoGanador, g, <span class="dt">entorno =</span> entorno)</a>
+<a class="sourceLine" id="cb108-30" data-line-number="30">            <span class="cf">for</span> (k <span class="cf">in</span> vecinos) {</a>
+<a class="sourceLine" id="cb108-31" data-line-number="31">              miLayout[k,] &lt;-<span class="st"> </span>(miLayout[k,] <span class="op">+</span><span class="st"> </span>nu <span class="op">*</span><span class="st"> </span>(datos[i,] <span class="op">-</span><span class="st"> </span>miLayout[k,])) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()</a>
+<a class="sourceLine" id="cb108-32" data-line-number="32">            }</a>
+<a class="sourceLine" id="cb108-33" data-line-number="33">            entorno &lt;-<span class="st"> </span><span class="kw">max</span>(entorno <span class="op">-</span><span class="st"> </span><span class="dv">1</span>, <span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb108-34" data-line-number="34">            nu &lt;-<span class="st"> </span><span class="kw">max</span>(nu <span class="op">-</span><span class="st"> </span><span class="fl">0.05</span>, <span class="fl">0.05</span>)</a>
+<a class="sourceLine" id="cb108-35" data-line-number="35">          } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb108-36" data-line-number="36">            <span class="co"># 3) Ajuste fino</span></a>
+<a class="sourceLine" id="cb108-37" data-line-number="37">            nu &lt;-<span class="st"> </span><span class="fl">0.05</span></a>
+<a class="sourceLine" id="cb108-38" data-line-number="38">            entorno &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb108-39" data-line-number="39">            vecinos &lt;-<span class="st"> </span><span class="kw">vecindad</span>(<span class="dt">nodo =</span> nodoGanador, g, <span class="dt">entorno =</span> entorno)</a>
+<a class="sourceLine" id="cb108-40" data-line-number="40">            <span class="cf">for</span> (k <span class="cf">in</span> vecinos) {</a>
+<a class="sourceLine" id="cb108-41" data-line-number="41">              miLayout[k,] &lt;-<span class="st"> </span>(miLayout[k,] <span class="op">+</span><span class="st"> </span>nu <span class="op">*</span><span class="st"> </span>(datos[i,] <span class="op">-</span><span class="st"> </span>miLayout[k,])) <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>()</a>
+<a class="sourceLine" id="cb108-42" data-line-number="42">            }</a>
+<a class="sourceLine" id="cb108-43" data-line-number="43">          }</a>
+<a class="sourceLine" id="cb108-44" data-line-number="44">        }</a>
+<a class="sourceLine" id="cb108-45" data-line-number="45">    }</a>
+<a class="sourceLine" id="cb108-46" data-line-number="46">    </a>
+<a class="sourceLine" id="cb108-47" data-line-number="47">    <span class="co">#if(((e%%5)==0)|e==1|e==2) {  #hacemos un dibujo cada 5 épocas</span></a>
+<a class="sourceLine" id="cb108-48" data-line-number="48">    <span class="cf">if</span>(<span class="ot">TRUE</span>) {  <span class="co">#hacemos un dibujo cada época</span></a>
+<a class="sourceLine" id="cb108-49" data-line-number="49">      <span class="kw">plot</span>(g, <span class="dt">layout=</span>miLayout)</a>
+<a class="sourceLine" id="cb108-50" data-line-number="50">      <span class="kw">print</span>(<span class="st">&quot;Epoca&quot;</span>)</a>
+<a class="sourceLine" id="cb108-51" data-line-number="51">      <span class="kw">print</span>(e)</a>
+<a class="sourceLine" id="cb108-52" data-line-number="52">      graficas[[e]] &lt;-<span class="st"> </span><span class="kw">list</span>(<span class="dt">g=</span>g,<span class="dt">miLayout=</span>miLayout)</a>
+<a class="sourceLine" id="cb108-53" data-line-number="53">    }</a>
+<a class="sourceLine" id="cb108-54" data-line-number="54">    <span class="co"># Controlo si hay diferencias significativas con la época anterior.</span></a>
+<a class="sourceLine" id="cb108-55" data-line-number="55">    <span class="co"># sinDiferencia &lt;- TRUE</span></a>
+<a class="sourceLine" id="cb108-56" data-line-number="56">    <span class="co"># for (j in seq(1,cantidadNodos * cantidadNodos)) {</span></a>
+<a class="sourceLine" id="cb108-57" data-line-number="57">    <span class="co">#     # buscar menor distancia</span></a>
+<a class="sourceLine" id="cb108-58" data-line-number="58">    <span class="co">#     aux  &lt;- (miLayoutAux[j,] - miLayout[j,])^2</span></a>
+<a class="sourceLine" id="cb108-59" data-line-number="59">    <span class="co">#     aux2 &lt;- sqrt( aux[1] + aux[2] )</span></a>
+<a class="sourceLine" id="cb108-60" data-line-number="60">    <span class="co">#     if(aux2 &gt; criterioSalida) { </span></a>
+<a class="sourceLine" id="cb108-61" data-line-number="61">    <span class="co">#       sinDiferencia &lt;- FALSE</span></a>
+<a class="sourceLine" id="cb108-62" data-line-number="62">    <span class="co">#       break</span></a>
+<a class="sourceLine" id="cb108-63" data-line-number="63">    <span class="co">#     }</span></a>
+<a class="sourceLine" id="cb108-64" data-line-number="64">    <span class="co"># }</span></a>
+<a class="sourceLine" id="cb108-65" data-line-number="65">    <span class="co"># if(sinDiferencia) {</span></a>
+<a class="sourceLine" id="cb108-66" data-line-number="66">    <span class="co">#   plot(g, layout=miLayout)</span></a>
+<a class="sourceLine" id="cb108-67" data-line-number="67">    <span class="co">#   print(&quot;Epoca&quot;)</span></a>
+<a class="sourceLine" id="cb108-68" data-line-number="68">    <span class="co">#   print(e)</span></a>
+<a class="sourceLine" id="cb108-69" data-line-number="69">    <span class="co">#   graficas[[e]] &lt;- recordPlot()</span></a>
+<a class="sourceLine" id="cb108-70" data-line-number="70">    <span class="co">#   return(list(graficas = graficas, layout=miLayout, g=g, epocas = e))</span></a>
+<a class="sourceLine" id="cb108-71" data-line-number="71">    <span class="co"># }</span></a>
+<a class="sourceLine" id="cb108-72" data-line-number="72">  }</a>
+<a class="sourceLine" id="cb108-73" data-line-number="73">  <span class="kw">return</span>(<span class="kw">list</span>(<span class="dt">graficas =</span> graficas, <span class="dt">milayout=</span>miLayout, <span class="dt">g=</span>g, <span class="dt">epocas =</span> e))</a>
+<a class="sourceLine" id="cb108-74" data-line-number="74">}</a>
+<a class="sourceLine" id="cb108-75" data-line-number="75"></a>
+<a class="sourceLine" id="cb108-76" data-line-number="76">datos &lt;-<span class="st"> </span>circulo</a>
+<a class="sourceLine" id="cb108-77" data-line-number="77">nu &lt;-<span class="st"> </span><span class="fl">0.4</span></a>
+<a class="sourceLine" id="cb108-78" data-line-number="78">cantidadEpocas &lt;-<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb108-79" data-line-number="79">entorno &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb108-80" data-line-number="80"></a>
+<a class="sourceLine" id="cb108-81" data-line-number="81"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb108-82" data-line-number="82">  modeloCirculo &lt;-<span class="st"> </span><span class="kw">entrenemientoSOM</span>(datos, nu, cantidadEpocas, g, miLayout, </a>
+<a class="sourceLine" id="cb108-83" data-line-number="83">                                    cantidadNodos, entorno)</a>
+<a class="sourceLine" id="cb108-84" data-line-number="84">}</a>
+<a class="sourceLine" id="cb108-85" data-line-number="85"></a>
+<a class="sourceLine" id="cb108-86" data-line-number="86"><span class="co"># Graficas:</span></a>
+<a class="sourceLine" id="cb108-87" data-line-number="87"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb108-88" data-line-number="88"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb108-89" data-line-number="89"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-72-1.png" width="672" /></p>
+<div class="sourceCode" id="cb109"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb109-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb109-2" data-line-number="2"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb109-3" data-line-number="3"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-72-2.png" width="672" /></p>
+<div class="sourceCode" id="cb110"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb110-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb110-2" data-line-number="2"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb110-3" data-line-number="3"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-72-3.png" width="672" /></p>
+<div class="sourceCode" id="cb111"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb111-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb111-2" data-line-number="2"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb111-3" data-line-number="3"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-72-4.png" width="672" /></p>
+<div class="sourceCode" id="cb112"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb112-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb112-2" data-line-number="2"><span class="kw">plot</span>(circulo)</a>
+<a class="sourceLine" id="cb112-3" data-line-number="3"><span class="kw">plot</span>(modeloCirculo<span class="op">$</span>graficas[[modeloCirculo<span class="op">$</span>epocas]]<span class="op">$</span>g, </a>
+<a class="sourceLine" id="cb112-4" data-line-number="4">     <span class="dt">layout=</span>modeloCirculo<span class="op">$</span>graficas[[modeloCirculo<span class="op">$</span>epocas]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-72-5.png" width="672" /></p>
 <ul>
-<li><p>Inicialización de Grilla SOM - Te</p></li>
-<li><p>Entrenamiento de la res SOM - Te</p></li>
-<li><p>Inicialización de Grilla SOM Unidimensional - Te</p></li>
-<li><p>Entrenamiento de la res SOM Unidimensional - Te</p></li>
+<li>Inicialización de Grilla SOM - Te</li>
 </ul>
+<div class="sourceCode" id="cb113"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb113-1" data-line-number="1">cantidadNodos &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb113-2" data-line-number="2">grillaSOM &lt;-<span class="st"> </span><span class="kw">inicializarGrilla</span>(cantidadNodos, <span class="dt">forma =</span> <span class="st">&quot;cuadrada&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-73-1.png" width="672" /></p>
+<div class="sourceCode" id="cb114"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb114-1" data-line-number="1">g        &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>g</a>
+<a class="sourceLine" id="cb114-2" data-line-number="2">miLayout &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>miLayout</a></code></pre></div>
+<ul>
+<li>Entrenamiento de la res SOM - Te</li>
+</ul>
+<div class="sourceCode" id="cb115"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb115-1" data-line-number="1">datos &lt;-<span class="st"> </span>te</a>
+<a class="sourceLine" id="cb115-2" data-line-number="2">nu &lt;-<span class="st"> </span><span class="fl">0.4</span></a>
+<a class="sourceLine" id="cb115-3" data-line-number="3">cantidadEpocas &lt;-<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb115-4" data-line-number="4">entorno &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb115-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb115-6" data-line-number="6"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb115-7" data-line-number="7">  modeloTe &lt;-<span class="st"> </span><span class="kw">entrenemientoSOM</span>(datos, nu, cantidadEpocas, g, miLayout, </a>
+<a class="sourceLine" id="cb115-8" data-line-number="8">                               cantidadNodos, entorno)</a>
+<a class="sourceLine" id="cb115-9" data-line-number="9">}</a>
+<a class="sourceLine" id="cb115-10" data-line-number="10"></a>
+<a class="sourceLine" id="cb115-11" data-line-number="11"><span class="co"># Graficas:</span></a>
+<a class="sourceLine" id="cb115-12" data-line-number="12"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb115-13" data-line-number="13"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb115-14" data-line-number="14"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-74-1.png" width="672" /></p>
+<div class="sourceCode" id="cb116"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb116-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb116-2" data-line-number="2"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb116-3" data-line-number="3"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-74-2.png" width="672" /></p>
+<div class="sourceCode" id="cb117"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb117-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb117-2" data-line-number="2"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb117-3" data-line-number="3"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-74-3.png" width="672" /></p>
+<div class="sourceCode" id="cb118"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb118-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb118-2" data-line-number="2"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb118-3" data-line-number="3"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-74-4.png" width="672" /></p>
+<div class="sourceCode" id="cb119"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb119-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb119-2" data-line-number="2"><span class="kw">plot</span>(te)</a>
+<a class="sourceLine" id="cb119-3" data-line-number="3"><span class="kw">plot</span>(modeloTe<span class="op">$</span>graficas[[modeloTe<span class="op">$</span>epocas]]<span class="op">$</span>g, </a>
+<a class="sourceLine" id="cb119-4" data-line-number="4">     <span class="dt">layout=</span>modeloTe<span class="op">$</span>graficas[[modeloTe<span class="op">$</span>epocas]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-74-5.png" width="672" /></p>
+<ul>
+<li>Inicialización de Grilla SOM Unidimensional - Te</li>
+</ul>
+<div class="sourceCode" id="cb120"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb120-1" data-line-number="1">cantidadNodos &lt;-<span class="st"> </span><span class="dv">25</span></a>
+<a class="sourceLine" id="cb120-2" data-line-number="2">grillaSOM &lt;-<span class="st"> </span><span class="kw">inicializarGrilla</span>(cantidadNodos, <span class="dt">forma =</span> <span class="st">&quot;lineal&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-75-1.png" width="672" /></p>
+<div class="sourceCode" id="cb121"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb121-1" data-line-number="1">g        &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>g</a>
+<a class="sourceLine" id="cb121-2" data-line-number="2">miLayout &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>miLayout</a></code></pre></div>
+<ul>
+<li>Entrenamiento de la res SOM Unidimensional - Te</li>
+</ul>
+<div class="sourceCode" id="cb122"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb122-1" data-line-number="1">datos &lt;-<span class="st"> </span>te</a>
+<a class="sourceLine" id="cb122-2" data-line-number="2">nu &lt;-<span class="st"> </span><span class="fl">0.4</span></a>
+<a class="sourceLine" id="cb122-3" data-line-number="3">cantidadEpocas &lt;-<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb122-4" data-line-number="4">cantidadNodos &lt;-<span class="st"> </span><span class="dv">5</span></a>
+<a class="sourceLine" id="cb122-5" data-line-number="5">entorno &lt;-<span class="st"> </span><span class="dv">7</span></a>
+<a class="sourceLine" id="cb122-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb122-7" data-line-number="7"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb122-8" data-line-number="8">  modeloTeUni &lt;-<span class="st"> </span><span class="kw">entrenemientoSOM</span>(datos, nu, cantidadEpocas, g, miLayout, </a>
+<a class="sourceLine" id="cb122-9" data-line-number="9">                                  cantidadNodos, entorno)</a>
+<a class="sourceLine" id="cb122-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb122-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb122-12" data-line-number="12"><span class="co"># Graficas:</span></a>
+<a class="sourceLine" id="cb122-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb122-14" data-line-number="14"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb122-15" data-line-number="15"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-76-1.png" width="672" /></p>
+<div class="sourceCode" id="cb123"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb123-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb123-2" data-line-number="2"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb123-3" data-line-number="3"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-76-2.png" width="672" /></p>
+<div class="sourceCode" id="cb124"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb124-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb124-2" data-line-number="2"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb124-3" data-line-number="3"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-76-3.png" width="672" /></p>
+<div class="sourceCode" id="cb125"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb125-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb125-2" data-line-number="2"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb125-3" data-line-number="3"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-76-4.png" width="672" /></p>
+<div class="sourceCode" id="cb126"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb126-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb126-2" data-line-number="2"><span class="kw">plot</span>(te)</a>
+<a class="sourceLine" id="cb126-3" data-line-number="3"><span class="kw">plot</span>(modeloTeUni<span class="op">$</span>graficas[[modeloTeUni<span class="op">$</span>epocas]]<span class="op">$</span>g, </a>
+<a class="sourceLine" id="cb126-4" data-line-number="4">     <span class="dt">layout=</span>modeloTeUni<span class="op">$</span>graficas[[modeloTeUni<span class="op">$</span>epocas]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-76-5.png" width="672" /></p>
 <p>Podemos observar que con la misma cantidad de neuronas, pero con la distribución lineal podemos obtener una red que se ubica por completo sobre los datos con el mismo entrenamiento.</p>
 </div>
 <div id="ejercicio-4-1" class="section level2">
 <h2><span class="header-section-number">2.4</span> Ejercicio 4</h2>
 <ul>
-<li><p>Lectura de datos</p></li>
-<li><p>Graficamos los datos de entrada</p></li>
-<li><p>Inicialización de Grilla SOM - Clouds</p></li>
+<li>Lectura de datos</li>
+</ul>
+<div class="sourceCode" id="cb127"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb127-1" data-line-number="1">clouds &lt;-<span class="st"> </span><span class="kw">read_csv</span>(<span class="st">&quot;../../PUBLICO/Encuentro 3/Práctica/data/clouds.csv&quot;</span>, <span class="dt">col_names =</span> <span class="ot">FALSE</span>)</a></code></pre></div>
+<ul>
+<li>Graficamos los datos de entrada</li>
+</ul>
+<div class="sourceCode" id="cb128"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb128-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="dt">data=</span>clouds, <span class="kw">aes</span>(<span class="dt">x=</span>X1, <span class="dt">y=</span>X2,<span class="dt">color=</span><span class="kw">as.factor</span>(X3)))<span class="op">+</span><span class="kw">geom_point</span>()</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-78-1.png" width="672" /></p>
+<ul>
+<li>Inicialización de Grilla SOM - Clouds</li>
 </ul>
 <p>Generamos una grilla SOM de 49 nodos, con esto tenemos un nodo cada 100 patrones aproximadamente.</p>
+<div class="sourceCode" id="cb129"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb129-1" data-line-number="1">cantidadNodos &lt;-<span class="st"> </span><span class="dv">7</span></a>
+<a class="sourceLine" id="cb129-2" data-line-number="2">grillaSOM &lt;-<span class="st"> </span><span class="kw">inicializarGrilla</span>(cantidadNodos, <span class="dt">forma =</span> <span class="st">&quot;cuadrada&quot;</span>)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-79-1.png" width="672" /></p>
+<div class="sourceCode" id="cb130"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb130-1" data-line-number="1">g        &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>g</a>
+<a class="sourceLine" id="cb130-2" data-line-number="2">miLayout &lt;-<span class="st"> </span>grillaSOM<span class="op">$</span>miLayout</a></code></pre></div>
 <ul>
-<li><p>Entrenamiento de la res SOM - Clouds</p></li>
-<li><p>Etiquetado de neuronas</p></li>
+<li>Entrenamiento de la res SOM - Clouds</li>
+</ul>
+<div class="sourceCode" id="cb131"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb131-1" data-line-number="1">datos &lt;-<span class="st"> </span>clouds[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)]</a>
+<a class="sourceLine" id="cb131-2" data-line-number="2">nu &lt;-<span class="st"> </span><span class="fl">0.4</span></a>
+<a class="sourceLine" id="cb131-3" data-line-number="3">cantidadEpocas &lt;-<span class="st"> </span><span class="dv">30</span></a>
+<a class="sourceLine" id="cb131-4" data-line-number="4">cantidadNodos &lt;-<span class="st"> </span><span class="dv">7</span></a>
+<a class="sourceLine" id="cb131-5" data-line-number="5">entorno &lt;-<span class="st"> </span><span class="dv">3</span></a>
+<a class="sourceLine" id="cb131-6" data-line-number="6"></a>
+<a class="sourceLine" id="cb131-7" data-line-number="7"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb131-8" data-line-number="8">  modeloClouds &lt;-<span class="st"> </span><span class="kw">entrenemientoSOM</span>(datos, nu, cantidadEpocas, g, miLayout, </a>
+<a class="sourceLine" id="cb131-9" data-line-number="9">                                   cantidadNodos, entorno)</a>
+<a class="sourceLine" id="cb131-10" data-line-number="10">}</a>
+<a class="sourceLine" id="cb131-11" data-line-number="11"></a>
+<a class="sourceLine" id="cb131-12" data-line-number="12"><span class="co"># Graficas:</span></a>
+<a class="sourceLine" id="cb131-13" data-line-number="13"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb131-14" data-line-number="14"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">1</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb131-15" data-line-number="15"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">2</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-80-1.png" width="672" /></p>
+<div class="sourceCode" id="cb132"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb132-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb132-2" data-line-number="2"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">3</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb132-3" data-line-number="3"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">5</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-80-2.png" width="672" /></p>
+<div class="sourceCode" id="cb133"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb133-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb133-2" data-line-number="2"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">10</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb133-3" data-line-number="3"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">15</span>]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-80-3.png" width="672" /></p>
+<div class="sourceCode" id="cb134"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb134-1" data-line-number="1"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb134-2" data-line-number="2"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">20</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb134-3" data-line-number="3"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>g, <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[<span class="dv">25</span>]]<span class="op">$</span>miLayout)</a>
+<a class="sourceLine" id="cb134-4" data-line-number="4"><span class="kw">par</span>(<span class="dt">mfrow=</span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb134-5" data-line-number="5"><span class="kw">plot</span>(clouds[,<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)])</a>
+<a class="sourceLine" id="cb134-6" data-line-number="6"><span class="kw">plot</span>(modeloClouds<span class="op">$</span>graficas[[modeloClouds<span class="op">$</span>epocas]]<span class="op">$</span>g, </a>
+<a class="sourceLine" id="cb134-7" data-line-number="7">     <span class="dt">layout=</span>modeloClouds<span class="op">$</span>graficas[[modeloClouds<span class="op">$</span>epocas]]<span class="op">$</span>miLayout)</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-80-4.png" width="672" /></p>
+<ul>
+<li>Etiquetado de neuronas</li>
 </ul>
 <p>Para el etiquetado de neuronas, se evalúa la cantidad de patrones de cada clase en el entorno cercano de cada neurona. Se toma como entorno cercano un radio de la mitad de la distancia promedio de la neurona con sus vecinas.</p>
+<div class="sourceCode" id="cb135"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb135-1" data-line-number="1">clase &lt;-<span class="st"> </span><span class="dv">3</span> <span class="co"># defino columna de clase</span></a>
+<a class="sourceLine" id="cb135-2" data-line-number="2">claseResultadoRed &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb135-3" data-line-number="3">miLayout &lt;-<span class="st"> </span>modeloClouds<span class="op">$</span>milayout</a>
+<a class="sourceLine" id="cb135-4" data-line-number="4">g        &lt;-<span class="st"> </span>modeloClouds<span class="op">$</span>g </a>
+<a class="sourceLine" id="cb135-5" data-line-number="5"></a>
+<a class="sourceLine" id="cb135-6" data-line-number="6"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,cantidadNodos<span class="op">*</span>cantidadNodos)) {</a>
+<a class="sourceLine" id="cb135-7" data-line-number="7">  <span class="co"># calculo la distancia media a sus vecinos para definir un entorno</span></a>
+<a class="sourceLine" id="cb135-8" data-line-number="8">  vecinos &lt;-<span class="st"> </span><span class="kw">which</span>(g[i]<span class="op">==</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb135-9" data-line-number="9">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>miLayout[vecinos,<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>miLayout[i,<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb135-10" data-line-number="10">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>miLayout[vecinos,<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>miLayout[i,<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb135-11" data-line-number="11">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb135-12" data-line-number="12">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb135-13" data-line-number="13">  aux2 &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>aux_<span class="dv">2</span> )</a>
+<a class="sourceLine" id="cb135-14" data-line-number="14">  radio &lt;-<span class="st"> </span><span class="kw">mean</span>(aux2) <span class="op">/</span><span class="st"> </span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb135-15" data-line-number="15">  </a>
+<a class="sourceLine" id="cb135-16" data-line-number="16">  <span class="co"># se clasifica el nodo con la categoría que más se repita en el entorno</span></a>
+<a class="sourceLine" id="cb135-17" data-line-number="17">  acumuladores &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb135-18" data-line-number="18">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>datos[,<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>miLayout[i,<span class="dv">1</span>]</a>
+<a class="sourceLine" id="cb135-19" data-line-number="19">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>datos[,<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>miLayout[i,<span class="dv">2</span>]</a>
+<a class="sourceLine" id="cb135-20" data-line-number="20">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb135-21" data-line-number="21">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb135-22" data-line-number="22">  aux2 &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>aux_<span class="dv">2</span> )</a>
+<a class="sourceLine" id="cb135-23" data-line-number="23">  <span class="cf">if</span>(<span class="kw">length</span>(<span class="kw">which</span>(clouds[<span class="kw">which</span>(aux2 <span class="op">&lt;</span><span class="st"> </span>radio),clase]<span class="op">==</span><span class="dv">0</span>)) <span class="op">&gt;</span><span class="st"> </span></a>
+<a class="sourceLine" id="cb135-24" data-line-number="24"><span class="st">     </span><span class="kw">length</span>(<span class="kw">which</span>(clouds[<span class="kw">which</span>(aux2 <span class="op">&lt;</span><span class="st"> </span>radio),clase]<span class="op">==</span><span class="dv">1</span>))) {</a>
+<a class="sourceLine" id="cb135-25" data-line-number="25">    claseResultadoRed[i] &lt;-<span class="st"> </span><span class="dv">0</span></a>
+<a class="sourceLine" id="cb135-26" data-line-number="26">  } <span class="cf">else</span> {</a>
+<a class="sourceLine" id="cb135-27" data-line-number="27">    claseResultadoRed[i] &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb135-28" data-line-number="28">  }</a>
+<a class="sourceLine" id="cb135-29" data-line-number="29">}</a></code></pre></div>
 <ul>
 <li>Clasificación con red SOM</li>
 </ul>
 <p>Se asigna como clase ganadora a cada patrón a la clase de la neurona más cercana.</p>
+<div class="sourceCode" id="cb136"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb136-1" data-line-number="1"><span class="co">#Ejemplo con un nuevo patrón</span></a>
+<a class="sourceLine" id="cb136-2" data-line-number="2">nuevoDato &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb136-3" data-line-number="3"></a>
+<a class="sourceLine" id="cb136-4" data-line-number="4"><span class="co">#para el nuevo valor recorremos la red SOM y buscamos la distancia menor</span></a>
+<a class="sourceLine" id="cb136-5" data-line-number="5">aux       &lt;-<span class="st"> </span>(nuevoDato <span class="op">-</span><span class="st"> </span>miLayout[<span class="dv">1</span>,])<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb136-6" data-line-number="6">distMenor &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>aux[<span class="dv">2</span>] )</a>
+<a class="sourceLine" id="cb136-7" data-line-number="7">nodoGanador &lt;-<span class="st"> </span><span class="dv">1</span></a>
+<a class="sourceLine" id="cb136-8" data-line-number="8"><span class="cf">for</span> (j <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">2</span>,cantidadNodos)) {</a>
+<a class="sourceLine" id="cb136-9" data-line-number="9">  <span class="co"># buscar menor distancia</span></a>
+<a class="sourceLine" id="cb136-10" data-line-number="10">  aux  &lt;-<span class="st"> </span>(nuevoDato <span class="op">-</span><span class="st"> </span>miLayout[j,])<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb136-11" data-line-number="11">  aux2 &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux[<span class="dv">1</span>] <span class="op">+</span><span class="st"> </span>aux[<span class="dv">2</span>] )</a>
+<a class="sourceLine" id="cb136-12" data-line-number="12">  <span class="cf">if</span>(aux2 <span class="op">&lt;</span><span class="st"> </span>distMenor) {</a>
+<a class="sourceLine" id="cb136-13" data-line-number="13">    distMenor   &lt;-<span class="st"> </span>aux2</a>
+<a class="sourceLine" id="cb136-14" data-line-number="14">    nodoGanador &lt;-<span class="st"> </span>j</a>
+<a class="sourceLine" id="cb136-15" data-line-number="15">  }</a>
+<a class="sourceLine" id="cb136-16" data-line-number="16">}</a>
+<a class="sourceLine" id="cb136-17" data-line-number="17"></a>
+<a class="sourceLine" id="cb136-18" data-line-number="18"><span class="co">#clase del dato nuevo</span></a>
+<a class="sourceLine" id="cb136-19" data-line-number="19">claseResultadoRed[nodoGanador]</a></code></pre></div>
+<pre><code>## [1] 0</code></pre>
+<div class="sourceCode" id="cb138"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb138-1" data-line-number="1"><span class="co"># Realizamos la clasificación para todos los patrones del dataset</span></a>
+<a class="sourceLine" id="cb138-2" data-line-number="2">claseResultado &lt;-<span class="st"> </span><span class="kw">array</span>(<span class="dv">0</span>)</a>
+<a class="sourceLine" id="cb138-3" data-line-number="3"><span class="cf">for</span> (i <span class="cf">in</span> <span class="kw">seq</span>(<span class="dv">1</span>,<span class="kw">nrow</span>(datos))) {</a>
+<a class="sourceLine" id="cb138-4" data-line-number="4">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>miLayout[,<span class="dv">1</span>] <span class="op">-</span><span class="st"> </span>(datos[i,<span class="dv">1</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>())</a>
+<a class="sourceLine" id="cb138-5" data-line-number="5">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>miLayout[,<span class="dv">2</span>] <span class="op">-</span><span class="st"> </span>(datos[i,<span class="dv">2</span>] <span class="op">%&gt;%</span><span class="st"> </span><span class="kw">as.numeric</span>())</a>
+<a class="sourceLine" id="cb138-6" data-line-number="6">  aux_<span class="dv">1</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">1</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb138-7" data-line-number="7">  aux_<span class="dv">2</span>  &lt;-<span class="st"> </span>(aux_<span class="dv">2</span>)<span class="op">^</span><span class="dv">2</span></a>
+<a class="sourceLine" id="cb138-8" data-line-number="8">  distancias &lt;-<span class="st"> </span><span class="kw">sqrt</span>( aux_<span class="dv">1</span> <span class="op">+</span><span class="st"> </span>aux_<span class="dv">2</span> )</a>
+<a class="sourceLine" id="cb138-9" data-line-number="9">  claseResultado[i] &lt;-<span class="st"> </span>claseResultadoRed[<span class="kw">which</span>(distancias <span class="op">==</span><span class="st"> </span><span class="kw">min</span>(distancias))[<span class="dv">1</span>]]</a>
+<a class="sourceLine" id="cb138-10" data-line-number="10">}</a></code></pre></div>
 <ul>
-<li><p>Visualizamos los puntos clasificados</p></li>
-<li><p>Calculamos la tasa de aciertos</p></li>
+<li>Visualizamos los puntos clasificados</li>
 </ul>
+<div class="sourceCode" id="cb139"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb139-1" data-line-number="1"><span class="kw">ggplot</span>(<span class="dt">data=</span>clouds, <span class="kw">aes</span>(<span class="dt">x=</span>X1, <span class="dt">y=</span>X2,<span class="dt">color=</span><span class="kw">as.factor</span>(X3),</a>
+<a class="sourceLine" id="cb139-2" data-line-number="2">                        <span class="dt">shape=</span><span class="kw">as.factor</span>(claseResultado)))<span class="op">+</span><span class="kw">geom_point</span>()</a></code></pre></div>
+<p><img src="PracticosBook_files/figure-html/unnamed-chunk-83-1.png" width="672" /></p>
+<ul>
+<li>Calculamos la tasa de aciertos</li>
+</ul>
+<div class="sourceCode" id="cb140"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb140-1" data-line-number="1">aciertos &lt;-<span class="st"> </span><span class="kw">length</span>(<span class="kw">which</span>(clouds[,clase] <span class="op">==</span><span class="st"> </span>claseResultado))</a>
+<a class="sourceLine" id="cb140-2" data-line-number="2">tasa &lt;-<span class="st"> </span>aciertos <span class="op">/</span><span class="st"> </span><span class="kw">nrow</span>(clouds)</a>
+<a class="sourceLine" id="cb140-3" data-line-number="3">tasa</a></code></pre></div>
+<pre><code>## [1] 0.86</code></pre>
 <p>Obtuvimos una tasa de un 86% de acierto, para mejorar esto se podría entrenar una red SOM con mayor numeró de neuronas.</p>
+<div class="sourceCode" id="cb142"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb142-1" data-line-number="1"><span class="co"># Guardamos los modelos generados</span></a>
+<a class="sourceLine" id="cb142-2" data-line-number="2"><span class="cf">if</span> (calcular) {</a>
+<a class="sourceLine" id="cb142-3" data-line-number="3"><span class="kw">save</span>(modeloMerval, modeloMerval70, modeloCirculo, modeloClouds, modeloTe,</a>
+<a class="sourceLine" id="cb142-4" data-line-number="4">     modeloTeUni, <span class="dt">file =</span> <span class="st">&quot;resultadosG2.RData&quot;</span>)</a>
+<a class="sourceLine" id="cb142-5" data-line-number="5">}</a></code></pre></div>
 </div>
 </div>
             </section>
@@ -297,7 +1932,7 @@ gitbook.start({
 "link": null,
 "text": null
 },
-"download": ["PracticosBook.pdf", "PracticosBook.epub"],
+"download": {},
 "toc": {
 "collapse": "subsection"
 }

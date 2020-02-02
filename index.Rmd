@@ -14,7 +14,6 @@ description: "Guias resueltas de trabajos prácticos"
 ```{r child = 'GUIA_1/Guia1.Rmd'}
 ```
 
-
 ```{r child = 'GUIA_2/Guia2_v2.Rmd'}
 ```
 
