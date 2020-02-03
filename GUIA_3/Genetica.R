@@ -94,7 +94,8 @@ cruzar <- function(padre1,padre2) {
 
 ##################################################################################
 # Funcion para mutar
-# Cambia el bit menos significativo si un valor random en menor a p
+# para cada variable del individuo, se muta con una probabilidad p con valor al azar
+# entre xMin y xMax de esa variable
 ##################################################################################
 
 mutar <- function(individuo, p = 0.5, cantidadDecimales=2, xMin, xMax) {

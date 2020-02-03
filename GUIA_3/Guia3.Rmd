@@ -19,6 +19,8 @@ source('./Genetica.R')
 
 # Guia 3
 
+La implementación de las funciones utilizadas en esta guía se encuentran en el archivo [Genetica.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_3/Genetica.R).
+
 ## Ejercicio 1
 
 Implemente las estructuras de datos y algoritmos básicos para la solución de un problema mediante algoritmos genéticos. Pruebe estas rutinas para buscar el mínimo global de las siguientes funciones:

@@ -34,6 +34,8 @@ calcular = TRUE
 
 Se ha utilizado el perceptrón multicapa en [PerceptronMulticapa.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/PerceptronMulticapa.R), como así también una implementación del algoritmo de *leave k out* en [LeavePOut.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/LeavePOut.R)
 
+Para la ejecución de todas las combinaciones de *leave k out* se ha empleado el paquete @R-doMC que permite ejecuciones en paralelo de bloques de código.
+
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}

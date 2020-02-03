@@ -27,6 +27,11 @@ if(file.exists('./resultadosG2.RData')) {
 
 # Guía 2
 
+La implementación del perceptron simple RBF se encuentra en el archivo [PerceptronSimpleRBF_g2.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_2/PerceptronSimpleRBF_g2.R). 
+
+La implementacion de la red RBF se localiza en el archivo [RedRBF_g2.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_2/RedRBF_g2.R).
+
+
 ## Ejercicio 1
 
 ### Resolución del problema XOR con una red neuronal RBF
