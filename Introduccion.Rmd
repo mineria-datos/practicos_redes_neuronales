@@ -1,0 +1,27 @@
+---
+title: "Introduccion"
+author: "Grupo 3"
+date: "2/3/2020"
+output: html_document
+---
+
+# Introducción {-}
+
+El presente documento conteniendo las guías resueltas del curso de *Redes Neuronales* ha sido desarrollado siguiendo los lineamientos de [Reproducible Research](https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research), por lo que los gráficos y cómputos empleados pueden ser examinados y reproducidos de manera sencilla.
+
+Para reproducir el presente documento, basta con tener instalados los paquetes requeridos de R y clonar el repositorio git en una carpeta que esté al mismo nivel que la carpeta **PUBLICO** de la materia.
+
+El repositorio se encuetra alojado en [github](https://github.com/mineria-datos/practicos_redes_neuronales), cada guía puede ser examinada y generada por separado en su propio directorio, junto con el código anexo con las implementaciones requeridas.
+
+El documento final se encuentra alojado en [github pages practicos_redes_neuronales](https://mineria-datos.github.io/practicos_redes_neuronales)  
+
+Se han empleado los siguientes paquetes R:
+
+* [bookdown](https://bookdown.org/) @R-bookdown
+* [dplyr](https://dplyr.tidyverse.org/) @R-dplyr
+* [ggplot2](https://ggplot2.tidyverse.org/) @R-ggplot2
+* [knitr](https://yihui.org/knitr/) @R-knitr
+* [plot.ly](https://plot.ly/) @R-plotly
+* [readr](https://readr.tidyverse.org/) @R-readr
+* [rmarkdown](https://rmarkdown.rstudio.com/) @R-rmarkdown
+* [tidyverse](https://www.tidyverse.org/) @R-tidyverse

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>Prácticos Redes Neuronales</title>
+  <meta name="description" content="Guias resueltas de trabajos prácticos" />
+  <meta name="generator" content="bookdown #bookdown:version# and GitBook 2.6.7" />
+
+  <meta property="og:title" content="Prácticos Redes Neuronales" />
+  <meta property="og:type" content="book" />
+  
+  
+  <meta property="og:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="Prácticos Redes Neuronales" />
+  
+  <meta name="twitter:description" content="Guias resueltas de trabajos prácticos" />
+  
+
+<meta name="author" content="Grupo 3: Emiliano Bodean - Zacarias Ojeda" />
+
+
+<meta name="date" content="2020-02-03" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<!--bookdown:link_prev-->
+<!--bookdown:link_next-->
+<script src="libs/jquery-2.2.3/jquery.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/lunr.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+</head>
+
+<body>
+
+
+
+<!--bookdown:title:start-->
+<div id="header">
+<h1 class="title">Prácticos Redes Neuronales</h1>
+<p class="author"><em>Grupo 3: Emiliano Bodean - Zacarias Ojeda</em></p>
+<p class="date"><em>2020-02-03</em></p>
+</div>
+<!--bookdown:title:end-->
+
+<!--bookdown:toc:start-->
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+<!--bookdown:toc2:start-->
+<!--bookdown:toc2:end-->
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Prácticos Redes Neuronales</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<!--bookdown:toc:end-->
+<!--bookdown:body:start-->
+<!--chapter:end:index.Rmd-->
+<p>El presente documento conteniendo las guías resueltas del curso de <em>Redes Neuronales</em> ha sido desarrollado siguiendo los lineamientos de <a href="https://en.wikipedia.org/wiki/Reproducibility#Reproducible_research">Reproducible Research</a>, por lo que los gráficos y cómputos empleados pueden ser examinados y reproducidos de manera sencilla.</p>
+<p>Para reproducir el presente documento, basta con tener instalados los paquetes requeridos de R y clonar el repositorio git en una carpeta que esté al mismo nivel que la carpeta <strong>PUBLICO</strong> de la materia.</p>
+<p>Se han empleado los siguientes paquetes R:</p>
+<ul>
+<li><a href="https://bookdown.org/">bookdown</a> <span class="citation">Xie (<a href="#ref-R-bookdown">2020</a>)</span></li>
+<li><a href="https://dplyr.tidyverse.org/">dplyr</a> <span class="citation">Wickham, François, et al. (<a href="#ref-R-dplyr">2019</a>)</span></li>
+<li><a href="https://ggplot2.tidyverse.org/">ggplot2</a> <span class="citation">Wickham, Chang, et al. (<a href="#ref-R-ggplot2">2019</a>)</span></li>
+<li><a href="https://yihui.org/knitr/">knitr</a> <span class="citation">Xie (<a href="#ref-R-knitr">2019</a>)</span></li>
+<li><a href="https://plot.ly/">plot.ly</a> <span class="citation">Sievert et al. (<a href="#ref-R-plotly">2019</a>)</span></li>
+<li><a href="https://readr.tidyverse.org/">readr</a> <span class="citation">Wickham, Hester, and Francois (<a href="#ref-R-readr">2018</a>)</span></li>
+<li><a href="https://rmarkdown.rstudio.com/">rmarkdown</a> <span class="citation">Allaire et al. (<a href="#ref-R-rmarkdown">2019</a>)</span></li>
+<li><a href="https://www.tidyverse.org/">tidyverse</a> <span class="citation">Wickham (<a href="#ref-R-tidyverse">2017</a>)</span></li>
+</ul>
+<!--chapter:end:Introduccion.Rmd-->
+<div id="refs" class="references">
+<div id="ref-R-rmarkdown">
+<p>Allaire, JJ, Yihui Xie, Jonathan McPherson, Javier Luraschi, Kevin Ushey, Aron Atkins, Hadley Wickham, Joe Cheng, Winston Chang, and Richard Iannone. 2019. <em>Rmarkdown: Dynamic Documents for R</em>. <a href="https://CRAN.R-project.org/package=rmarkdown">https://CRAN.R-project.org/package=rmarkdown</a>.</p>
+</div>
+<div id="ref-R-plotly">
+<p>Sievert, Carson, Chris Parmer, Toby Hocking, Scott Chamberlain, Karthik Ram, Marianne Corvellec, and Pedro Despouy. 2019. <em>Plotly: Create Interactive Web Graphics via ’Plotly.js’</em>. <a href="https://CRAN.R-project.org/package=plotly">https://CRAN.R-project.org/package=plotly</a>.</p>
+</div>
+<div id="ref-R-tidyverse">
+<p>Wickham, Hadley. 2017. <em>Tidyverse: Easily Install and Load the ’Tidyverse’</em>. <a href="https://CRAN.R-project.org/package=tidyverse">https://CRAN.R-project.org/package=tidyverse</a>.</p>
+</div>
+<div id="ref-R-ggplot2">
+<p>Wickham, Hadley, Winston Chang, Lionel Henry, Thomas Lin Pedersen, Kohske Takahashi, Claus Wilke, and Kara Woo. 2019. <em>Ggplot2: Create Elegant Data Visualisations Using the Grammar of Graphics</em>. <a href="https://CRAN.R-project.org/package=ggplot2">https://CRAN.R-project.org/package=ggplot2</a>.</p>
+</div>
+<div id="ref-R-dplyr">
+<p>Wickham, Hadley, Romain François, Lionel Henry, and Kirill Müller. 2019. <em>Dplyr: A Grammar of Data Manipulation</em>. <a href="https://CRAN.R-project.org/package=dplyr">https://CRAN.R-project.org/package=dplyr</a>.</p>
+</div>
+<div id="ref-R-readr">
+<p>Wickham, Hadley, Jim Hester, and Romain Francois. 2018. <em>Readr: Read Rectangular Text Data</em>. <a href="https://CRAN.R-project.org/package=readr">https://CRAN.R-project.org/package=readr</a>.</p>
+</div>
+<div id="ref-R-knitr">
+<p>Xie, Yihui. 2019. <em>Knitr: A General-Purpose Package for Dynamic Report Generation in R</em>. <a href="https://CRAN.R-project.org/package=knitr">https://CRAN.R-project.org/package=knitr</a>.</p>
+</div>
+<div id="ref-R-bookdown">
+<p>———. 2020. <em>Bookdown: Authoring Books and Technical Documents with R Markdown</em>. <a href="https://CRAN.R-project.org/package=bookdown">https://CRAN.R-project.org/package=bookdown</a>.</p>
+</div>
+</div>
+<!--bookdown:body:end-->
+            </section>
+
+          </div>
+        </div>
+      </div>
+<!--bookdown:link_prev-->
+<!--bookdown:link_next-->
+    </div>
+  </div>
+<!--bookdown:config-->
+
+</body>
+
+</html>

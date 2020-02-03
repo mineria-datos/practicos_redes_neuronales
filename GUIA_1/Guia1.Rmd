@@ -14,15 +14,9 @@ library(readr)
 library(plotly)
 library(foreach)
 
-## ejecuciones multicore
-#install.packages("doMC", repos="http://R-Forge.R-project.org")
-library(doMC)
-registerDoMC()
-getDoParWorkers() 
 source('./PerceptronSimple.R')
 source('./PerceptronMulticapa.R')
 source('./Particiones.R')
-source('./LeavePOut.R')
 
 calcular = TRUE
 
@@ -34,6 +28,14 @@ if(file.exists('./resultados.RData')) {
 ```
 
 # Guía 1
+
+La implementación del perceptrón simple se encuentra en el archivo [PerceptronSimple.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/PerceptronSimple.R).
+
+El código del perceptrón multicapa se encuentra en el archivo [PerceptronMulticapa.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/PerceptronMulticapa.R).
+
+
+
+
 
 ## Ejercicio 1
 
@@ -151,8 +153,10 @@ plot_ly(x=spheres1d10$X1, y=spheres1d10$X2, z=spheres1d10$X3, type="scatter3d",
 ```
 
  - Generamos las particiones
+ 
 
-Utilizamos la función implementada en el archivo "Particiones.R"
+
+Utilizamos la función implementada en el archivo [Particiones.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/Particiones.R)
 
 ```{r}
 particion_spheres1d10 <- generarNParticionesPorID(dataset = spheres1d10, nroParticiones = 5, 

@@ -32,6 +32,8 @@ calcular = TRUE
 
 ## Ejercicio 4
 
+Se ha utilizado el perceptrón multicapa en [PerceptronMulticapa.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/PerceptronMulticapa.R), como así también una implementación del algoritmo de *leave k out* en [LeavePOut.R](https://github.com/mineria-datos/practicos_redes_neuronales/blob/master/GUIA_1/LeavePOut.R)
+
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}

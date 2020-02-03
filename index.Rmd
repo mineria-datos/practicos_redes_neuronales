@@ -11,6 +11,10 @@ description: "Guias resueltas de trabajos prácticos"
 ---
 
 
+
+```{r child = 'Introduccion.Rmd'}
+```
+
 ```{r child = 'GUIA_1/Guia1.Rmd'}
 ```
 
