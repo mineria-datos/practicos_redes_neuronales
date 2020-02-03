@@ -62,7 +62,7 @@ salidaPerceptronOR
 ```
 El entrenamiento nos devuelve la tasa obtenida en cada época y al final mostramos los valores de los pesos w que definen la recta del modelo. 
 
-$ pesos = [w_0, w_1, w_2, ...w_n] $
+$pesos = [w_0, w_1, w_2, ...w_n]$
 
  - Graficas
 

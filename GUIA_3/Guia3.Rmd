@@ -123,7 +123,7 @@ ggplot(data = datos, aes(x = x, y = y)) +
 
 
 > Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del rango.
-> El valor medio de los resultados de la funcion01 es **`r mean(resultado)`**, el desvio estándar es **`r sd(resultado)`**
+> El valor medio de los resultados de la funcion02 es **`r mean(resultado)`**, el desvio estándar es **`r sd(resultado)`**
 
 ### Función 3
 
@@ -175,7 +175,7 @@ resultado %>% colMeans()
 ```
 
 > Se puede apreciar en la gráfica que el mínimo encontrado coincide con el mínimo global dentro del ranggo (tanto para x como para y).
-> El valor medio de los resultados de la funcion01 es **`r resultado %>% colMeans()`**, el desvio estándar es **`r resultado %>% summarise_all(sd)`**
+> El valor medio de los resultados de la funcion03 es **`r resultado %>% colMeans()`**, el desvio estándar es **`r resultado %>% summarise_all(sd)`**
 
 
 
@@ -222,3 +222,14 @@ resultado <- algoritmoGenetico(limiteInf = rep(xMin,4), limiteSup = rep(xMax,4),
 
 
 ```
+
+Calculamos el error del resultado:
+
+```{r}
+
+errorEj2(resultado$mejor_individuo[1],resultado$mejor_individuo[2],
+         resultado$mejor_individuo[3],resultado$mejor_individuo[4])
+
+```
+
+Este error que obtenemos está afectado por el ruido que contenían los datos del archivo. Por esto concluimos que es un valor de error es aceptable. 

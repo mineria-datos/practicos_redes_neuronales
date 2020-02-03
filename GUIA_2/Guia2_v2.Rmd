@@ -3,8 +3,8 @@ title: "Guia 2"
 author: "Grupo 3: Emiliano Bodean - Zacarias Ojeda"
 date: "10/19/2019"
 output:
-  pdf_document: default
   html_document: default
+  pdf_document: default
 ---
 
 ```{r, include=FALSE}
@@ -71,11 +71,11 @@ irisbin <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_
 datos_x <- irisbin[,c(1,2,3,4)]
 datos_y <- irisbin[,c(5,6,7)]
 
-#Se podría aplicar criterio de Elbow para la selección de K
-
 modeloRBF <- redRBF(datos_x, datos_y, nroGausianas = 10, funcion = "sigmo", pnu = 0.2, 
                     pepoca = 200, pcritFinalizacion = 0.9)
 ```
+
+Utilizamos un k alto porque trabajamos solo con gausianas circulares unitarias y queremos representar cada clase con más de una gausiana.
 
  - Prueba con datos 
  
@@ -90,15 +90,15 @@ head(salida$salida)
 
 Cantidad de parámetros:
 
-En una red MLP con una estructura (3,1), tenemos los siguientes parámetros:
+En una red MLP con una estructura (4,3,3), tenemos los siguientes parámetros:
 
-$numParamMLP = Parámetros de Capa 1 + Parámetros de Capa 2$
+$numParamMLP = Parámetros de Capa 1 + Parámetros de Capa 2 + Parámetros de Capa 3$
 
-$numParamMLP = [(4 entradas + 1) * 3 neuronas] + [(3 entradas + 1) * 1 neurona]$
+$numParamMLP = [(4 entradas + 1) * 4 neuronas] + [(4 entradas + 1) * 3 neurona] + [(3 entradas + 1) * 3 neurona]$
 
-$numParamMLP = 5 * 3 + 4 * 1 = 19 parámetros$
+$numParamMLP = 5 * 4 + 5 * 3 + 4 * 3 = 47 parámetros$
 
-Una red RBF con 19 parámetros podría tener la siguiente distribución:
+Una red RBF para el mismo problema podría tener la siguiente distribución:
 
 $numParamRBF = Parámetros de Gausianas + Parámetros de Perceptrones$
 
@@ -120,6 +120,7 @@ salida_2$tasa
 head(salida_2$salida)
 ```
 
+Para este problema en particular, un modelo basado en redes de base radial permite obtener un buen porcentaje de aciertos con un menor tiempo de cálculo ya que requiere menos parámetros que la red MLP.
 
 ## Ejercicio 2
 
@@ -384,9 +385,10 @@ vecindad <- function(nodo, g, entorno = 1) {
 Implementamos la función de entrenamiento para redes SOM, y se la utiliza en el caso del Circulo.
 
 La función dentro tiene tres etapas, 
- - Ordenamiento topológico o global
- - Transición
- - Ajuste fino
+
+- Ordenamiento topológico o global
+- Transición
+- Ajuste fino
  
 La vecindad para el ajuste de los pesos decrece en forma lineal hasta 1 y la taza de aprendizaje decrece linealmente hasta 0,05.
  
@@ -399,7 +401,6 @@ entrenemientoSOM <- function(datos, nu = 0.9, cantidadEpocas = 100, g, miLayout,
   # 1) Ordenamiento topológico o global
   for (e in seq(1,cantidadEpocas)) {
     #Hacemos un for para recorrer todos los datos de entrada
-    miLayoutAux <- miLayout
     for (i in seq(1,cantidadDatos)) {
       # para cada valor recorremos la red SOM y buscamos la distancia menor
       aux_1  <- (datos[i,1] %>% as.numeric()) - miLayout[,1]
@@ -445,24 +446,6 @@ entrenemientoSOM <- function(datos, nu = 0.9, cantidadEpocas = 100, g, miLayout,
       print(e)
       graficas[[e]] <- list(g=g,miLayout=miLayout)
     }
-    # Controlo si hay diferencias significativas con la época anterior.
-    # sinDiferencia <- TRUE
-    # for (j in seq(1,cantidadNodos * cantidadNodos)) {
-    #     # buscar menor distancia
-    #     aux  <- (miLayoutAux[j,] - miLayout[j,])^2
-    #     aux2 <- sqrt( aux[1] + aux[2] )
-    #     if(aux2 > criterioSalida) { 
-    #       sinDiferencia <- FALSE
-    #       break
-    #     }
-    # }
-    # if(sinDiferencia) {
-    #   plot(g, layout=miLayout)
-    #   print("Epoca")
-    #   print(e)
-    #   graficas[[e]] <- recordPlot()
-    #   return(list(graficas = graficas, layout=miLayout, g=g, epocas = e))
-    # }
   }
   return(list(graficas = graficas, milayout=miLayout, g=g, epocas = e))
 }

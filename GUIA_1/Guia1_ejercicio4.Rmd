@@ -32,10 +32,6 @@ calcular = TRUE
 
 ## Ejercicio 4
 
-
-> En ejercicio 4 quedó un head(30) para disminuir la cantidad de combinaciones de leave2out
-
-
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}
