@@ -33,13 +33,13 @@ calcular = TRUE
 ## Ejercicio 4
 
 
-> En ejercicio 4 quedó un head(20) para disminuir la cantidad de combinaciones de leave2out
+> En ejercicio 4 quedó un head(30) para disminuir la cantidad de combinaciones de leave2out
 
 
  - Lectura de los patrones de entrenamiento
 
 ```{r message=FALSE}
-irisbin <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE) %>% head(20)
+irisbin <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/irisbin.csv", col_names = FALSE) %>% head(30)
 
 ```
 
@@ -71,7 +71,7 @@ errores_leave_one_out %>%
   ggplot(aes(x=x)) +
   geom_density() +
   ggtitle("Densidad del error", subtitle = "leave 1 out")
-
+    
 ```
 
 
@@ -113,3 +113,39 @@ if (calcular) {
 }
 
 ```
+
+
+### Respuestas
+
+¿Cuál es la arquitectura mı́nima que emplearı́a para resolver
+este problema? Justifique.
+
+La arquitectura mínima requerida para resolver este problema es una de 3 capas, sindo las capas de entrada y salida determinadas en su número por la formulación del problema (4 neuronas en la capa de entrada y 3 en la de salida).
+
+Una arquitectura de 3 capas permite separar regiones de decisión de arbitraria complejidad, requirida por la distribución de los datos como se aprecia en la siguiente figura:
+
+```{r}
+irisbin %>% 
+  mutate(clase = case_when(
+    X5 == -1 & X6 == -1 & X7 == 1 ~ "setosa",
+    X5 == -1 & X6 == 1 & X7 == -1 ~ "versicolor",
+    X5 == 1 & X6 == -1 & X7 == -1 ~ "virginica",
+  )) %>% 
+  ggplot(aes(x=X1, y=X2, color=clase)) +
+  geom_point()
+```
+
+
+
+
+¿Qué ventajas y desventajas poseen los métodos leave-k-out
+y leave-one-out para validación?
+
+
+La principal ventaja es que son métodos exhaustivos, por lo que usan todos los datos disponibles, resultando de gran utilidad cuando los mismos son escasos.
+
+La principal desventaja es el costo computacional de entrenar tantas veces el modelo, para $n$ el número de datos y $k$ el número de observaciones que se usan en cada test, el número de ciclos de entrenamiento/test es la combinatoria $(_p^n)$.
+
+
+
+

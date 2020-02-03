@@ -35,7 +35,7 @@ if(file.exists('./resultados.RData')) {
 
 # Guía 1
 
-## Ejercicio 1: 
+## Ejercicio 1
 
 Realice un programa que permita el entrenamiento y prueba de un perceptrón simple con una cantidad variable de entradas.
 
@@ -54,7 +54,7 @@ Utilizamos las funciones implementadas en el archivo "PerceptronSimple.R"
 
 ```{r}
 if (calcular) {
-salidaPerceptronOR <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.9)
+ salidaPerceptronOR <- entrenarPerceptron(OR_trn, maxEpocas = 10, critFinalizacion = 0.9)
 }
 # Modelo obtenido
 salidaPerceptronOR
@@ -93,7 +93,7 @@ XOR_tst <- read_csv("../../PUBLICO/Encuentro 1/Práctica/data/XOR_tst.csv", col_
 
 ```{r}
 if (calcular) {
-salidaPerceptronXOR <- entrenarPerceptron(XOR_trn, maxEpocas = 10, critFinalizacion = 0.8)
+  salidaPerceptronXOR <- entrenarPerceptron(XOR_trn, maxEpocas = 10, critFinalizacion = 0.8)
 }
 salidaPerceptronXOR
 
@@ -130,9 +130,9 @@ La tasa de aprendizaje nos permite variar cuanto se actualizan los valores de lo
 En nuestro caso, se implementó una función que posee una tasa de aprendizaje de 0,05 (nu=0.05) por defecto y no fue necesario cambiarlo. 
 
 
-## Ejercicio 2: 
+## Ejercicio 2
 
-### Punto a:
+### Punto a
 
  - Lectura de datos
 
@@ -177,7 +177,7 @@ for (n in seq(1,5)) {
 }
 ```
  
-### Punto b:
+### Punto b
 
  - Lectura de datos
 
@@ -301,7 +301,7 @@ print(glue::glue("Tasa de aciertos media en test: {tasaMedia/10}"))
 
 
 
-### Preguntas:
+### Preguntas
 
  - ¿Qué beneficio supone el uso de validación cruzada?
  
@@ -332,7 +332,7 @@ ggplot(data=concentlite, aes(x=X1, y=X2,color=X3))+geom_point()
 
 ```{r}
 if (calcular) {
-resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
+  resultado <- entrenarPerceptronM(concentlite, maxEpocas = 500, critFinalizacion = 0.9, nu=0.1,
                                  arquitectura = c(3,1))
 }
 concentlite <- cbind(concentlite,resultado$resultado)
@@ -423,7 +423,7 @@ plot(pesosConcentlite$error)
 
 # Guardamos los modelos generados
 if (calcular) {
-save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
+  save(resultado,resultado2,salidaPerceptronOR,salidaPerceptronXOR,
      pesosConcentlite,file = "resultados.RData")
 }
 
